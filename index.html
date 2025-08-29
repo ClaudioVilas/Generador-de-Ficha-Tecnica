@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ficha Técnica de Producción</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+<body>
+    <!-- Botón de exportar PDF -->
+    <div class="export-controls">
+        <button id="exportPDF" class="export-btn">Exportar a PDF</button>
+        <button id="guardarDatos" class="save-btn">Guardar Ficha</button>
+        <button id="cargarDatos" class="load-btn">Cargar Ficha</button>
+        <input type="file" id="archivoCargar" accept=".json" style="display: none;">
+    </div>
+
+    <!-- Modal para guardar archivo -->
+    <div id="modalGuardar" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Guardar Ficha Técnica</h3>
+                <span class="modal-close">&times;</span>
+            </div>
+            <div class="modal-body">
+                <label for="nombreArchivo">Nombre del archivo:</label>
+                <input type="text" id="nombreArchivo" class="input-modal" placeholder="ficha-tecnica">
+                <small>Se agregará automáticamente la extensión .json</small>
+            </div>
+            <div class="modal-footer">
+                <button id="cancelarGuardar" class="btn-cancelar">Cancelar</button>
+                <button id="confirmarGuardar" class="btn-confirmar">Guardar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Contenedor principal para la ficha técnica -->
+    <div class="ficha-container" id="fichaContainer">
+        <!-- Fila superior de información general -->
+        <div class="info-superior">
+            <div class="campo-grupo">
+                <label>Nombre y Apellido:</label>
+                <input type="text" value="Pascual, Mairena Bahiana" class="input-text">
+            </div>
+            <div class="campo-grupo">
+                <label>Usuario:</label>
+                <input type="text" value="Mujer" class="input-text">
+            </div>
+            <div class="campo-grupo">
+                <label>Artículo:</label>
+                <input type="text" value="A-01" class="input-text">
+            </div>
+            <div class="campo-grupo">
+                <label>Rubro:</label>
+                <input type="text" value="Casual" class="input-text">
+            </div>
+            <div class="campo-grupo fecha">
+                <label>Ficha de Producción:</label>
+                <input type="text" value="1" class="input-text">
+            </div>
+        </div>
+
+        <!-- Fila de descripción y organización -->
+        <div class="descripcion-organizacion">
+            <div class="descripcion-campo">
+                <label>Descripción:</label>
+                <textarea class="textarea-descripcion">Vestido corto de mujer, con escote recto, y tirantes pinzas de hombro.
+Falda evasé, con volados en ruedo. Utiliza un textil cuadrille, y cierre en espalda.</textarea>
+            </div>
+            <div class="organizacion-campo">
+                <label>Organización:</label>
+                <input type="text" value="Control interno" class="input-text">
+            </div>
+        </div>
+
+        <!-- Sección principal con imagen y tablas -->
+        <div class="seccion-principal">
+            <!-- Columna izquierda: Imagen del vestido -->
+            <div class="imagen-vestido">
+                <div class="contenedor-imagen" id="imagenVestido">
+                    <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjMwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8cmVjdCB3aWR0aD0iMjAwIiBoZWlnaHQ9IjMwMCIgZmlsbD0iI2Y0ZjRmNCIgc3Ryb2tlPSIjY2NjIiBzdHJva2Utd2lkdGg9IjIiLz4KICA8dGV4dCB4PSIxMDAiIHk9IjE1MCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iIzk5OSIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjE0Ij5DbGljIHBhcmEgc3ViaXIgaW1hZ2VuPC90ZXh0Pgo8L3N2Zz4K" alt="Vestido" class="imagen-preview">
+                    <input type="file" id="uploadVestido" accept="image/*" class="file-input" style="display: none;">
+                    <button class="upload-btn" onclick="document.getElementById('uploadVestido').click()">Subir Imagen</button>
+                </div>
+            </div>
+
+            <!-- Columna derecha: Tabla de materiales -->
+            <div class="tabla-materiales">
+                <h3>MATERIALES</h3>
+                <table class="tabla" id="tablaMateriales">
+                    <thead>
+                        <tr>
+                            <th>Nº</th>
+                            <th>Descripción</th>
+                            <th>Color</th>
+                            <th>Material</th>
+                            <th>Proveedor</th>
+                            <th>Cantidad</th>
+                            <th>Costo</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td><input type="text" value="Tela" class="input-celda"></td>
+                            <td><input type="text" value="Mostaza" class="input-celda"></td>
+                            <td><input type="text" value="Cuadrille" class="input-celda"></td>
+                            <td><input type="text" value="Los Angeles" class="input-celda"></td>
+                            <td><input type="text" value="11 mts" class="input-celda"></td>
+                            <td><input type="text" value="$ 12.000" class="input-celda"></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="tabla-controls">
+                    <button class="btn-eliminar-ultima" onclick="eliminarUltimaFila('tablaMateriales')" title="Eliminar última fila">-</button>
+                    <button class="btn-agregar-fila" onclick="agregarFilaMateriales()" title="Agregar material">+</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sección inferior con tablas -->
+        <div class="seccion-inferior">
+            <!-- Tabla de costo de producción -->
+            <div class="costo-produccion">
+                <h3>COSTO DE PRODUCCIÓN</h3>
+                <table class="tabla" id="tablaCostos">
+                    <thead>
+                        <tr>
+                            <th>Nº</th>
+                            <th>Descripción</th>
+                            <th>Cantidad</th>
+                            <th>Precio</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td><input type="text" value="Tela" class="input-celda"></td>
+                            <td><input type="text" value="1.10 mts" class="input-celda"></td>
+                            <td><input type="text" value="$1.100" class="input-celda"></td>
+                        </tr>
+                        <tr class="total-row">
+                            <td colspan="3"><strong>Total x Prenda</strong></td>
+                            <td><input type="text" value="$3.993" class="input-celda total-input"></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="tabla-controls">
+                    <button class="btn-eliminar-ultima" onclick="eliminarUltimaFila('tablaCostos')" title="Eliminar última fila">-</button>
+                    <button class="btn-agregar-fila" onclick="agregarFilaCostos()" title="Agregar costo">+</button>
+                </div>
+            </div>
+
+            <!-- Tabla de taller de corte -->
+            <div class="taller-corte">
+                <h3>TALLER DE CORTE</h3>
+                <table class="tabla tabla-corte" id="tablaCorte">
+                    <thead>
+                        <tr>
+                            <th rowspan="2">Color</th>
+                            <th colspan="6">Talles</th>
+                        </tr>
+                        <tr>
+                            <th>XS</th>
+                            <th>S</th>
+                            <th>L</th>
+                            <th>M</th>
+                            <th>XL</th>
+                            <th>XXL</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="color-cell">
+                                <input type="color" value="#FFFF00" class="color-picker">
+                            </td>
+                            <td><input type="number" value="5" class="input-numero"></td>
+                            <td><input type="number" value="5" class="input-numero"></td>
+                            <td><input type="number" value="5" class="input-numero"></td>
+                            <td><input type="number" value="5" class="input-numero"></td>
+                            <td><input type="number" value="5" class="input-numero"></td>
+                            <td><input type="number" value="5" class="input-numero"></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="tabla-controls">
+                    <button class="btn-eliminar-ultima" onclick="eliminarUltimaFila('tablaCorte')" title="Eliminar último color">-</button>
+                    <button class="btn-agregar-fila" onclick="agregarFilaCorte()" title="Agregar color">+</button>
+                </div>
+                <div class="cantidad-total">
+                    <label>Cantidad total de prendas:</label>
+                    <input type="number" value="30" class="input-total" id="totalPrendas">
+                </div>
+            </div>
+
+            <!-- Muestra de materiales -->
+            <div class="muestra-materiales">
+                <h3>MUESTRA DE MATERIALES</h3>
+                <div class="materiales-grid" id="materialesGrid">
+                    <div class="material-item">
+                        <div class="imagen-material" id="materialHilo1">
+                            <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CiAgPHJlY3Qgd2lkdGg9IjYwIiBoZWlnaHQ9IjYwIiBmaWxsPSIjZjRmNGY0IiBzdHJva2U9IiNjY2MiIHN0cm9rZS13aWR0aD0iMSIvPgogIDx0ZXh0IHg9IjMwIiB5PSIzNSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iIzk5OSIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjEwIj7wn5OFPC90ZXh0Pgo8L3N2Zz4K" alt="Hilo" class="material-preview">
+                            <input type="file" id="uploadHilo1" accept="image/*" class="file-input" style="display: none;">
+                            <button class="upload-btn-small" onclick="document.getElementById('uploadHilo1').click()">+</button>
+                        </div>
+                        <div class="material-description">
+                            <input type="text" value="Hilo de poliester de color rojo y mostaza" class="input-material-desc">
+                        </div>
+                    </div>
+                </div>
+                <div class="tabla-controls">
+                    <button class="btn-eliminar-ultima" onclick="eliminarUltimoMaterial()" title="Eliminar último material">-</button>
+                    <button class="btn-agregar-fila" onclick="agregarMaterial()" title="Agregar material">+</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
