@@ -1,0 +1,646 @@
+/* ================================================
+   NavBar System Styles
+   ================================================ */
+
+/* Navbar Container - Fixed at top */
+.navbar-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    z-index: 1000;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    border-bottom: 3px solid rgba(255, 255, 255, 0.1);
+}
+
+.navbar-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 20px;
+    max-width: 1400px;
+    margin: 0 auto;
+    gap: 20px;
+}
+
+.navbar-brand h1 {
+    margin: 0;
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: white;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+/* Navigation buttons */
+.navbar-navigation {
+    display: flex;
+    gap: 8px;
+    flex: 1;
+    justify-content: center;
+}
+
+.nav-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 16px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 2px solid transparent;
+    border-radius: 8px;
+    color: white;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+    min-width: 100px;
+    justify-content: center;
+}
+
+.nav-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.3);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.nav-btn.active {
+    background: rgba(255, 255, 255, 0.25);
+    border-color: rgba(255, 255, 255, 0.5);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    font-weight: 600;
+}
+
+.nav-icon {
+    font-size: 1.1rem;
+}
+
+.nav-text {
+    font-size: 0.9rem;
+}
+
+/* Action buttons */
+.navbar-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.action-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 12px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 6px;
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    font-size: 0.85rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+}
+
+.action-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.5);
+    transform: translateY(-1px);
+}
+
+.btn-icon {
+    font-size: 0.9rem;
+}
+
+.btn-text {
+    font-size: 0.8rem;
+}
+
+/* Content area - Below navbar */
+.navbar-content-area {
+    margin-top: 80px; /* Space for fixed navbar */
+    padding: 20px;
+    min-height: calc(100vh - 80px);
+    background: #f8f9fa;
+}
+
+/* View headers */
+.vista-header {
+    margin-bottom: 30px;
+    padding: 20px;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    border-left: 4px solid #667eea;
+}
+
+.vista-header h2 {
+    margin: 0 0 8px 0;
+    color: #2c3e50;
+    font-size: 1.8rem;
+    font-weight: 600;
+}
+
+.vista-header p {
+    margin: 0;
+    color: #6c757d;
+    font-size: 1rem;
+}
+
+/* Vista containers */
+.vista1-container,
+.vista2-container,
+.vista3-container,
+.vista4-container {
+    background: white;
+    border-radius: 10px;
+    padding: 30px;
+    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.08);
+    margin-bottom: 20px;
+}
+
+/* Section styling */
+.seccion-cabecera,
+.seccion-tecnica,
+.seccion-tecnica-especifica,
+.seccion-medidas,
+.seccion-construccion,
+.seccion-cuidado,
+.seccion-notas,
+.seccion-patrones,
+.seccion-piezas,
+.seccion-trazado,
+.seccion-consumo,
+.seccion-esquema,
+.seccion-observaciones,
+.seccion-control-calidad,
+.seccion-defectos,
+.seccion-pruebas,
+.seccion-tiempos,
+.seccion-aprobaciones,
+.seccion-estado-final {
+    margin-bottom: 30px;
+    padding: 20px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    border: 1px solid #e9ecef;
+}
+
+.seccion-cabecera h3,
+.seccion-tecnica h3,
+.seccion-tecnica-especifica h3,
+.seccion-medidas h3,
+.seccion-construccion h3,
+.seccion-cuidado h3,
+.seccion-notas h3,
+.seccion-patrones h3,
+.seccion-piezas h3,
+.seccion-trazado h3,
+.seccion-consumo h3,
+.seccion-esquema h3,
+.seccion-observaciones h3,
+.seccion-control-calidad h3,
+.seccion-defectos h3,
+.seccion-pruebas h3,
+.seccion-tiempos h3,
+.seccion-aprobaciones h3,
+.seccion-estado-final h3 {
+    margin: 0 0 20px 0;
+    color: #495057;
+    font-size: 1.3rem;
+    font-weight: 600;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #dee2e6;
+}
+
+/* Cabecera específica styling */
+.seccion-cabecera {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border: 2px solid #667eea;
+    border-radius: 10px;
+}
+
+.seccion-cabecera h3 {
+    color: #667eea;
+    border-bottom-color: #667eea;
+    font-size: 1.4rem;
+}
+
+/* Información superior en cabecera */
+.info-superior {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+/* Descripción y organización */
+.descripcion-organizacion {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 20px;
+    align-items: start;
+}
+
+.descripcion-campo,
+.organizacion-campo {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.descripcion-campo label,
+.organizacion-campo label {
+    font-weight: 600;
+    color: #495057;
+    font-size: 0.95rem;
+}
+
+/* Grid layouts */
+.campos-tecnicos,
+.construccion-item,
+.trazado-grid,
+.patrones-info,
+.tiempos-grid,
+.aprobaciones-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.campo-grupo {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.campo-grupo label {
+    font-weight: 600;
+    color: #495057;
+    font-size: 0.9rem;
+}
+
+/* Checkboxes and radio styling */
+.checklist-grid,
+.cuidado-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 12px;
+}
+
+.checklist-item,
+.cuidado-item {
+    display: flex;
+    align-items: center;
+}
+
+.checklist-item label,
+.cuidado-item label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 500;
+    color: #495057;
+    cursor: pointer;
+    font-size: 0.9rem;
+}
+
+.checklist-item input[type="checkbox"],
+.cuidado-item input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    accent-color: #667eea;
+}
+
+/* Tables styling */
+#tablaMedidas,
+#tablaPiezas,
+#tablaConsumo,
+#tablaDefectos,
+#tablaPruebas {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 15px;
+    background: white;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+#tablaMedidas th,
+#tablaPiezas th,
+#tablaConsumo th,
+#tablaDefectos th,
+#tablaPruebas th {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 12px 8px;
+    text-align: center;
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+#tablaMedidas td,
+#tablaPiezas td,
+#tablaConsumo td,
+#tablaDefectos td,
+#tablaPruebas td {
+    padding: 8px;
+    text-align: center;
+    border-bottom: 1px solid #e9ecef;
+}
+
+#tablaMedidas input,
+#tablaPiezas input,
+#tablaConsumo input,
+#tablaDefectos input,
+#tablaPruebas input,
+#tablaMedidas select,
+#tablaPiezas select,
+#tablaConsumo select,
+#tablaDefectos select,
+#tablaPruebas select {
+    width: 100%;
+    padding: 6px 8px;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    font-size: 0.85rem;
+}
+
+/* Textareas */
+.textarea-notas,
+.textarea-observaciones,
+.textarea-finales,
+.textarea-descripcion {
+    width: 100%;
+    min-height: 120px;
+    padding: 12px;
+    border: 1px solid #ced4da;
+    border-radius: 6px;
+    font-family: inherit;
+    font-size: 0.9rem;
+    line-height: 1.5;
+    resize: vertical;
+}
+
+/* Image upload areas */
+.imagen-esquema,
+.esquema-container {
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+}
+
+.imagen-esquema {
+    flex: 1;
+    text-align: center;
+    padding: 20px;
+    border: 2px dashed #ced4da;
+    border-radius: 8px;
+    background: #f8f9fa;
+}
+
+.esquema-preview {
+    max-width: 100%;
+    height: auto;
+    border-radius: 6px;
+    margin-bottom: 15px;
+}
+
+.esquema-description {
+    flex: 1;
+}
+
+/* Time calculation */
+.tiempos-grid {
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+}
+
+.total-tiempo {
+    grid-column: 1 / -1;
+    padding: 15px;
+    background: #e3f2fd;
+    border-radius: 6px;
+    border: 1px solid #90caf9;
+}
+
+.total-tiempo label {
+    font-weight: 700;
+    color: #1565c0;
+}
+
+.total-input {
+    background: #fff3e0 !important;
+    border-color: #ffb74d !important;
+    font-weight: 600 !important;
+}
+
+/* Approval sections */
+.aprobacion-item {
+    padding: 20px;
+    background: white;
+    border-radius: 8px;
+    border: 1px solid #e9ecef;
+}
+
+.aprobacion-item h4 {
+    margin: 0 0 15px 0;
+    color: #495057;
+    font-size: 1.1rem;
+    font-weight: 600;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #dee2e6;
+}
+
+.firma-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.firma-container input[type="text"],
+.firma-container input[type="date"] {
+    padding: 8px 12px;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    font-size: 0.9rem;
+}
+
+.firma-container label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 500;
+    color: #28a745;
+}
+
+/* Final status */
+.estado-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.estado-item label {
+    display: block;
+    font-weight: 600;
+    color: #495057;
+    margin-bottom: 5px;
+}
+
+.estado-select {
+    background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+    color: white;
+    font-weight: 600;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .navbar-content {
+        flex-direction: column;
+        gap: 10px;
+        padding: 10px;
+    }
+    
+    .navbar-brand h1 {
+        font-size: 1.2rem;
+        text-align: center;
+    }
+    
+    .navbar-navigation {
+        order: 2;
+        width: 100%;
+        justify-content: space-around;
+        flex-wrap: wrap;
+        gap: 5px;
+    }
+    
+    .nav-btn {
+        flex: 1;
+        min-width: 80px;
+        padding: 8px 12px;
+        font-size: 0.8rem;
+    }
+    
+    .nav-text {
+        display: none;
+    }
+    
+    .navbar-actions {
+        order: 3;
+        width: 100%;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+    
+    .action-btn {
+        flex: 1;
+        min-width: 80px;
+        padding: 6px 8px;
+        font-size: 0.75rem;
+    }
+    
+    .btn-text {
+        display: none;
+    }
+    
+    .navbar-content-area {
+        margin-top: 120px;
+        padding: 10px;
+    }
+    
+    .campos-tecnicos,
+    .construccion-item,
+    .trazado-grid,
+    .patrones-info,
+    .tiempos-grid,
+    .aprobaciones-grid,
+    .info-superior {
+        grid-template-columns: 1fr;
+    }
+    
+    .descripcion-organizacion {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+    
+    .checklist-grid,
+    .cuidado-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .esquema-container {
+        flex-direction: column;
+    }
+    
+    .estado-container {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 480px) {
+    .navbar-content-area {
+        margin-top: 140px;
+        padding: 5px;
+    }
+    
+    .vista1-container,
+    .vista2-container,
+    .vista3-container,
+    .vista4-container {
+        padding: 15px;
+    }
+    
+    .vista-header {
+        padding: 15px;
+    }
+    
+    .vista-header h2 {
+        font-size: 1.4rem;
+    }
+}
+
+/* Animation for view transitions */
+.view-transition {
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Loading states */
+.loading {
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+.loading::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 30px;
+    height: 30px;
+    border: 3px solid #f3f3f3;
+    border-top: 3px solid #667eea;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: translate(-50%, -50%) rotate(0deg); }
+    100% { transform: translate(-50%, -50%) rotate(360deg); }
+}

@@ -1,13 +1,16 @@
 // JavaScript para la Ficha Técnica de Producción
 
 document.addEventListener('DOMContentLoaded', function() {
-    // Inicializar funcionalidades
+    // Inicializar funcionalidades originales
     initImageUploads();
     initColorPickers();
     initPDFExport();
     initAutoCalculations();
     initDynamicRows();
     initSaveLoad();
+    
+    // Inicializar funcionalidad NavBar
+    initNavBarToggle();
     
     console.log('Ficha Técnica de Producción inicializada correctamente');
 });
@@ -1026,3 +1029,93 @@ setInterval(() => {
 
 // Cargar datos al inicializar (comentado para no interferir con valores por defecto)
 // loadFromLocalStorage();
+
+// ============================================
+// FUNCIONALIDAD NAVBAR
+// ============================================
+
+/**
+ * Inicializa la funcionalidad de toggle del NavBar
+ */
+function initNavBarToggle() {
+    const toggleButton = document.getElementById('toggleNavBar');
+    if (toggleButton) {
+        toggleButton.addEventListener('click', toggleNavBarApp);
+    }
+}
+
+/**
+ * Variable global para controlar la instancia de NavBar
+ */
+let navBarAppInstance = null;
+
+/**
+ * Alterna entre la ficha original y el NavBar
+ */
+async function toggleNavBarApp() {
+    const toggleButton = document.getElementById('toggleNavBar');
+    
+    try {
+        if (!navBarAppInstance || !navBarAppInstance.isReady()) {
+            // Inicializar NavBar
+            toggleButton.textContent = 'Cargando NavBar...';
+            toggleButton.disabled = true;
+            
+            navBarAppInstance = new NavBarApp();
+            await navBarAppInstance.init();
+            
+            toggleButton.textContent = '📋 Volver a Ficha Original';
+            toggleButton.style.background = '#dc3545';
+            
+        } else {
+            // Alternar vista
+            navBarAppInstance.toggleOriginalView();
+            
+            const navbarApp = document.getElementById('navbarApp');
+            if (navbarApp && navbarApp.style.display === 'none') {
+                toggleButton.textContent = '🚀 Abrir NavBar';
+                toggleButton.style.background = '#6f42c1';
+            } else {
+                toggleButton.textContent = '📋 Volver a Ficha Original';
+                toggleButton.style.background = '#dc3545';
+            }
+        }
+        
+    } catch (error) {
+        console.error('Error al alternar NavBar:', error);
+        alert('Error al cargar el NavBar. Revisa la consola para más detalles.');
+        
+        toggleButton.textContent = '🚀 Abrir NavBar';
+        toggleButton.style.background = '#6f42c1';
+    } finally {
+        toggleButton.disabled = false;
+    }
+}
+
+/**
+ * Función para obtener la instancia del NavBar (para debugging)
+ */
+function getNavBarInstance() {
+    return navBarAppInstance;
+}
+
+/**
+ * Función para resetear el NavBar
+ */
+function resetNavBar() {
+    if (navBarAppInstance) {
+        navBarAppInstance.destroy();
+        navBarAppInstance = null;
+        
+        const toggleButton = document.getElementById('toggleNavBar');
+        toggleButton.textContent = '🚀 Abrir NavBar';
+        toggleButton.style.background = '#6f42c1';
+        
+        console.log('NavBar reseteado');
+    }
+}
+
+// Hacer funciones disponibles globalmente para debugging
+window.getNavBarInstance = getNavBarInstance;
+window.resetNavBar = resetNavBar;
+window.toggleNavBarApp = toggleNavBarApp;

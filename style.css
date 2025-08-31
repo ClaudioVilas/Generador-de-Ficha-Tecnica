@@ -74,6 +74,33 @@ body {
     background: #e0a800;
 }
 
+.navbar-toggle-btn {
+    background: linear-gradient(135deg, #6f42c1 0%, #9c27b0 100%);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
+    margin-left: 10px;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 5px rgba(111, 66, 193, 0.3);
+}
+
+.navbar-toggle-btn:hover {
+    background: linear-gradient(135deg, #5a32a3 0%, #8e24aa 100%);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 10px rgba(111, 66, 193, 0.4);
+}
+
+.navbar-toggle-btn:disabled {
+    background: #6c757d;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
 /* Contenedor principal de la ficha - Tamaño A4 Horizontal */
 .ficha-container {
     width: 297mm;
