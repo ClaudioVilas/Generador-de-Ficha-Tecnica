@@ -25,21 +25,6 @@ class Vista1 {
                 <!-- Información general de la ficha -->
                 ${this.getGeneralInfoHTML()}
 
-                <div class="seccion-cabecera">
-                    <h3>ESPECIFICACIONES DETALLADAS</h3>
-                    <div class="descripcion-organizacion">
-                        <div class="descripcion-campo">
-                            <label>Descripción Específica:</label>
-                            <textarea class="textarea-descripcion" data-field="descripcion" placeholder="Completar descripción específica del producto">Vestido corto de mujer, con escote recto, y tirantes pinzas de hombro.
-Falda evasé, con volados en ruedo. Utiliza un textil cuadrille, y cierre en espalda.</textarea>
-                        </div>
-                        <div class="organizacion-campo">
-                            <label>Organización:</label>
-                            <input type="text" value="Control interno" class="input-text" data-field="organizacion">
-                        </div>
-                    </div>
-                </div>
-
                 <!-- Sección principal con imagen y tablas -->
                 <div class="seccion-principal">
                     <!-- Columna izquierda: Imagen del vestido -->
