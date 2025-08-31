@@ -1,16 +1,57 @@
 /**
- * Vista3 - Tercera vista de la ficha técnica
- * Enfocada en patrones, moldes y trazado
+ * Vista3 - Gestión de Patrones y Moldes
+ * Maneja la información de patrones, piezas y consumos
  */
 class Vista3 {
     constructor() {
-        this.container = null;
         this.data = {};
+        this.container = null;
+    }
+
+    /**
+     * Genera el HTML para la información general compartida (igual que en index.html)
+     */
+    getGeneralInfoHTML() {
+        return `
+            <div class="info-superior">
+                <div class="campo-grupo">
+                    <label>Nombre y Apellido:</label>
+                    <input type="text" placeholder="Completar" class="input-text" data-field="nombreApellido">
+                </div>
+                <div class="campo-grupo">
+                    <label>Usuario:</label>
+                    <input type="text" placeholder="Completar" class="input-text" data-field="usuario">
+                </div>
+                <div class="campo-grupo">
+                    <label>Artículo:</label>
+                    <input type="text" placeholder="Completar" class="input-text" data-field="articulo">
+                </div>
+                <div class="campo-grupo">
+                    <label>Rubro:</label>
+                    <input type="text" placeholder="Completar" class="input-text" data-field="rubro">
+                </div>
+                <div class="campo-grupo fecha">
+                    <label>Ficha de Producción:</label>
+                    <input type="text" placeholder="Completar" class="input-text" data-field="fichaProduccion">
+                </div>
+            </div>
+
+            <!-- Fila de descripción y organización -->
+            <div class="descripcion-organizacion">
+                <div class="descripcion-campo">
+                    <label>Descripción:</label>
+                    <textarea class="textarea-descripcion" data-field="descripcion" placeholder="Completar descripción"></textarea>
+                </div>
+                <div class="organizacion-campo">
+                    <label>Organización:</label>
+                    <input type="text" placeholder="Completar" class="input-text" data-field="organizacion">
+                </div>
+            </div>
+        `;
     }
 
     /**
      * Renderiza la Vista3 en el contenedor especificado
-     * @param {HTMLElement} container - Contenedor donde renderizar
      */
     render(container) {
         this.container = container;
@@ -18,48 +59,12 @@ class Vista3 {
         const vista3HTML = `
             <div class="vista3-container">
                 <div class="vista-header">
-                    <h2>🔧 Patrones y Moldes</h2>
-                    <p>Especificaciones de patrones, moldes y trazado</p>
+                    <h2>📐 Patrones y Moldes</h2>
+                    <p>Especificaciones de patrones, piezas y consumos de materiales</p>
                 </div>
 
                 <!-- Información general de la ficha -->
-                <div class="seccion-cabecera">
-                    <h3>INFORMACIÓN GENERAL</h3>
-                    <div class="info-superior">
-                        <div class="campo-grupo">
-                            <label>Nombre y Apellido:</label>
-                            <input type="text" value="Pascual, Mairena Bahiana" class="input-text" data-field="nombreApellido">
-                        </div>
-                        <div class="campo-grupo">
-                            <label>Usuario:</label>
-                            <input type="text" value="Mujer" class="input-text" data-field="usuario">
-                        </div>
-                        <div class="campo-grupo">
-                            <label>Artículo:</label>
-                            <input type="text" value="A-01" class="input-text" data-field="articulo">
-                        </div>
-                        <div class="campo-grupo">
-                            <label>Rubro:</label>
-                            <input type="text" value="Casual" class="input-text" data-field="rubro">
-                        </div>
-                        <div class="campo-grupo fecha">
-                            <label>Ficha de Producción:</label>
-                            <input type="text" value="1" class="input-text" data-field="fichaProduccion">
-                        </div>
-                    </div>
-                    
-                    <div class="descripcion-organizacion">
-                        <div class="descripcion-campo">
-                            <label>Descripción:</label>
-                            <textarea class="textarea-descripcion" data-field="descripcion">Vestido corto de mujer, con escote recto, y tirantes pinzas de hombro.
-Falda evasé, con volados en ruedo. Utiliza un textil cuadrille, y cierre en espalda.</textarea>
-                        </div>
-                        <div class="organizacion-campo">
-                            <label>Organización:</label>
-                            <input type="text" value="Control interno" class="input-text" data-field="organizacion">
-                        </div>
-                    </div>
-                </div>
+                ${this.getGeneralInfoHTML()}
 
                 <!-- Información específica de patrones -->
                 <div class="seccion-patrones">
@@ -67,15 +72,15 @@ Falda evasé, con volados en ruedo. Utiliza un textil cuadrille, y cierre en esp
                     <div class="patrones-info">
                         <div class="campo-grupo">
                             <label>Número de Patrón:</label>
-                            <input type="text" value="P-001" class="input-text" data-field="numeroPatron">
+                            <input type="text" placeholder="Completar número de patrón" class="input-text" data-field="numeroPatron">
                         </div>
                         <div class="campo-grupo">
                             <label>Versión del Patrón:</label>
-                            <input type="text" value="1.0" class="input-text" data-field="versionPatron">
+                            <input type="text" placeholder="Completar versión" class="input-text" data-field="versionPatron">
                         </div>
                         <div class="campo-grupo">
                             <label>Diseñador:</label>
-                            <input type="text" value="" class="input-text" data-field="disenador">
+                            <input type="text" placeholder="Completar nombre del diseñador" class="input-text" data-field="disenador">
                         </div>
                         <div class="campo-grupo">
                             <label>Fecha de Creación:</label>
@@ -84,6 +89,7 @@ Falda evasé, con volados en ruedo. Utiliza un textil cuadrille, y cierre en esp
                         <div class="campo-grupo">
                             <label>Escala del Patrón:</label>
                             <select class="input-text" data-field="escalaPatron">
+                                <option value="">Seleccionar escala</option>
                                 <option value="1:1">1:1 (Real)</option>
                                 <option value="1:2">1:2 (Mitad)</option>
                                 <option value="1:4">1:4 (Cuarto)</option>
@@ -93,6 +99,7 @@ Falda evasé, con volados en ruedo. Utiliza un textil cuadrille, y cierre en esp
                         <div class="campo-grupo">
                             <label>Tipo de Papel:</label>
                             <select class="input-text" data-field="tipoPapel">
+                                <option value="">Seleccionar tipo de papel</option>
                                 <option value="kraft">Papel Kraft</option>
                                 <option value="manila">Papel Manila</option>
                                 <option value="opalina">Opalina</option>
@@ -109,171 +116,66 @@ Falda evasé, con volados en ruedo. Utiliza un textil cuadrille, y cierre en esp
                         <thead>
                             <tr>
                                 <th>Pieza</th>
-                                <th>Descripción</th>
-                                <th>Cantidad a Cortar</th>
-                                <th>Tela Principal</th>
-                                <th>Forro</th>
-                                <th>Entretela</th>
+                                <th>Cantidad</th>
+                                <th>Talla</th>
+                                <th>Medidas (cm)</th>
+                                <th>Material</th>
                                 <th>Observaciones</th>
+                                <th>Acciones</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
-                                <td><input type="text" value="Delantero" class="input-celda"></td>
-                                <td><input type="text" value="Parte frontal del vestido" class="input-celda"></td>
-                                <td><input type="text" value="2" class="input-celda"></td>
-                                <td><input type="checkbox" checked></td>
-                                <td><input type="checkbox"></td>
-                                <td><input type="checkbox"></td>
-                                <td><input type="text" value="Cortar al hilo" class="input-celda"></td>
+                                <td><input type="text" placeholder="Nombre de la pieza" value="Delantero"></td>
+                                <td><input type="number" value="2" min="1"></td>
+                                <td><input type="text" placeholder="Talla" value="M"></td>
+                                <td><input type="text" placeholder="Ancho x Alto" value="45 x 60"></td>
+                                <td><input type="text" placeholder="Material" value="Tela principal"></td>
+                                <td><input type="text" placeholder="Observaciones" value="Con pinzas"></td>
+                                <td><button class="btn-eliminar" onclick="Vista3Instance.eliminarFila(this)">❌</button></td>
                             </tr>
                             <tr>
-                                <td><input type="text" value="Espalda" class="input-celda"></td>
-                                <td><input type="text" value="Parte posterior del vestido" class="input-celda"></td>
-                                <td><input type="text" value="2" class="input-celda"></td>
-                                <td><input type="checkbox" checked></td>
-                                <td><input type="checkbox"></td>
-                                <td><input type="checkbox"></td>
-                                <td><input type="text" value="Incluye abertura cremallera" class="input-celda"></td>
-                            </tr>
-                            <tr>
-                                <td><input type="text" value="Tirante" class="input-celda"></td>
-                                <td><input type="text" value="Tirantes del escote" class="input-celda"></td>
-                                <td><input type="text" value="4" class="input-celda"></td>
-                                <td><input type="checkbox" checked></td>
-                                <td><input type="checkbox"></td>
-                                <td><input type="checkbox" checked></td>
-                                <td><input type="text" value="Reforzar con entretela" class="input-celda"></td>
+                                <td><input type="text" placeholder="Nombre de la pieza" value="Trasero"></td>
+                                <td><input type="number" value="2" min="1"></td>
+                                <td><input type="text" placeholder="Talla" value="M"></td>
+                                <td><input type="text" placeholder="Ancho x Alto" value="45 x 65"></td>
+                                <td><input type="text" placeholder="Material" value="Tela principal"></td>
+                                <td><input type="text" placeholder="Observaciones" value="Con cierre"></td>
+                                <td><button class="btn-eliminar" onclick="Vista3Instance.eliminarFila(this)">❌</button></td>
                             </tr>
                         </tbody>
                     </table>
-                    <div class="tabla-controls">
-                        <button class="btn-eliminar-ultima" onclick="Vista3Instance.eliminarUltimaPieza()" title="Eliminar última pieza">-</button>
-                        <button class="btn-agregar-fila" onclick="Vista3Instance.agregarPieza()" title="Agregar pieza">+</button>
-                    </div>
+                    <button class="btn-agregar" onclick="Vista3Instance.agregarPieza()">➕ Agregar Pieza</button>
                 </div>
 
-                <!-- Instrucciones de trazado -->
-                <div class="seccion-trazado">
-                    <h3>INSTRUCCIONES DE TRAZADO</h3>
-                    <div class="trazado-grid">
-                        <div class="trazado-item">
-                            <label>Dirección del Hilo:</label>
-                            <select class="input-text" data-field="direccionHilo">
-                                <option value="longitudinal">Longitudinal</option>
-                                <option value="transversal">Transversal</option>
-                                <option value="sesgo">Al sesgo</option>
-                                <option value="mixto">Mixto</option>
-                            </select>
-                        </div>
-                        <div class="trazado-item">
-                            <label>Ancho de Tela Recomendado:</label>
-                            <select class="input-text" data-field="anchoTela">
-                                <option value="90cm">90 cm</option>
-                                <option value="110cm">110 cm</option>
-                                <option value="140cm">140 cm</option>
-                                <option value="150cm">150 cm</option>
-                                <option value="180cm">180 cm</option>
-                            </select>
-                        </div>
-                        <div class="trazado-item">
-                            <label>Márgen de Costura:</label>
-                            <select class="input-text" data-field="margenCostura">
-                                <option value="1cm">1 cm</option>
-                                <option value="1.5cm">1.5 cm</option>
-                                <option value="2cm">2 cm</option>
-                                <option value="variable">Variable</option>
-                            </select>
-                        </div>
-                        <div class="trazado-item">
-                            <label>Márgen de Dobladillo:</label>
-                            <select class="input-text" data-field="margenDobladillo">
-                                <option value="2cm">2 cm</option>
-                                <option value="3cm">3 cm</option>
-                                <option value="4cm">4 cm</option>
-                                <option value="5cm">5 cm</option>
-                                <option value="variable">Variable</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Cálculo de consumo de tela -->
+                <!-- Consumo de materiales -->
                 <div class="seccion-consumo">
-                    <h3>CÁLCULO DE CONSUMO DE TELA</h3>
+                    <h3>CONSUMO DE MATERIALES</h3>
                     <table class="tabla" id="tablaConsumo">
                         <thead>
                             <tr>
-                                <th>Talle</th>
-                                <th>Tela Principal (mts)</th>
-                                <th>Forro (mts)</th>
-                                <th>Entretela (mts)</th>
-                                <th>Otros Materiales</th>
+                                <th>Material</th>
+                                <th>Ancho (cm)</th>
+                                <th>Consumo por Prenda (m)</th>
+                                <th>Eficiencia (%)</th>
+                                <th>Consumo Real (m)</th>
+                                <th>Observaciones</th>
+                                <th>Acciones</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
-                                <td>XS</td>
-                                <td><input type="text" value="1.20" class="input-celda"></td>
-                                <td><input type="text" value="0.80" class="input-celda"></td>
-                                <td><input type="text" value="0.10" class="input-celda"></td>
-                                <td><input type="text" value="Cremallera 20cm" class="input-celda"></td>
-                            </tr>
-                            <tr>
-                                <td>S</td>
-                                <td><input type="text" value="1.25" class="input-celda"></td>
-                                <td><input type="text" value="0.85" class="input-celda"></td>
-                                <td><input type="text" value="0.10" class="input-celda"></td>
-                                <td><input type="text" value="Cremallera 20cm" class="input-celda"></td>
-                            </tr>
-                            <tr>
-                                <td>M</td>
-                                <td><input type="text" value="1.30" class="input-celda"></td>
-                                <td><input type="text" value="0.90" class="input-celda"></td>
-                                <td><input type="text" value="0.10" class="input-celda"></td>
-                                <td><input type="text" value="Cremallera 20cm" class="input-celda"></td>
-                            </tr>
-                            <tr>
-                                <td>L</td>
-                                <td><input type="text" value="1.35" class="input-celda"></td>
-                                <td><input type="text" value="0.95" class="input-celda"></td>
-                                <td><input type="text" value="0.10" class="input-celda"></td>
-                                <td><input type="text" value="Cremallera 20cm" class="input-celda"></td>
-                            </tr>
-                            <tr>
-                                <td>XL</td>
-                                <td><input type="text" value="1.40" class="input-celda"></td>
-                                <td><input type="text" value="1.00" class="input-celda"></td>
-                                <td><input type="text" value="0.15" class="input-celda"></td>
-                                <td><input type="text" value="Cremallera 20cm" class="input-celda"></td>
-                            </tr>
-                            <tr>
-                                <td>XXL</td>
-                                <td><input type="text" value="1.45" class="input-celda"></td>
-                                <td><input type="text" value="1.05" class="input-celda"></td>
-                                <td><input type="text" value="0.15" class="input-celda"></td>
-                                <td><input type="text" value="Cremallera 20cm" class="input-celda"></td>
+                                <td><input type="text" placeholder="Tipo de material" value="Tela principal"></td>
+                                <td><input type="number" placeholder="Ancho" value="150"></td>
+                                <td><input type="number" step="0.1" placeholder="Metros" value="1.8"></td>
+                                <td><input type="number" min="60" max="100" placeholder="%" value="85"></td>
+                                <td class="consumo-calculado">2.1</td>
+                                <td><input type="text" placeholder="Observaciones" value="Incluye desperdicio"></td>
+                                <td><button class="btn-eliminar" onclick="Vista3Instance.eliminarFilaConsumo(this)">❌</button></td>
                             </tr>
                         </tbody>
                     </table>
-                </div>
-
-                <!-- Esquema de trazado -->
-                <div class="seccion-esquema">
-                    <h3>ESQUEMA DE TRAZADO</h3>
-                    <div class="esquema-container">
-                        <div class="imagen-esquema" id="imagenEsquema">
-                            <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8cmVjdCB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgZmlsbD0iI2Y5ZjlmOSIgc3Ryb2tlPSIjZGRkIiBzdHJva2Utd2lkdGg9IjIiLz4KICA8dGV4dCB4PSIyMDAiIHk9IjE1MCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iIzk5OSIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjE0Ij5Fc3F1ZW1hIGRlIHRyYXphZG88L3RleHQ+CiAgPHRleHQgeD0iMjAwIiB5PSIxNzAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9IiM5OTkiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxMiI+Q2xpYyBwYXJhIHN1YmlyIGltYWdlbjwvdGV4dD4KPC9zdmc+" alt="Esquema" class="esquema-preview">
-                            <input type="file" id="uploadEsquema" accept="image/*" class="file-input" style="display: none;">
-                            <button class="upload-btn" onclick="document.getElementById('uploadEsquema').click()">Subir Esquema</button>
-                        </div>
-                        <div class="esquema-description">
-                            <label>Descripción del esquema:</label>
-                            <textarea class="textarea-descripcion" data-field="descripcionEsquema" placeholder="Describe el esquema de trazado, disposición de piezas, etc.">Disposición eficiente de piezas sobre tela de 140cm de ancho.
-Todas las piezas van al hilo excepto los bies que van al sesgo.
-Considerar el dibujo de la tela para centrado.</textarea>
-                        </div>
-                    </div>
+                    <button class="btn-agregar" onclick="Vista3Instance.agregarConsumo()">➕ Agregar Material</button>
                 </div>
 
                 <!-- Observaciones del patrón -->
@@ -300,113 +202,139 @@ Considerar el dibujo de la tela para centrado.</textarea>
      * Configura los eventos de la Vista3
      */
     setupEvents() {
-        // Eventos de subida de imágenes
-        this.setupImageUpload();
-        
-        // Eventos de entrada de datos
-        const inputs = this.container.querySelectorAll('input, textarea, select');
+        // Event listeners para actualización automática de datos
+        const inputs = this.container.querySelectorAll('input, select, textarea');
         inputs.forEach(input => {
-            input.addEventListener('input', () => this.saveData());
             input.addEventListener('change', () => this.saveData());
+            input.addEventListener('input', () => this.calcularConsumos());
+        });
+
+        // Event listeners específicos para cálculos
+        const consumoInputs = this.container.querySelectorAll('#tablaConsumo input[type="number"]');
+        consumoInputs.forEach(input => {
+            input.addEventListener('input', () => this.calcularConsumos());
         });
     }
 
     /**
-     * Configura la subida de esquemas
-     */
-    setupImageUpload() {
-        const uploadEsquema = this.container.querySelector('#uploadEsquema');
-
-        if (uploadEsquema) {
-            uploadEsquema.addEventListener('change', (e) => this.handleImageUpload(e, 'imagenEsquema'));
-        }
-    }
-
-    /**
-     * Maneja la subida de imágenes
-     * @param {Event} event - Evento de cambio del input file
-     * @param {string} containerId - ID del contenedor de imagen
-     */
-    handleImageUpload(event, containerId) {
-        const file = event.target.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                const container = this.container.querySelector(`#${containerId}`);
-                const img = container.querySelector('img');
-                if (img) {
-                    img.src = e.target.result;
-                }
-            };
-            reader.readAsDataURL(file);
-        }
-    }
-
-    /**
-     * Agrega una nueva pieza a la tabla
+     * Agregar nueva pieza a la tabla
      */
     agregarPieza() {
-        const tabla = this.container.querySelector('#tablaPiezas tbody');
-        
+        const tabla = document.getElementById('tablaPiezas').getElementsByTagName('tbody')[0];
         const nuevaFila = tabla.insertRow();
-        nuevaFila.innerHTML = `
-            <td><input type="text" value="" class="input-celda" placeholder="Nombre pieza"></td>
-            <td><input type="text" value="" class="input-celda" placeholder="Descripción"></td>
-            <td><input type="text" value="1" class="input-celda"></td>
-            <td><input type="checkbox"></td>
-            <td><input type="checkbox"></td>
-            <td><input type="checkbox"></td>
-            <td><input type="text" value="" class="input-celda" placeholder="Observaciones"></td>
-        `;
         
+        nuevaFila.innerHTML = `
+            <td><input type="text" placeholder="Nombre de la pieza"></td>
+            <td><input type="number" value="1" min="1"></td>
+            <td><input type="text" placeholder="Talla"></td>
+            <td><input type="text" placeholder="Ancho x Alto"></td>
+            <td><input type="text" placeholder="Material"></td>
+            <td><input type="text" placeholder="Observaciones"></td>
+            <td><button class="btn-eliminar" onclick="Vista3Instance.eliminarFila(this)">❌</button></td>
+        `;
+
         this.setupEvents();
+        this.saveData();
     }
 
     /**
-     * Elimina la última pieza de la tabla
+     * Eliminar una fila de piezas
      */
-    eliminarUltimaPieza() {
-        const tabla = this.container.querySelector('#tablaPiezas tbody');
-        if (tabla.rows.length > 1) {
-            tabla.deleteRow(tabla.rows.length - 1);
-        }
+    eliminarFila(boton) {
+        const fila = boton.closest('tr');
+        fila.remove();
+        this.saveData();
     }
 
     /**
-     * Obtiene todos los datos de la Vista3
-     * @returns {Object} Datos de la vista
+     * Agregar nuevo material de consumo
+     */
+    agregarConsumo() {
+        const tabla = document.getElementById('tablaConsumo').getElementsByTagName('tbody')[0];
+        const nuevaFila = tabla.insertRow();
+        
+        nuevaFila.innerHTML = `
+            <td><input type="text" placeholder="Tipo de material"></td>
+            <td><input type="number" placeholder="Ancho"></td>
+            <td><input type="number" step="0.1" placeholder="Metros"></td>
+            <td><input type="number" min="60" max="100" placeholder="%"></td>
+            <td class="consumo-calculado">0.0</td>
+            <td><input type="text" placeholder="Observaciones"></td>
+            <td><button class="btn-eliminar" onclick="Vista3Instance.eliminarFilaConsumo(this)">❌</button></td>
+        `;
+
+        this.setupEvents();
+        this.saveData();
+    }
+
+    /**
+     * Eliminar una fila de consumo
+     */
+    eliminarFilaConsumo(boton) {
+        const fila = boton.closest('tr');
+        fila.remove();
+        this.calcularConsumos();
+        this.saveData();
+    }
+
+    /**
+     * Calcular consumos reales basados en eficiencia
+     */
+    calcularConsumos() {
+        const filas = document.querySelectorAll('#tablaConsumo tbody tr');
+        
+        filas.forEach(fila => {
+            const consumoInput = fila.querySelector('input[step="0.1"]');
+            const eficienciaInput = fila.querySelector('input[min="60"]');
+            const consumoCalculado = fila.querySelector('.consumo-calculado');
+            
+            if (consumoInput && eficienciaInput && consumoCalculado) {
+                const consumo = parseFloat(consumoInput.value) || 0;
+                const eficiencia = parseFloat(eficienciaInput.value) || 100;
+                
+                const consumoReal = consumo * (100 / eficiencia);
+                consumoCalculado.textContent = consumoReal.toFixed(2);
+            }
+        });
+    }
+
+    /**
+     * Obtiene todos los datos de la vista
      */
     getData() {
         const data = {};
         
-        // Campos básicos
-        const inputs = this.container.querySelectorAll('[data-field]');
+        // Recopilar datos de inputs generales
+        const inputs = this.container.querySelectorAll('input[data-field], select[data-field], textarea[data-field]');
         inputs.forEach(input => {
-            data[input.getAttribute('data-field')] = input.value;
+            data[input.dataset.field] = input.value;
         });
 
-        // Tablas
-        data.piezas = this.getPiezasData();
-        data.consumo = this.getConsumoData();
+        // Recopilar datos de tabla de piezas
+        data.piezas = this.getTableData('tablaPiezas');
+        
+        // Recopilar datos de tabla de consumo
+        data.consumos = this.getTableData('tablaConsumo');
 
         return data;
     }
 
     /**
-     * Obtiene los datos de la tabla de piezas
-     * @returns {Array} Datos de piezas
+     * Obtiene los datos de una tabla específica
      */
-    getPiezasData() {
-        const tabla = this.container.querySelector('#tablaPiezas tbody');
+    getTableData(tableId) {
+        const tabla = document.getElementById(tableId);
+        if (!tabla) return [];
+
+        const filas = tabla.querySelectorAll('tbody tr');
         const data = [];
-        
-        for (let i = 0; i < tabla.rows.length; i++) {
-            const row = tabla.rows[i];
+
+        filas.forEach(fila => {
             const rowData = [];
+            const celdas = fila.querySelectorAll('td');
             
-            for (let j = 0; j < row.cells.length; j++) {
-                const cell = row.cells[j];
-                const input = cell.querySelector('input');
+            celdas.forEach(celda => {
+                const input = celda.querySelector('input, select, textarea');
                 if (input) {
                     if (input.type === 'checkbox') {
                         rowData.push(input.checked);
@@ -414,59 +342,86 @@ Considerar el dibujo de la tela para centrado.</textarea>
                         rowData.push(input.value);
                     }
                 } else {
-                    rowData.push(cell.textContent);
+                    rowData.push(celda.textContent);
                 }
-            }
+            });
             data.push(rowData);
-        }
+        });
         
         return data;
     }
 
     /**
-     * Obtiene los datos de la tabla de consumo
-     * @returns {Array} Datos de consumo
-     */
-    getConsumoData() {
-        const tabla = this.container.querySelector('#tablaConsumo tbody');
-        const data = [];
-        
-        for (let i = 0; i < tabla.rows.length; i++) {
-            const row = tabla.rows[i];
-            const rowData = [];
-            
-            for (let j = 0; j < row.cells.length; j++) {
-                const cell = row.cells[j];
-                const input = cell.querySelector('input');
-                rowData.push(input ? input.value : cell.textContent);
-            }
-            data.push(rowData);
-        }
-        
-        return data;
-    }
-
-    /**
-     * Carga datos en la Vista3
-     * @param {Object} data - Datos a cargar
+     * Carga los datos en la vista
      */
     loadData(data) {
         if (!data) return;
-        
-        // Cargar campos básicos
+
+        // Cargar datos de inputs generales
         Object.keys(data).forEach(key => {
-            const input = this.container.querySelector(`[data-field="${key}"]`);
-            if (input) {
-                input.value = data[key];
+            const element = this.container.querySelector(`[data-field="${key}"]`);
+            if (element) {
+                element.value = data[key] || '';
             }
         });
 
-        this.data = data;
-        console.log('Datos cargados en Vista3:', data);
+        // Cargar datos de tablas si existen
+        if (data.piezas) {
+            this.loadTableData('tablaPiezas', data.piezas);
+        }
+
+        if (data.consumos) {
+            this.loadTableData('tablaConsumo', data.consumos);
+        }
+
+        this.calcularConsumos();
     }
 
     /**
-     * Guarda los datos automáticamente
+     * Carga datos en una tabla específica
+     */
+    loadTableData(tableId, data) {
+        const tabla = document.getElementById(tableId);
+        if (!tabla || !data) return;
+
+        const tbody = tabla.querySelector('tbody');
+        tbody.innerHTML = '';
+
+        data.forEach(rowData => {
+            const fila = tbody.insertRow();
+            rowData.forEach((cellData, index) => {
+                const celda = fila.insertCell();
+                if (index === rowData.length - 1) {
+                    // Última columna (acciones)
+                    const isConsumo = tableId === 'tablaConsumo';
+                    const functionName = isConsumo ? 'eliminarFilaConsumo' : 'eliminarFila';
+                    celda.innerHTML = `<button class="btn-eliminar" onclick="Vista3Instance.${functionName}(this)">❌</button>`;
+                } else if (tableId === 'tablaConsumo' && index === 4) {
+                    // Columna de consumo calculado
+                    celda.className = 'consumo-calculado';
+                    celda.textContent = cellData;
+                } else {
+                    // Input normal
+                    const input = document.createElement('input');
+                    input.type = index === 1 || (tableId === 'tablaConsumo' && (index === 1 || index === 2 || index === 3)) ? 'number' : 'text';
+                    input.value = cellData;
+                    if (input.type === 'number' && tableId === 'tablaConsumo' && index === 2) {
+                        input.step = '0.1';
+                    }
+                    if (input.type === 'number' && tableId === 'tablaConsumo' && index === 3) {
+                        input.min = '60';
+                        input.max = '100';
+                    }
+                    celda.appendChild(input);
+                }
+            });
+        });
+
+        this.setupEvents();
+    }
+
+    /**
+     * Guarda los datos de la vista
      */
     saveData() {
         this.data = this.getData();

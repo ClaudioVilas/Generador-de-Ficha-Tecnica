@@ -23,43 +23,7 @@ class Vista2 {
                 </div>
 
                 <!-- Información general de la ficha -->
-                <div class="seccion-cabecera">
-                    <h3>INFORMACIÓN GENERAL</h3>
-                    <div class="info-superior">
-                        <div class="campo-grupo">
-                            <label>Nombre y Apellido:</label>
-                            <input type="text" value="Pascual, Mairena Bahiana" class="input-text" data-field="nombreApellido">
-                        </div>
-                        <div class="campo-grupo">
-                            <label>Usuario:</label>
-                            <input type="text" value="Mujer" class="input-text" data-field="usuario">
-                        </div>
-                        <div class="campo-grupo">
-                            <label>Artículo:</label>
-                            <input type="text" value="A-01" class="input-text" data-field="articulo">
-                        </div>
-                        <div class="campo-grupo">
-                            <label>Rubro:</label>
-                            <input type="text" value="Casual" class="input-text" data-field="rubro">
-                        </div>
-                        <div class="campo-grupo fecha">
-                            <label>Ficha de Producción:</label>
-                            <input type="text" value="1" class="input-text" data-field="fichaProduccion">
-                        </div>
-                    </div>
-                    
-                    <div class="descripcion-organizacion">
-                        <div class="descripcion-campo">
-                            <label>Descripción:</label>
-                            <textarea class="textarea-descripcion" data-field="descripcion">Vestido corto de mujer, con escote recto, y tirantes pinzas de hombro.
-Falda evasé, con volados en ruedo. Utiliza un textil cuadrille, y cierre en espalda.</textarea>
-                        </div>
-                        <div class="organizacion-campo">
-                            <label>Organización:</label>
-                            <input type="text" value="Control interno" class="input-text" data-field="organizacion">
-                        </div>
-                    </div>
-                </div>
+                ${this.getGeneralInfoHTML()}
 
                 <!-- Información técnica específica -->
                 <div class="seccion-tecnica-especifica">
@@ -407,6 +371,48 @@ Usar puntada de refuerzo en áreas de stress.</textarea>
         if (window.ViewManager) {
             window.ViewManager.setViewData('vista2', this.data);
         }
+    }
+
+    /**
+     * Genera el HTML para la información general compartida (igual que en index.html)
+     */
+    getGeneralInfoHTML() {
+        return `
+            <div class="info-superior">
+                <div class="campo-grupo">
+                    <label>Nombre y Apellido:</label>
+                    <input type="text" placeholder="Completar" class="input-text" data-field="nombreApellido">
+                </div>
+                <div class="campo-grupo">
+                    <label>Usuario:</label>
+                    <input type="text" placeholder="Completar" class="input-text" data-field="usuario">
+                </div>
+                <div class="campo-grupo">
+                    <label>Artículo:</label>
+                    <input type="text" placeholder="Completar" class="input-text" data-field="articulo">
+                </div>
+                <div class="campo-grupo">
+                    <label>Rubro:</label>
+                    <input type="text" placeholder="Completar" class="input-text" data-field="rubro">
+                </div>
+                <div class="campo-grupo fecha">
+                    <label>Ficha de Producción:</label>
+                    <input type="text" placeholder="Completar" class="input-text" data-field="fichaProduccion">
+                </div>
+            </div>
+
+            <!-- Fila de descripción y organización -->
+            <div class="descripcion-organizacion">
+                <div class="descripcion-campo">
+                    <label>Descripción:</label>
+                    <textarea class="textarea-descripcion" data-field="descripcion" placeholder="Completar descripción"></textarea>
+                </div>
+                <div class="organizacion-campo">
+                    <label>Organización:</label>
+                    <input type="text" placeholder="Completar" class="input-text" data-field="organizacion">
+                </div>
+            </div>
+        `;
     }
 
     /**

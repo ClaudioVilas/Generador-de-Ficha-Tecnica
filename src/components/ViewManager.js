@@ -12,7 +12,16 @@ class ViewManager {
             vista3: null,
             vista4: null
         };
-        this.viewData = {
+        this.data = {
+            generalInfo: {
+                nombreApellido: '',
+                usuario: '',
+                articulo: '',
+                rubro: '',
+                fichaProduccion: '',
+                descripcion: '',
+                organizacion: ''
+            },
             vista1: {},
             vista2: {},
             vista3: {},
@@ -26,7 +35,7 @@ class ViewManager {
      */
     init(container) {
         this.viewContainer = container;
-        this.loadViewData();
+        this.loadData();
         this.showView('vista1'); // Vista por defecto
         console.log('ViewManager inicializado correctamente');
     }
@@ -45,6 +54,7 @@ class ViewManager {
         // Guardar datos de la vista actual antes de cambiar
         if (this.currentView) {
             this.saveCurrentViewData();
+            this.syncGeneralInfoFromCurrentView();
         }
 
         // Ocultar vista actual
@@ -54,7 +64,28 @@ class ViewManager {
         this.currentView = viewName;
         this.renderView(viewName);
 
+        // Sincronizar información general en la nueva vista
+        this.syncGeneralInfoToCurrentView();
+
         console.log(`Vista cambiada a: ${viewName}`);
+    }
+
+    /**
+     * Oculta la vista actual
+     */
+    hideCurrentView() {
+        if (this.currentView && this.views[this.currentView]) {
+            // Destruir la vista actual si tiene el método
+            if (this.views[this.currentView].destroy) {
+                this.views[this.currentView].destroy();
+            }
+            this.views[this.currentView] = null;
+        }
+        
+        // Limpiar el contenedor
+        if (this.viewContainer) {
+            this.viewContainer.innerHTML = '';
+        }
     }
 
     /**
@@ -62,63 +93,34 @@ class ViewManager {
      * @param {string} viewName - Nombre de la vista a renderizar
      */
     renderView(viewName) {
-        if (!this.viewContainer) {
-            console.error('Contenedor de vistas no inicializado');
-            return;
-        }
-
-        // Limpiar contenedor
-        this.viewContainer.innerHTML = '';
-
-        // Crear instancia de vista si no existe
-        if (!this.views[viewName]) {
-            this.views[viewName] = this.createViewInstance(viewName);
-        }
-
-        // Renderizar vista
-        const viewInstance = this.views[viewName];
-        if (viewInstance && viewInstance.render) {
-            viewInstance.render(this.viewContainer);
-            
-            // Cargar datos de la vista
-            if (this.viewData[viewName] && viewInstance.loadData) {
-                viewInstance.loadData(this.viewData[viewName]);
+        try {
+            // Crear instancia de la vista
+            const ViewClass = window[viewName.charAt(0).toUpperCase() + viewName.slice(1)];
+            if (!ViewClass) {
+                throw new Error(`Clase de vista ${viewName} no encontrada`);
             }
-        } else {
-            console.error(`No se pudo renderizar la vista: ${viewName}`);
-        }
-    }
 
-    /**
-     * Crea una instancia de vista
-     * @param {string} viewName - Nombre de la vista
-     * @returns {Object} Instancia de la vista
-     */
-    createViewInstance(viewName) {
-        switch (viewName) {
-            case 'vista1':
-                return new Vista1();
-            case 'vista2':
-                return new Vista2();
-            case 'vista3':
-                return new Vista3();
-            case 'vista4':
-                return new Vista4();
-            default:
-                console.error(`Tipo de vista desconocido: ${viewName}`);
-                return null;
-        }
-    }
+            const viewInstance = new ViewClass();
+            this.views[viewName] = viewInstance;
 
-    /**
-     * Oculta la vista actual
-     */
-    hideCurrentView() {
-        if (this.viewContainer) {
-            this.viewContainer.style.display = 'none';
-            setTimeout(() => {
-                this.viewContainer.style.display = 'block';
-            }, 100);
+            // Renderizar la vista
+            viewInstance.render(this.viewContainer);
+
+            // Cargar datos si existen
+            if (this.data[viewName] && viewInstance.loadData) {
+                viewInstance.loadData(this.data[viewName]);
+            }
+
+            console.log(`Vista ${viewName} renderizada correctamente`);
+        } catch (error) {
+            console.error(`Error renderizando vista ${viewName}:`, error);
+            this.viewContainer.innerHTML = `
+                <div class="error-container">
+                    <h2>Error cargando vista</h2>
+                    <p>No se pudo cargar la vista ${viewName}</p>
+                    <button onclick="location.reload()">Recargar página</button>
+                </div>
+            `;
         }
     }
 
@@ -129,38 +131,64 @@ class ViewManager {
         if (this.currentView && this.views[this.currentView]) {
             const viewInstance = this.views[this.currentView];
             if (viewInstance.getData) {
-                this.viewData[this.currentView] = viewInstance.getData();
-                this.saveViewData();
+                this.data[this.currentView] = viewInstance.getData();
+                this.saveData();
+                console.log(`Datos de ${this.currentView} guardados`);
             }
         }
     }
 
     /**
-     * Guarda todos los datos de las vistas en localStorage
+     * Guarda todos los datos en localStorage
      */
-    saveViewData() {
+    saveData() {
         try {
-            localStorage.setItem('viewsData', JSON.stringify(this.viewData));
-            console.log('Datos de vistas guardados en localStorage');
+            localStorage.setItem('navbarAppData', JSON.stringify(this.data));
+            console.log('Datos guardados en localStorage');
         } catch (error) {
-            console.error('Error guardando datos de vistas:', error);
+            console.error('Error guardando datos:', error);
         }
     }
 
     /**
-     * Carga los datos de las vistas desde localStorage
+     * Carga los datos guardados en localStorage
      */
-    loadViewData() {
+    loadData() {
         try {
-            const savedData = localStorage.getItem('viewsData');
+            const savedData = localStorage.getItem('navbarAppData');
             if (savedData) {
-                this.viewData = JSON.parse(savedData);
-                console.log('Datos de vistas cargados desde localStorage');
+                this.data = JSON.parse(savedData);
+                console.log('Datos cargados desde localStorage');
+            } else {
+                // Inicializar con información general vacía
+                this.data = {
+                    generalInfo: {
+                        clienteNombre: '',
+                        clienteRut: '',
+                        ordenCompra: '',
+                        fechaSolicitud: '',
+                        fechaRequerida: '',
+                        tipoTrabajo: '',
+                        descripcionGeneral: ''
+                    },
+                    vista1: {},
+                    vista2: {},
+                    vista3: {},
+                    vista4: {}
+                };
             }
         } catch (error) {
-            console.error('Error cargando datos de vistas:', error);
-            // Resetear a valores por defecto
-            this.viewData = {
+            console.error('Error al cargar datos:', error);
+            this.data = {
+                generalInfo: {
+                    clienteNombre: '',
+                    clienteRut: '',
+                    ordenCompra: '',
+                    fechaSolicitud: '',
+                    fechaRequerida: '',
+                    tipoTrabajo: '',
+                    descripcionGeneral: ''
+                },
                 vista1: {},
                 vista2: {},
                 vista3: {},
@@ -170,12 +198,118 @@ class ViewManager {
     }
 
     /**
+     * Sincroniza la información general desde la vista actual hacia el modelo de datos
+     */
+    syncGeneralInfoFromCurrentView() {
+        if (!this.currentView) return;
+
+        // Asegurar que la estructura de datos existe
+        if (!this.data) {
+            this.data = {};
+        }
+        if (!this.data.generalInfo) {
+            this.data.generalInfo = {
+                nombreApellido: '',
+                usuario: '',
+                articulo: '',
+                rubro: '',
+                fichaProduccion: '',
+                descripcion: '',
+                organizacion: ''
+            };
+        }
+
+        const generalInfoInputs = {
+            nombreApellido: document.querySelector('[data-field="nombreApellido"]'),
+            usuario: document.querySelector('[data-field="usuario"]'),
+            articulo: document.querySelector('[data-field="articulo"]'),
+            rubro: document.querySelector('[data-field="rubro"]'),
+            fichaProduccion: document.querySelector('[data-field="fichaProduccion"]'),
+            descripcion: document.querySelector('[data-field="descripcion"]'),
+            organizacion: document.querySelector('[data-field="organizacion"]')
+        };
+
+        // Actualizar los datos centrales con los valores actuales
+        Object.keys(generalInfoInputs).forEach(key => {
+            const input = generalInfoInputs[key];
+            if (input) {
+                this.data.generalInfo[key] = input.value || '';
+            }
+        });
+
+        console.log('Información general sincronizada desde vista actual');
+    }
+
+    /**
+     * Sincroniza la información general hacia la vista actual desde el modelo de datos
+     */
+    syncGeneralInfoToCurrentView() {
+        if (!this.currentView) return;
+
+        // Asegurar que la estructura de datos existe
+        if (!this.data) {
+            this.data = {};
+        }
+        if (!this.data.generalInfo) {
+            this.data.generalInfo = {
+                nombreApellido: '',
+                usuario: '',
+                articulo: '',
+                rubro: '',
+                fichaProduccion: '',
+                descripcion: '',
+                organizacion: ''
+            };
+        }
+
+        // Esperar un poco para que los elementos se rendericen
+        setTimeout(() => {
+            const generalInfoInputs = {
+                nombreApellido: document.querySelector('[data-field="nombreApellido"]'),
+                usuario: document.querySelector('[data-field="usuario"]'),
+                articulo: document.querySelector('[data-field="articulo"]'),
+                rubro: document.querySelector('[data-field="rubro"]'),
+                fichaProduccion: document.querySelector('[data-field="fichaProduccion"]'),
+                descripcion: document.querySelector('[data-field="descripcion"]'),
+                organizacion: document.querySelector('[data-field="organizacion"]')
+            };
+
+            // Aplicar los datos centrales a los inputs de la vista actual
+            Object.keys(generalInfoInputs).forEach(key => {
+                const input = generalInfoInputs[key];
+                if (input) {
+                    input.value = this.data.generalInfo[key] || '';
+                    
+                    // Remover event listeners existentes para evitar duplicados
+                    const newInput = input.cloneNode(true);
+                    input.parentNode.replaceChild(newInput, input);
+                    
+                    // Agregar event listener para sincronización en tiempo real
+                    newInput.addEventListener('input', () => {
+                        this.data.generalInfo[key] = newInput.value || '';
+                        this.saveData(); // Guardar inmediatamente
+                        console.log(`Campo ${key} actualizado globalmente`);
+                    });
+
+                    newInput.addEventListener('change', () => {
+                        this.data.generalInfo[key] = newInput.value || '';
+                        this.saveData(); // Guardar inmediatamente
+                        console.log(`Campo ${key} actualizado globalmente`);
+                    });
+                }
+            });
+
+            console.log('Información general sincronizada hacia vista actual');
+        }, 100);
+    }
+
+    /**
      * Obtiene los datos de una vista específica
      * @param {string} viewName - Nombre de la vista
      * @returns {Object} Datos de la vista
      */
     getViewData(viewName) {
-        return this.viewData[viewName] || {};
+        return this.data[viewName] || {};
     }
 
     /**
@@ -184,62 +318,81 @@ class ViewManager {
      * @param {Object} data - Datos a establecer
      */
     setViewData(viewName, data) {
-        if (this.viewData.hasOwnProperty(viewName)) {
-            this.viewData[viewName] = data;
-            this.saveViewData();
+        if (this.data.hasOwnProperty(viewName)) {
+            this.data[viewName] = data;
+            this.saveData();
+            console.log(`Datos de ${viewName} actualizados`);
         }
     }
 
     /**
      * Obtiene todos los datos de todas las vistas
-     * @returns {Object} Todos los datos de las vistas
+     * @returns {Object} Todos los datos
      */
     getAllData() {
-        // Asegurar que los datos actuales estén guardados
         this.saveCurrentViewData();
-        return this.viewData;
+        return this.data;
     }
 
     /**
-     * Carga todos los datos en todas las vistas
-     * @param {Object} allData - Datos de todas las vistas
+     * Establece todos los datos de todas las vistas
+     * @param {Object} allData - Todos los datos
      */
     setAllData(allData) {
-        this.viewData = allData;
-        this.saveViewData();
+        this.data = allData;
+        this.saveData();
         
-        // Recargar vista actual si está activa
+        // Recargar vista actual si existe
         if (this.currentView) {
             this.renderView(this.currentView);
         }
     }
 
     /**
-     * Limpia todos los datos de las vistas
+     * Limpia todos los datos guardados
      */
     clearAllData() {
-        this.viewData = {
+        this.data = {
+            generalInfo: {
+                clienteNombre: '',
+                clienteRut: '',
+                ordenCompra: '',
+                fechaSolicitud: '',
+                fechaRequerida: '',
+                tipoTrabajo: '',
+                descripcionGeneral: ''
+            },
             vista1: {},
             vista2: {},
             vista3: {},
             vista4: {}
         };
-        localStorage.removeItem('viewsData');
-        
-        // Recargar vista actual
-        if (this.currentView) {
-            this.renderView(this.currentView);
-        }
-        
-        console.log('Todos los datos de vistas limpiados');
+        this.saveData();
+        console.log('Todos los datos han sido limpiados');
     }
 
     /**
-     * Obtiene la vista activa actual
-     * @returns {string} Nombre de la vista activa
+     * Exporta todos los datos como JSON
+     * @returns {string} Datos en formato JSON
      */
-    getCurrentView() {
-        return this.currentView;
+    exportData() {
+        this.saveCurrentViewData();
+        return JSON.stringify(this.data, null, 2);
+    }
+
+    /**
+     * Importa datos desde JSON
+     * @param {string} jsonData - Datos en formato JSON
+     */
+    importData(jsonData) {
+        try {
+            const data = JSON.parse(jsonData);
+            this.setAllData(data);
+            console.log('Datos importados correctamente');
+        } catch (error) {
+            console.error('Error importando datos:', error);
+            throw new Error('Formato de datos inválido');
+        }
     }
 
     /**
@@ -249,16 +402,13 @@ class ViewManager {
         // Guardar datos antes de destruir
         this.saveCurrentViewData();
         
-        // Limpiar vistas
-        Object.values(this.views).forEach(view => {
-            if (view && view.destroy) {
-                view.destroy();
-            }
-        });
+        // Destruir vista actual
+        this.hideCurrentView();
         
-        this.views = {};
+        // Limpiar referencias
         this.currentView = null;
         this.viewContainer = null;
+        this.views = {};
         
         console.log('ViewManager destruido');
     }
