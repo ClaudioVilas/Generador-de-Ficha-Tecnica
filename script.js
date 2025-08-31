@@ -1,17 +1,6 @@
 // JavaScript para la Ficha Técnica de Producción
 
 document.addEventListener('DOMContentLoaded', function() {
-    // Inicializar funcionalidades originales
-    initImageUploads();
-    initColorPickers();
-    initPDFExport();
-    initAutoCalculations();
-    initDynamicRows();
-    initSaveLoad();
-    
-    // Inicializar funcionalidad NavBar
-    initNavBarToggle();
-    
     // Auto-inicializar NavBar con Vista1 al cargar la página
     autoInitNavBar();
     
@@ -1061,37 +1050,47 @@ async function toggleNavBarApp() {
     try {
         if (!navBarAppInstance || !navBarAppInstance.isReady()) {
             // Inicializar NavBar
-            toggleButton.textContent = 'Cargando NavBar...';
-            toggleButton.disabled = true;
+            if (toggleButton) {
+                toggleButton.textContent = 'Cargando NavBar...';
+                toggleButton.disabled = true;
+            }
             
             navBarAppInstance = new NavBarApp();
             await navBarAppInstance.init();
             
-            toggleButton.textContent = '📋 Volver a Ficha Original';
-            toggleButton.style.background = '#dc3545';
+            if (toggleButton) {
+                toggleButton.textContent = '📋 Volver a Ficha Original';
+                toggleButton.style.background = '#dc3545';
+            }
             
         } else {
             // Alternar vista
             navBarAppInstance.toggleOriginalView();
             
-            const navbarApp = document.getElementById('navbarApp');
-            if (navbarApp && navbarApp.style.display === 'none') {
-                toggleButton.textContent = '🚀 Abrir NavBar';
-                toggleButton.style.background = '#6f42c1';
-            } else {
-                toggleButton.textContent = '📋 Volver a Ficha Original';
-                toggleButton.style.background = '#dc3545';
+            if (toggleButton) {
+                const navbarApp = document.getElementById('navbarApp');
+                if (navbarApp && navbarApp.style.display === 'none') {
+                    toggleButton.textContent = '🚀 Abrir NavBar';
+                    toggleButton.style.background = '#6f42c1';
+                } else {
+                    toggleButton.textContent = '📋 Volver a Ficha Original';
+                    toggleButton.style.background = '#dc3545';
+                }
             }
         }
         
     } catch (error) {
         console.error('Error al alternar NavBar:', error);
-        alert('Error al cargar el NavBar. Revisa la consola para más detalles.');
         
-        toggleButton.textContent = '🚀 Abrir NavBar';
-        toggleButton.style.background = '#6f42c1';
+        if (toggleButton) {
+            alert('Error al cargar el NavBar. Revisa la consola para más detalles.');
+            toggleButton.textContent = '🚀 Abrir NavBar';
+            toggleButton.style.background = '#6f42c1';
+        }
     } finally {
-        toggleButton.disabled = false;
+        if (toggleButton) {
+            toggleButton.disabled = false;
+        }
     }
 }
 
