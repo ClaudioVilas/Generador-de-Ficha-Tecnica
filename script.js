@@ -12,6 +12,9 @@ document.addEventListener('DOMContentLoaded', function() {
     // Inicializar funcionalidad NavBar
     initNavBarToggle();
     
+    // Auto-inicializar NavBar con Vista1 al cargar la página
+    autoInitNavBar();
+    
     console.log('Ficha Técnica de Producción inicializada correctamente');
 });
 
@@ -1112,6 +1115,23 @@ function resetNavBar() {
         toggleButton.style.background = '#6f42c1';
         
         console.log('NavBar reseteado');
+    }
+}
+
+/**
+ * Auto-inicializa el NavBar con Vista1 al cargar la página
+ */
+async function autoInitNavBar() {
+    try {
+        console.log('Auto-inicializando NavBar con Vista1...');
+        
+        // Pequeño delay para asegurar que el DOM esté completamente cargado
+        setTimeout(async () => {
+            await toggleNavBarApp();
+        }, 100);
+        
+    } catch (error) {
+        console.error('Error al auto-inicializar NavBar:', error);
     }
 }
 
