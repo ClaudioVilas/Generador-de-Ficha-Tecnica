@@ -181,7 +181,7 @@ class NavBar {
      * Maneja la exportación a PDF
      */
     handleExportPDF() {
-        console.log('Exportando a PDF desde NavBar...');
+        console.log('Exportando todas las vistas a PDF...');
         
         try {
             // Verificar que las librerías estén disponibles
@@ -195,8 +195,8 @@ class NavBar {
                 return;
             }
             
-            // Exportar la vista actual del NavBar
-            this.exportCurrentViewToPDF();
+            // Exportar todas las vistas en orden
+            this.exportAllViewsToPDF();
             
         } catch (error) {
             console.error('Error al exportar PDF:', error);
@@ -205,9 +205,9 @@ class NavBar {
     }
     
     /**
-     * Exporta la vista actual a PDF
+     * Exporta todas las vistas a PDF en orden con márgenes de 2cm
      */
-    async exportCurrentViewToPDF() {
+    async exportAllViewsToPDF() {
         try {
             // Mostrar indicador de carga en el botón
             const exportBtn = this.container.querySelector('#exportAllPDF');
@@ -215,73 +215,145 @@ class NavBar {
             exportBtn.innerHTML = '<span class="btn-icon">⏳</span><span class="btn-text">Generando PDF...</span>';
             exportBtn.disabled = true;
 
-            // Obtener el contenedor de la vista actual
-            const viewContainer = document.getElementById('viewContainer');
+            console.log('Iniciando exportación de todas las vistas...');
             
-            if (!viewContainer) {
-                throw new Error('No se encontró el contenedor de vista');
-            }
-
-            console.log('Capturando vista para PDF...');
-            
-            // Configurar opciones para html2canvas
-            const canvas = await window.html2canvas(viewContainer, {
-                scale: 2, // Mayor resolución
-                useCORS: true,
-                allowTaint: true,
-                backgroundColor: '#ffffff',
-                width: viewContainer.scrollWidth,
-                height: viewContainer.scrollHeight,
-                scrollX: 0,
-                scrollY: 0
-            });
-
-            console.log('Vista capturada, creando PDF...');
-            
-            // Crear el PDF
+            // Crear el PDF con márgenes de 2cm (20mm)
             const { jsPDF } = window.jspdf;
             const pdf = new jsPDF('p', 'mm', 'a4');
+            
+            // Configuración de márgenes (2cm = 20mm)
+            const marginLeft = 20;
+            const marginRight = 20;
+            const pageWidth = 210; // A4 width
+            const contentWidth = pageWidth - marginLeft - marginRight; // 170mm
+            const pageHeight = 297; // A4 height
+            
+            // Configurar primera página
+            let currentY = 20; // Margen superior
+            let isFirstPage = true;
+            
+            // Título general
+            pdf.setFontSize(16);
+            pdf.setFont('helvetica', 'bold');
+            pdf.text('Ficha Técnica de Producción - Todas las Vistas', marginLeft, currentY);
+            currentY += 15;
+            
+            // Agregar fecha
+            pdf.setFontSize(10);
+            pdf.setFont('helvetica', 'normal');
+            const fecha = new Date().toLocaleDateString('es-ES');
+            pdf.text(`Generado el: ${fecha}`, marginLeft, currentY);
+            currentY += 15;
 
-            // Calcular dimensiones
-            const imgWidth = 210; // A4 width en mm
-            const pageHeight = 295; // A4 height en mm
-            const imgHeight = (canvas.height * imgWidth) / canvas.width;
-            let heightLeft = imgHeight;
+            // Lista de vistas a exportar
+            const vistas = ['vista1', 'vista2', 'vista3', 'vista4'];
+            const titulosVistas = [
+                'Vista 1 - Detalle General',
+                'Vista 2 - Especificaciones Técnicas', 
+                'Vista 3 - Patrones y Moldes',
+                'Vista 4 - Control de Calidad'
+            ];
 
-            let position = 0;
+            // Exportar cada vista
+            for (let i = 0; i < vistas.length; i++) {
+                const vistaName = vistas[i];
+                const titulo = titulosVistas[i];
+                
+                console.log(`Procesando ${vistaName}...`);
+                
+                // Cambiar a la vista para capturarla
+                if (this.onViewChange) {
+                    this.onViewChange(vistaName);
+                    // Esperar a que se renderice la vista
+                    await new Promise(resolve => setTimeout(resolve, 500));
+                }
 
-            // Agregar imagen al PDF
-            const imgData = canvas.toDataURL('image/png');
-            pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-            heightLeft -= pageHeight;
+                // Obtener el contenedor de la vista
+                const viewContainer = document.getElementById('viewContainer');
+                
+                if (!viewContainer) {
+                    console.warn(`No se pudo encontrar contenedor para ${vistaName}`);
+                    continue;
+                }
 
-            // Agregar páginas adicionales si es necesario
-            while (heightLeft >= 0) {
-                position = heightLeft - imgHeight;
-                pdf.addPage();
-                pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-                heightLeft -= pageHeight;
+                // Capturar la vista
+                const canvas = await window.html2canvas(viewContainer, {
+                    scale: 2,
+                    useCORS: true,
+                    allowTaint: true,
+                    backgroundColor: '#ffffff',
+                    width: viewContainer.scrollWidth,
+                    height: viewContainer.scrollHeight,
+                    scrollX: 0,
+                    scrollY: 0
+                });
+
+                // Calcular dimensiones de la imagen en el PDF
+                const imgWidth = contentWidth; // Ancho del contenido (170mm)
+                const imgHeight = (canvas.height * imgWidth) / canvas.width;
+                
+                // Verificar si necesitamos una nueva página
+                if (!isFirstPage || (currentY + imgHeight + 20) > pageHeight) {
+                    pdf.addPage();
+                    currentY = 20; // Reset Y position
+                    isFirstPage = false;
+                }
+
+                // Agregar título de la vista
+                pdf.setFontSize(14);
+                pdf.setFont('helvetica', 'bold');
+                pdf.text(titulo, marginLeft, currentY);
+                currentY += 10;
+
+                // Agregar la imagen de la vista
+                const imgData = canvas.toDataURL('image/png');
+                pdf.addImage(imgData, 'PNG', marginLeft, currentY, imgWidth, imgHeight);
+                currentY += imgHeight + 15; // Espaciado entre vistas
+
+                // Si la imagen es muy alta, manejar páginas adicionales
+                let heightLeft = imgHeight;
+                let position = currentY - imgHeight;
+                
+                while (heightLeft >= pageHeight - 40) { // 40mm de margen total (superior + inferior)
+                    pdf.addPage();
+                    position = 20 - (imgHeight - heightLeft);
+                    pdf.addImage(imgData, 'PNG', marginLeft, position, imgWidth, imgHeight);
+                    heightLeft -= (pageHeight - 40);
+                    currentY = 20;
+                }
+                
+                console.log(`${vistaName} exportada correctamente`);
             }
 
             // Guardar el PDF
-            const fecha = new Date().toISOString().split('T')[0];
-            const nombreArchivo = `ficha-tecnica-${this.activeView}-${fecha}.pdf`;
+            const fechaArchivo = new Date().toISOString().split('T')[0];
+            const nombreArchivo = `ficha-tecnica-completa-${fechaArchivo}.pdf`;
             pdf.save(nombreArchivo);
 
-            console.log('PDF generado correctamente:', nombreArchivo);
+            console.log('PDF de todas las vistas generado correctamente:', nombreArchivo);
 
             // Restaurar botón
             exportBtn.innerHTML = originalText;
             exportBtn.disabled = false;
 
+            // Volver a la vista original
+            if (this.onViewChange) {
+                this.onViewChange(this.activeView);
+            }
+
         } catch (error) {
-            console.error('Error en exportCurrentViewToPDF:', error);
+            console.error('Error en exportAllViewsToPDF:', error);
             
             // Restaurar botón en caso de error
             const exportBtn = this.container.querySelector('#exportAllPDF');
             if (exportBtn) {
                 exportBtn.innerHTML = '<span class="btn-icon">📄</span><span class="btn-text">Exportar PDF</span>';
                 exportBtn.disabled = false;
+            }
+            
+            // Volver a la vista original
+            if (this.onViewChange) {
+                this.onViewChange(this.activeView);
             }
             
             throw error;
