@@ -181,12 +181,55 @@ class NavBar {
      * Maneja la exportación a PDF
      */
     handleExportPDF() {
-        console.log('Exportando todas las vistas a PDF...');
-        // Aquí se integrará con el sistema de PDF existente
-        if (window.DataManager) {
-            window.DataManager.exportAllViewsToPDF();
-        } else {
-            console.warn('DataManager no disponible para exportar PDF');
+        console.log('Exportando a PDF desde NavBar...');
+        
+        try {
+            // Intentar usar la función original de script.js primero
+            if (typeof window.exportToPDF === 'function') {
+                console.log('Usando función original de exportar PDF...');
+                window.exportToPDF();
+                return;
+            }
+            
+            // Si no está disponible, usar el DataManager
+            if (window.DataManager && typeof window.DataManager.exportAllViewsToPDF === 'function') {
+                console.log('Usando DataManager para exportar PDF...');
+                window.DataManager.exportAllViewsToPDF();
+                return;
+            }
+            
+            // Fallback manual
+            console.warn('Ninguna función de PDF disponible, creando PDF simple...');
+            this.createSimplePDF();
+            
+        } catch (error) {
+            console.error('Error al exportar PDF:', error);
+            alert('Error al generar el PDF. Por favor inténtalo de nuevo.');
+        }
+    }
+    
+    /**
+     * Crea un PDF simple como fallback
+     */
+    createSimplePDF() {
+        try {
+            const { jsPDF } = window.jspdf;
+            if (!jsPDF) {
+                alert('Librería jsPDF no disponible');
+                return;
+            }
+            
+            const pdf = new jsPDF();
+            pdf.text('Ficha Técnica de Producción', 20, 20);
+            pdf.text('Generado desde NavBar', 20, 30);
+            pdf.text('Fecha: ' + new Date().toLocaleString(), 20, 40);
+            
+            pdf.save('ficha-tecnica-navbar.pdf');
+            console.log('PDF simple generado correctamente');
+            
+        } catch (error) {
+            console.error('Error creando PDF simple:', error);
+            alert('Error al crear PDF. Verifica que las librerías estén cargadas.');
         }
     }
 
@@ -194,11 +237,16 @@ class NavBar {
      * Maneja el guardado de datos
      */
     handleSaveData() {
-        console.log('Guardando datos...');
-        if (window.DataManager) {
+        console.log('Guardando datos desde NavBar...');
+        
+        // Intentar usar la función original de script.js
+        if (typeof guardarFicha === 'function') {
+            guardarFicha();
+        } else if (window.DataManager && typeof window.DataManager.saveAllData === 'function') {
             window.DataManager.saveAllData();
         } else {
-            console.warn('DataManager no disponible para guardar datos');
+            console.warn('Función de guardar datos no disponible');
+            alert('Función de guardar datos no está disponible');
         }
     }
 
@@ -206,12 +254,31 @@ class NavBar {
      * Maneja la carga de datos
      */
     handleLoadData() {
-        console.log('Cargando datos...');
-        if (window.DataManager) {
-            window.DataManager.loadAllData();
-        } else {
-            console.warn('DataManager no disponible para cargar datos');
+        console.log('Abriendo carga de datos desde NavBar...');
+        
+        // Simular click en el input file existente o crear uno nuevo
+        let fileInput = document.getElementById('archivoCargar');
+        
+        if (!fileInput) {
+            // Crear input file si no existe
+            fileInput = document.createElement('input');
+            fileInput.type = 'file';
+            fileInput.accept = '.json';
+            fileInput.style.display = 'none';
+            fileInput.id = 'archivoCargar';
+            document.body.appendChild(fileInput);
+            
+            // Agregar event listener
+            fileInput.addEventListener('change', function(event) {
+                if (typeof cargarFicha === 'function') {
+                    cargarFicha(event);
+                } else {
+                    console.warn('Función cargarFicha no disponible');
+                }
+            });
         }
+        
+        fileInput.click();
     }
 
     /**

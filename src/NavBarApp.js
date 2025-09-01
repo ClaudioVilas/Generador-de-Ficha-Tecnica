@@ -129,6 +129,9 @@ class NavBarApp {
         window.NavBarApp = this;
         window.NavBarViewManager = this.viewManager;
         window.NavBarDataManager = this.dataManager;
+        
+        // Compatibilidad con NavBar
+        window.DataManager = this.dataManager;
     }
 
     /**

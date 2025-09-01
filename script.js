@@ -1,6 +1,10 @@
 // JavaScript para la Ficha Técnica de Producción
 
 document.addEventListener('DOMContentLoaded', function() {
+    // Inicializar funciones esenciales para el NavBar
+    initPDFExport();
+    initSaveLoad();
+    
     // Auto-inicializar NavBar con Vista1 al cargar la página
     autoInitNavBar();
     
@@ -1134,7 +1138,12 @@ async function autoInitNavBar() {
     }
 }
 
-// Hacer funciones disponibles globalmente para debugging
+// Hacer funciones disponibles globalmente para debugging y NavBar
 window.getNavBarInstance = getNavBarInstance;
 window.resetNavBar = resetNavBar;
 window.toggleNavBarApp = toggleNavBarApp;
+
+// Hacer funciones principales disponibles para el NavBar
+window.exportToPDF = exportToPDF;
+window.guardarFicha = guardarFicha;
+window.cargarFicha = cargarFicha;

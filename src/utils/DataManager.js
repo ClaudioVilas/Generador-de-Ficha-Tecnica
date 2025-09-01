@@ -217,15 +217,33 @@ class DataManager {
      */
     async exportAllViewsToPDF() {
         try {
+            console.log('Iniciando exportación a PDF desde DataManager...');
+            
             if (!this.viewManager) {
                 throw new Error('ViewManager no inicializado');
+            }
+
+            // Verificar que las librerías estén disponibles
+            if (!window.jspdf) {
+                throw new Error('jsPDF no está disponible');
+            }
+
+            if (!window.html2canvas) {
+                throw new Error('html2canvas no está disponible');
             }
 
             // Asegurar que los datos estén guardados
             this.viewManager.saveCurrentViewData();
 
-            console.log('Iniciando exportación a PDF...');
+            console.log('Librerías verificadas, creando PDF...');
             
+            // Intentar usar la función original como fallback
+            if (typeof window.exportToPDF === 'function') {
+                console.log('Usando función original de exportar PDF...');
+                await window.exportToPDF();
+                return;
+            }
+
             // Crear nuevo documento PDF
             const { jsPDF } = window.jspdf;
             const pdf = new jsPDF('p', 'mm', 'a4');
