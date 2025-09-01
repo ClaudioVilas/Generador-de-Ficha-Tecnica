@@ -205,7 +205,7 @@ class NavBar {
     }
     
     /**
-     * Exporta todas las vistas a PDF en orden con márgenes de 2cm
+     * Exporta todas las vistas a PDF en orden con márgenes de 1.5cm
      */
     async exportAllViewsToPDF() {
         try {
@@ -217,15 +217,15 @@ class NavBar {
 
             console.log('Iniciando exportación de todas las vistas...');
             
-            // Crear el PDF con márgenes de 2cm (20mm)
+            // Crear el PDF con márgenes de 1.5cm (15mm)
             const { jsPDF } = window.jspdf;
             const pdf = new jsPDF('p', 'mm', 'a4');
             
-            // Configuración de márgenes (2cm = 20mm)
-            const marginLeft = 20;
-            const marginRight = 20;
+            // Configuración de márgenes (1.5cm = 15mm)
+            const marginLeft = 15;
+            const marginRight = 15;
             const pageWidth = 210; // A4 width
-            const contentWidth = pageWidth - marginLeft - marginRight; // 170mm
+            const contentWidth = pageWidth - marginLeft - marginRight; // 180mm
             const pageHeight = 297; // A4 height
             
             // Configurar primera página
@@ -289,7 +289,7 @@ class NavBar {
                 });
 
                 // Calcular dimensiones de la imagen en el PDF
-                const imgWidth = contentWidth; // Ancho del contenido (170mm)
+                const imgWidth = contentWidth; // Ancho del contenido (180mm)
                 const imgHeight = (canvas.height * imgWidth) / canvas.width;
                 
                 // Verificar si necesitamos una nueva página
