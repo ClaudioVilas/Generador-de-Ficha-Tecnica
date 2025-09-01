@@ -184,23 +184,19 @@ class NavBar {
         console.log('Exportando a PDF desde NavBar...');
         
         try {
-            // Intentar usar la función original de script.js primero
-            if (typeof window.exportToPDF === 'function') {
-                console.log('Usando función original de exportar PDF...');
-                window.exportToPDF();
+            // Verificar que las librerías estén disponibles
+            if (!window.html2canvas) {
+                alert('Librería html2canvas no disponible');
                 return;
             }
             
-            // Si no está disponible, usar el DataManager
-            if (window.DataManager && typeof window.DataManager.exportAllViewsToPDF === 'function') {
-                console.log('Usando DataManager para exportar PDF...');
-                window.DataManager.exportAllViewsToPDF();
+            if (!window.jspdf) {
+                alert('Librería jsPDF no disponible');
                 return;
             }
             
-            // Fallback manual
-            console.warn('Ninguna función de PDF disponible, creando PDF simple...');
-            this.createSimplePDF();
+            // Exportar la vista actual del NavBar
+            this.exportCurrentViewToPDF();
             
         } catch (error) {
             console.error('Error al exportar PDF:', error);
@@ -209,27 +205,86 @@ class NavBar {
     }
     
     /**
-     * Crea un PDF simple como fallback
+     * Exporta la vista actual a PDF
      */
-    createSimplePDF() {
+    async exportCurrentViewToPDF() {
         try {
+            // Mostrar indicador de carga en el botón
+            const exportBtn = this.container.querySelector('#exportAllPDF');
+            const originalText = exportBtn.innerHTML;
+            exportBtn.innerHTML = '<span class="btn-icon">⏳</span><span class="btn-text">Generando PDF...</span>';
+            exportBtn.disabled = true;
+
+            // Obtener el contenedor de la vista actual
+            const viewContainer = document.getElementById('viewContainer');
+            
+            if (!viewContainer) {
+                throw new Error('No se encontró el contenedor de vista');
+            }
+
+            console.log('Capturando vista para PDF...');
+            
+            // Configurar opciones para html2canvas
+            const canvas = await window.html2canvas(viewContainer, {
+                scale: 2, // Mayor resolución
+                useCORS: true,
+                allowTaint: true,
+                backgroundColor: '#ffffff',
+                width: viewContainer.scrollWidth,
+                height: viewContainer.scrollHeight,
+                scrollX: 0,
+                scrollY: 0
+            });
+
+            console.log('Vista capturada, creando PDF...');
+            
+            // Crear el PDF
             const { jsPDF } = window.jspdf;
-            if (!jsPDF) {
-                alert('Librería jsPDF no disponible');
-                return;
+            const pdf = new jsPDF('p', 'mm', 'a4');
+
+            // Calcular dimensiones
+            const imgWidth = 210; // A4 width en mm
+            const pageHeight = 295; // A4 height en mm
+            const imgHeight = (canvas.height * imgWidth) / canvas.width;
+            let heightLeft = imgHeight;
+
+            let position = 0;
+
+            // Agregar imagen al PDF
+            const imgData = canvas.toDataURL('image/png');
+            pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+            heightLeft -= pageHeight;
+
+            // Agregar páginas adicionales si es necesario
+            while (heightLeft >= 0) {
+                position = heightLeft - imgHeight;
+                pdf.addPage();
+                pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+                heightLeft -= pageHeight;
+            }
+
+            // Guardar el PDF
+            const fecha = new Date().toISOString().split('T')[0];
+            const nombreArchivo = `ficha-tecnica-${this.activeView}-${fecha}.pdf`;
+            pdf.save(nombreArchivo);
+
+            console.log('PDF generado correctamente:', nombreArchivo);
+
+            // Restaurar botón
+            exportBtn.innerHTML = originalText;
+            exportBtn.disabled = false;
+
+        } catch (error) {
+            console.error('Error en exportCurrentViewToPDF:', error);
+            
+            // Restaurar botón en caso de error
+            const exportBtn = this.container.querySelector('#exportAllPDF');
+            if (exportBtn) {
+                exportBtn.innerHTML = '<span class="btn-icon">📄</span><span class="btn-text">Exportar PDF</span>';
+                exportBtn.disabled = false;
             }
             
-            const pdf = new jsPDF();
-            pdf.text('Ficha Técnica de Producción', 20, 20);
-            pdf.text('Generado desde NavBar', 20, 30);
-            pdf.text('Fecha: ' + new Date().toLocaleString(), 20, 40);
-            
-            pdf.save('ficha-tecnica-navbar.pdf');
-            console.log('PDF simple generado correctamente');
-            
-        } catch (error) {
-            console.error('Error creando PDF simple:', error);
-            alert('Error al crear PDF. Verifica que las librerías estén cargadas.');
+            throw error;
         }
     }
 
