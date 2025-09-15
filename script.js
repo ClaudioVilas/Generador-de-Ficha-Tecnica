@@ -485,7 +485,7 @@ async function guardarFicha() {
         const datosCompletos = {
             // Información general
             informacionGeneral: {
-                nombreApellido: document.querySelector('.info-superior .campo-grupo:nth-child(1) input').value,
+                marca: document.querySelector('.info-superior .campo-grupo:nth-child(1) input').value,
                 usuario: document.querySelector('.info-superior .campo-grupo:nth-child(2) input').value,
                 articulo: document.querySelector('.info-superior .campo-grupo:nth-child(3) input').value,
                 rubro: document.querySelector('.info-superior .campo-grupo:nth-child(4) input').value,
@@ -567,8 +567,8 @@ async function guardarFicha() {
                     talles: {
                         xs: inputs[0].value,
                         s: inputs[1].value,
-                        l: inputs[2].value,
-                        m: inputs[3].value,
+                        m: inputs[2].value,
+                        l: inputs[3].value,
                         xl: inputs[4].value,
                         xxl: inputs[5].value
                     }
@@ -675,7 +675,7 @@ function cargarFicha(event) {
             // Cargar información general
             if (datos.informacionGeneral) {
                 const info = datos.informacionGeneral;
-                document.querySelector('.info-superior .campo-grupo:nth-child(1) input').value = info.nombreApellido || '';
+                document.querySelector('.info-superior .campo-grupo:nth-child(1) input').value = info.marca || '';
                 document.querySelector('.info-superior .campo-grupo:nth-child(2) input').value = info.usuario || '';
                 document.querySelector('.info-superior .campo-grupo:nth-child(3) input').value = info.articulo || '';
                 document.querySelector('.info-superior .campo-grupo:nth-child(4) input').value = info.rubro || '';
@@ -751,8 +751,8 @@ function cargarFicha(event) {
                         </td>
                         <td><input type="number" value="${corte.talles.xs || 0}" class="input-numero"></td>
                         <td><input type="number" value="${corte.talles.s || 0}" class="input-numero"></td>
-                        <td><input type="number" value="${corte.talles.l || 0}" class="input-numero"></td>
                         <td><input type="number" value="${corte.talles.m || 0}" class="input-numero"></td>
+                        <td><input type="number" value="${corte.talles.l || 0}" class="input-numero"></td>
                         <td><input type="number" value="${corte.talles.xl || 0}" class="input-numero"></td>
                         <td><input type="number" value="${corte.talles.xxl || 0}" class="input-numero"></td>
                     `;

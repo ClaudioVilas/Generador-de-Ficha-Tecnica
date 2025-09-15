@@ -14,7 +14,7 @@ class ViewManager {
         };
         this.data = {
             generalInfo: {
-                nombreApellido: '',
+                marca: '',
                 usuario: '',
                 articulo: '',
                 rubro: '',
@@ -209,7 +209,7 @@ class ViewManager {
         }
         if (!this.data.generalInfo) {
             this.data.generalInfo = {
-                nombreApellido: '',
+                marca: '',
                 usuario: '',
                 articulo: '',
                 rubro: '',
@@ -220,7 +220,7 @@ class ViewManager {
         }
 
         const generalInfoInputs = {
-            nombreApellido: document.querySelector('[data-field="nombreApellido"]'),
+            marca: document.querySelector('[data-field="marca"]'),
             usuario: document.querySelector('[data-field="usuario"]'),
             articulo: document.querySelector('[data-field="articulo"]'),
             rubro: document.querySelector('[data-field="rubro"]'),
@@ -252,7 +252,7 @@ class ViewManager {
         }
         if (!this.data.generalInfo) {
             this.data.generalInfo = {
-                nombreApellido: '',
+                marca: '',
                 usuario: '',
                 articulo: '',
                 rubro: '',
@@ -265,7 +265,7 @@ class ViewManager {
         // Esperar un poco para que los elementos se rendericen
         setTimeout(() => {
             const generalInfoInputs = {
-                nombreApellido: document.querySelector('[data-field="nombreApellido"]'),
+                marca: document.querySelector('[data-field="marca"]'),
                 usuario: document.querySelector('[data-field="usuario"]'),
                 articulo: document.querySelector('[data-field="articulo"]'),
                 rubro: document.querySelector('[data-field="rubro"]'),

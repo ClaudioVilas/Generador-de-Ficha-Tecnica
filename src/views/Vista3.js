@@ -15,8 +15,8 @@ class Vista3 {
         return `
             <div class="info-superior">
                 <div class="campo-grupo">
-                    <label>Nombre y Apellido:</label>
-                    <input type="text" placeholder="Completar" class="input-text" data-field="nombreApellido">
+                    <label>Marca:</label>
+                    <input type="text" placeholder="Completar" class="input-text" data-field="marca">
                 </div>
                 <div class="campo-grupo">
                     <label>Usuario:</label>
