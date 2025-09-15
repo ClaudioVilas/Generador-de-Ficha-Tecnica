@@ -257,56 +257,12 @@ class Vista1 {
                             <button class="btn-eliminar-ultima" onclick="Vista1Instance.eliminarUltimaFila('tablaCorte')" title="Eliminar último color">-</button>
                             <button class="btn-agregar-fila" onclick="Vista1Instance.agregarFilaCorte()" title="Agregar color">+</button>
                         </div>
-                        <div class="cantidad-total">
-                            <label>Cantidad total de prendas:</label>
-                            <input type="number" value="30" class="input-total" id="totalPrendas">
-                        </div>
                     </div>
 
-                    <!-- Tabla de medidas -->
-                    <div class="tabla-medidas">
-                        <h3>TABLA DE MEDIDAS</h3>
-                        <h4>Talles</h4>
-                        <table class="tabla" id="tablaMedidasTalles">
-                            <thead>
-                                <tr>
-                                    <th>Letra</th>
-                                    <th>U</th>
-                                    <th>M</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td><strong>A</strong></td>
-                                    <td>Ancho total delantero</td>
-                                    <td><input type="number" placeholder="35" class="input-numero-medida"></td>
-                                </tr>
-                                <tr>
-                                    <td><strong>B</strong></td>
-                                    <td>Ancho de hombros total</td>
-                                    <td><input type="number" placeholder="44" class="input-numero-medida"></td>
-                                </tr>
-                                <tr>
-                                    <td><strong>C</strong></td>
-                                    <td>Ancho cuello</td>
-                                    <td><input type="number" placeholder="22" class="input-numero-medida"></td>
-                                </tr>
-                                <tr>
-                                    <td><strong>D</strong></td>
-                                    <td>Largo total delantero</td>
-                                    <td><input type="number" placeholder="97" class="input-numero-medida"></td>
-                                </tr>
-                                <tr>
-                                    <td><strong>E</strong></td>
-                                    <td>Largo manga</td>
-                                    <td><input type="number" placeholder="32" class="input-numero-medida"></td>
-                                </tr>
-                            </tbody>
-                        </table>
-                        <div class="tabla-controls">
-                            <button class="btn-eliminar-ultima" onclick="Vista1Instance.eliminarUltimaMedida()" title="Eliminar última medida">-</button>
-                            <button class="btn-agregar-fila" onclick="Vista1Instance.agregarMedida()" title="Agregar medida">+</button>
-                        </div>
+                    <!-- Cantidad total de prendas -->
+                    <div class="cantidad-total">
+                        <label>Cantidad total de prendas:</label>
+                        <input type="number" value="30" class="input-total" id="totalPrendas">
                     </div>
 
                     <!-- Muestra de materiales -->
@@ -327,6 +283,58 @@ class Vista1 {
                         <div class="tabla-controls">
                             <button class="btn-eliminar-ultima" onclick="Vista1Instance.eliminarUltimoMaterial()" title="Eliminar último material">-</button>
                             <button class="btn-agregar-fila" onclick="Vista1Instance.agregarMaterial()" title="Agregar material">+</button>
+                        </div>
+                    </div>
+
+                    <!-- Tabla de medidas -->
+                    <div class="tabla-medidas">
+                        <h3>TABLA DE MEDIDAS</h3>
+                        <h4>Talles</h4>
+                        <table class="tabla" id="tablaMedidasTalles">
+                            <thead>
+                                <tr>
+                                    <th>Letra</th>
+                                    <th>Descripción</th>
+                                    <th>U</th>
+                                    <th>M</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>A</strong></td>
+                                    <td>Ancho total delantero</td>
+                                    <td>CM</td>
+                                    <td><input type="number" placeholder="35" class="input-numero-medida"></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>B</strong></td>
+                                    <td>Ancho de hombros total</td>
+                                    <td>CM</td>
+                                    <td><input type="number" placeholder="44" class="input-numero-medida"></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>C</strong></td>
+                                    <td>Ancho cuello</td>
+                                    <td>CM</td>
+                                    <td><input type="number" placeholder="22" class="input-numero-medida"></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>D</strong></td>
+                                    <td>Largo total delantero</td>
+                                    <td>CM</td>
+                                    <td><input type="number" placeholder="97" class="input-numero-medida"></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>E</strong></td>
+                                    <td>Largo manga</td>
+                                    <td>CM</td>
+                                    <td><input type="number" placeholder="32" class="input-numero-medida"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div class="tabla-controls">
+                            <button class="btn-eliminar-ultima" onclick="Vista1Instance.eliminarUltimaMedida()" title="Eliminar última medida">-</button>
+                            <button class="btn-agregar-fila" onclick="Vista1Instance.agregarMedida()" title="Agregar medida">+</button>
                         </div>
                     </div>
                 </div>

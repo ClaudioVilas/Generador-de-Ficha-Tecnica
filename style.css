@@ -337,7 +337,31 @@ body {
 .seccion-inferior {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
+    grid-template-areas: 
+        "costo taller muestra"
+        "costo medidas muestra"
+        "costo cantidad muestra";
     gap: 20px;
+}
+
+.costo-produccion {
+    grid-area: costo;
+}
+
+.taller-corte {
+    grid-area: taller;
+}
+
+.tabla-medidas {
+    grid-area: medidas;
+}
+
+.cantidad-total {
+    grid-area: cantidad;
+}
+
+.muestra-materiales {
+    grid-area: muestra;
 }
 
 /* Costo de producción */
@@ -1037,6 +1061,10 @@ body {
     width: 80px;
 }
 
+#tablaMedidasTalles th:nth-child(4) {
+    width: 80px;
+}
+
 #tablaMedidasTalles td {
     border: 1px solid #333;
     padding: 3px;
@@ -1053,6 +1081,15 @@ body {
     text-align: left;
     padding-left: 8px;
     font-size: 10px;
+}
+
+#tablaMedidasTalles td:nth-child(3) {
+    font-size: 10px;
+    font-weight: bold;
+}
+
+#tablaMedidasTalles td:nth-child(4) {
+    padding: 1px;
 }
 
 .input-numero-medida {
