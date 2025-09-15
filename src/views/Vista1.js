@@ -6,6 +6,124 @@ class Vista1 {
     constructor() {
         this.container = null;
         this.data = {};
+        
+        // Definir paleta de colores estilo Excel
+        this.colorPalette = {
+            theme: [
+                { name: 'Blanco', value: '#FFFFFF' },
+                { name: 'Negro', value: '#000000' },
+                { name: 'Gris Oscuro', value: '#404040' },
+                { name: 'Azul Oscuro', value: '#1F4E79' },
+                { name: 'Azul', value: '#4472C4' },
+                { name: 'Rojo', value: '#C5504B' }
+            ],
+            standard: [
+                { name: 'Rojo Oscuro', value: '#C00000' },
+                { name: 'Rojo', value: '#FF0000' },
+                { name: 'Naranja', value: '#FFC000' },
+                { name: 'Amarillo', value: '#FFFF00' },
+                { name: 'Verde Claro', value: '#92D050' },
+                { name: 'Verde', value: '#00B050' },
+                { name: 'Azul Claro', value: '#00B0F0' },
+                { name: 'Azul', value: '#0070C0' },
+                { name: 'Azul Oscuro', value: '#002060' },
+                { name: 'Púrpura', value: '#7030A0' }
+            ]
+        };
+    }
+
+    /**
+     * Crea un selector de colores estilo Excel
+     * @param {string} selectedValue - Color actualmente seleccionado
+     * @param {string} id - ID único del selector
+     * @returns {string} HTML del selector
+     */
+    createColorSelector(selectedValue = '#FFFFFF', id = '') {
+        return `
+            <div class="color-selector-container" data-color-id="${id}">
+                <div class="color-display-button" onclick="Vista1Instance.toggleColorPalette('${id}')">
+                    <div class="color-display-preview" style="background-color: ${selectedValue}"></div>
+                </div>
+                <div class="color-palette" id="palette-${id}">
+                    <div class="color-section">
+                        <div class="color-section-title">Colores del tema</div>
+                        <div class="color-grid theme-colors">
+                            ${this.colorPalette.theme.map(color => 
+                                `<div class="color-option ${selectedValue === color.value ? 'selected' : ''}" 
+                                     style="background-color: ${color.value}" 
+                                     title="${color.name}"
+                                     onclick="Vista1Instance.selectColor('${id}', '${color.value}')"></div>`
+                            ).join('')}
+                        </div>
+                    </div>
+                    <div class="color-section">
+                        <div class="color-section-title">Colores estándar</div>
+                        <div class="color-grid standard-colors">
+                            ${this.colorPalette.standard.map(color => 
+                                `<div class="color-option ${selectedValue === color.value ? 'selected' : ''}" 
+                                     style="background-color: ${color.value}" 
+                                     title="${color.name}"
+                                     onclick="Vista1Instance.selectColor('${id}', '${color.value}')"></div>`
+                            ).join('')}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+
+    /**
+     * Alterna la visibilidad de la paleta de colores
+     * @param {string} id - ID del selector
+     */
+    toggleColorPalette(id) {
+        const palette = document.getElementById(`palette-${id}`);
+        const allPalettes = document.querySelectorAll('.color-palette');
+        
+        // Cerrar todas las otras paletas
+        allPalettes.forEach(p => {
+            if (p.id !== `palette-${id}`) {
+                p.classList.remove('open');
+            }
+        });
+        
+        // Alternar la paleta actual
+        palette.classList.toggle('open');
+    }
+
+    /**
+     * Selecciona un color
+     * @param {string} id - ID del selector
+     * @param {string} colorValue - Valor del color seleccionado
+     */
+    selectColor(id, colorValue) {
+        const container = document.querySelector(`[data-color-id="${id}"]`);
+        const preview = container.querySelector('.color-display-preview');
+        const palette = document.getElementById(`palette-${id}`);
+        
+        // Actualizar preview
+        preview.style.backgroundColor = colorValue;
+        
+        // Actualizar selección visual
+        const options = palette.querySelectorAll('.color-option');
+        options.forEach(option => option.classList.remove('selected'));
+        
+        const selectedOption = palette.querySelector(`[onclick*="'${colorValue}'"]`);
+        if (selectedOption) {
+            selectedOption.classList.add('selected');
+        }
+        
+        // Cerrar paleta
+        palette.classList.remove('open');
+        
+        // Almacenar valor seleccionado
+        container.setAttribute('data-selected-color', colorValue);
+        
+        // Disparar evento personalizado
+        const event = new CustomEvent('colorChanged', {
+            detail: { id, color: colorValue }
+        });
+        container.dispatchEvent(event);
     }
 
     /**
@@ -124,7 +242,7 @@ class Vista1 {
                             <tbody>
                                 <tr>
                                     <td class="color-cell">
-                                        <input type="color" value="#FFFF00" class="color-picker">
+                                        ${this.createColorSelector('#FFFFFF', 'corte-0')}
                                     </td>
                                     <td><input type="number" value="5" class="input-numero"></td>
                                     <td><input type="number" value="5" class="input-numero"></td>
@@ -142,6 +260,52 @@ class Vista1 {
                         <div class="cantidad-total">
                             <label>Cantidad total de prendas:</label>
                             <input type="number" value="30" class="input-total" id="totalPrendas">
+                        </div>
+                    </div>
+
+                    <!-- Tabla de medidas -->
+                    <div class="tabla-medidas">
+                        <h3>TABLA DE MEDIDAS</h3>
+                        <h4>Talles</h4>
+                        <table class="tabla" id="tablaMedidasTalles">
+                            <thead>
+                                <tr>
+                                    <th>Letra</th>
+                                    <th>U</th>
+                                    <th>M</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>A</strong></td>
+                                    <td>Ancho total delantero</td>
+                                    <td><input type="number" placeholder="35" class="input-numero-medida"></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>B</strong></td>
+                                    <td>Ancho de hombros total</td>
+                                    <td><input type="number" placeholder="44" class="input-numero-medida"></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>C</strong></td>
+                                    <td>Ancho cuello</td>
+                                    <td><input type="number" placeholder="22" class="input-numero-medida"></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>D</strong></td>
+                                    <td>Largo total delantero</td>
+                                    <td><input type="number" placeholder="97" class="input-numero-medida"></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>E</strong></td>
+                                    <td>Largo manga</td>
+                                    <td><input type="number" placeholder="32" class="input-numero-medida"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div class="tabla-controls">
+                            <button class="btn-eliminar-ultima" onclick="Vista1Instance.eliminarUltimaMedida()" title="Eliminar última medida">-</button>
+                            <button class="btn-agregar-fila" onclick="Vista1Instance.agregarMedida()" title="Agregar medida">+</button>
                         </div>
                     </div>
 
@@ -229,7 +393,7 @@ class Vista1 {
      * Configura eventos de entrada de datos
      */
     setupDataEvents() {
-        const inputs = this.container.querySelectorAll('input, textarea');
+        const inputs = this.container.querySelectorAll('input, textarea, select');
         inputs.forEach(input => {
             input.addEventListener('input', () => this.saveData());
             input.addEventListener('change', () => this.saveData());
@@ -281,11 +445,12 @@ class Vista1 {
      */
     agregarFilaCorte() {
         const tabla = this.container.querySelector('#tablaCorte tbody');
+        const filaCount = tabla.rows.length;
         
         const nuevaFila = tabla.insertRow();
         nuevaFila.innerHTML = `
             <td class="color-cell">
-                <input type="color" value="#FFFFFF" class="color-picker">
+                ${this.createColorSelector('#FFFFFF', `corte-${filaCount}`)}
             </td>
             <td><input type="number" value="0" class="input-numero"></td>
             <td><input type="number" value="0" class="input-numero"></td>
@@ -349,6 +514,36 @@ class Vista1 {
     }
 
     /**
+     * Agrega una nueva medida a la tabla de medidas
+     */
+    agregarMedida() {
+        const tabla = this.container.querySelector('#tablaMedidasTalles tbody');
+        const filaCount = tabla.rows.length;
+        
+        // Generar la próxima letra del alfabeto
+        const letra = String.fromCharCode(65 + filaCount); // A=65, B=66, etc.
+        
+        const nuevaFila = tabla.insertRow();
+        nuevaFila.innerHTML = `
+            <td><strong>${letra}</strong></td>
+            <td><input type="text" placeholder="Descripción medida" class="input-celda"></td>
+            <td><input type="number" placeholder="0" class="input-numero-medida"></td>
+        `;
+        
+        this.setupDataEvents();
+    }
+
+    /**
+     * Elimina la última medida de la tabla
+     */
+    eliminarUltimaMedida() {
+        const tabla = this.container.querySelector('#tablaMedidasTalles tbody');
+        if (tabla.rows.length > 1) {
+            tabla.deleteRow(tabla.rows.length - 1);
+        }
+    }
+
+    /**
      * Obtiene todos los datos de la Vista1
      * @returns {Object} Datos de la vista
      */
@@ -365,6 +560,7 @@ class Vista1 {
         data.materiales = this.getTableData('tablaMateriales');
         data.costos = this.getTableData('tablaCostos');
         data.corte = this.getTableData('tablaCorte');
+        data.medidasTalles = this.getTableData('tablaMedidasTalles');
         data.materialesMuestra = this.getMaterialesData();
 
         return data;
@@ -387,7 +583,18 @@ class Vista1 {
             for (let j = 0; j < row.cells.length; j++) {
                 const cell = row.cells[j];
                 const input = cell.querySelector('input');
-                rowData.push(input ? input.value : cell.textContent);
+                const select = cell.querySelector('select');
+                const colorSelector = cell.querySelector('.color-selector-container');
+                
+                if (input) {
+                    rowData.push(input.value);
+                } else if (select) {
+                    rowData.push(select.value);
+                } else if (colorSelector) {
+                    rowData.push(colorSelector.getAttribute('data-selected-color') || '#FFFFFF');
+                } else {
+                    rowData.push(cell.textContent);
+                }
             }
             data.push(rowData);
         }
@@ -430,8 +637,75 @@ class Vista1 {
             }
         });
 
+        // Cargar datos de las tablas
+        if (data.materiales) {
+            this.loadTableData('tablaMateriales', data.materiales);
+        }
+        if (data.costos) {
+            this.loadTableData('tablaCostos', data.costos);
+        }
+        if (data.corte) {
+            this.loadTableData('tablaCorte', data.corte);
+        }
+        if (data.medidasTalles) {
+            this.loadTableData('tablaMedidasTalles', data.medidasTalles);
+        }
+
         this.data = data;
         console.log('Datos cargados en Vista1:', data);
+    }
+
+    /**
+     * Carga datos en una tabla específica
+     * @param {string} tableId - ID de la tabla
+     * @param {Array} tableData - Datos de la tabla
+     */
+    loadTableData(tableId, tableData) {
+        const tabla = this.container.querySelector(`#${tableId} tbody`);
+        if (!tabla || !tableData || !Array.isArray(tableData)) return;
+
+        // Limpiar tabla existente
+        tabla.innerHTML = '';
+
+        // Cargar datos
+        tableData.forEach((rowData, index) => {
+            const fila = tabla.insertRow();
+            rowData.forEach((cellData, cellIndex) => {
+                const celda = fila.insertCell();
+                
+                if (tableId === 'tablaMedidasTalles' && cellIndex === 0) {
+                    // Para la tabla de medidas, la primera columna es la letra
+                    celda.innerHTML = `<strong>${cellData}</strong>`;
+                } else if (tableId === 'tablaCorte' && cellIndex === 0) {
+                    // Para la tabla de corte, la primera columna es el selector de color personalizado
+                    celda.className = 'color-cell';
+                    celda.innerHTML = this.createColorSelector(cellData, `corte-${index}`);
+                    
+                    // Establecer el color seleccionado después de crear el selector
+                    setTimeout(() => {
+                        const container = celda.querySelector('.color-selector-container');
+                        if (container) {
+                            container.setAttribute('data-selected-color', cellData);
+                            const preview = container.querySelector('.color-display-preview');
+                            if (preview) {
+                                preview.style.backgroundColor = cellData;
+                            }
+                        }
+                    }, 0);
+                } else if (typeof cellData === 'object' && cellData.type) {
+                    // Manejar inputs especiales (color, número, etc.)
+                    celda.innerHTML = `<input type="${cellData.type}" value="${cellData.value}" class="${cellData.class}">`;
+                } else {
+                    // Input de texto normal o número
+                    const inputType = (tableId === 'tablaCorte' && cellIndex > 0) ? 'number' : 'text';
+                    const inputClass = tableId === 'tablaMedidasTalles' && cellIndex === 2 ? 'input-numero-medida' : 
+                                     (tableId === 'tablaCorte' && cellIndex > 0) ? 'input-numero' : 'input-celda';
+                    celda.innerHTML = `<input type="${inputType}" value="${cellData}" class="${inputClass}">`;
+                }
+            });
+        });
+
+        this.setupDataEvents();
     }
 
     /**
@@ -498,6 +772,16 @@ class Vista1 {
         console.log('Vista1 destruida');
     }
 }
+
+// Event listener global para cerrar paletas de colores al hacer click fuera
+document.addEventListener('click', function(e) {
+    if (!e.target.closest('.color-selector-container')) {
+        const allPalettes = document.querySelectorAll('.color-palette');
+        allPalettes.forEach(palette => {
+            palette.classList.remove('open');
+        });
+    }
+});
 
 // Exportar para uso global
 window.Vista1 = Vista1;
