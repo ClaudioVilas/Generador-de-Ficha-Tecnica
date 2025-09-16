@@ -306,30 +306,6 @@ class Vista1 {
                                     <td>CM</td>
                                     <td><input type="number" placeholder="0" class="input-numero-medida"></td>
                                 </tr>
-                                <tr>
-                                    <td><strong>B</strong></td>
-                                    <td><input type="text" value="Ancho de hombros total" class="input-celda"></td>
-                                    <td>CM</td>
-                                    <td><input type="number" placeholder="0" class="input-numero-medida"></td>
-                                </tr>
-                                <tr>
-                                    <td><strong>C</strong></td>
-                                    <td><input type="text" value="Ancho cuello" class="input-celda"></td>
-                                    <td>CM</td>
-                                    <td><input type="number" placeholder="0" class="input-numero-medida"></td>
-                                </tr>
-                                <tr>
-                                    <td><strong>D</strong></td>
-                                    <td><input type="text" value="Largo total delantero" class="input-celda"></td>
-                                    <td>CM</td>
-                                    <td><input type="number" placeholder="0" class="input-numero-medida"></td>
-                                </tr>
-                                <tr>
-                                    <td><strong>E</strong></td>
-                                    <td><input type="text" value="Largo manga" class="input-celda"></td>
-                                    <td>CM</td>
-                                    <td><input type="number" placeholder="0" class="input-numero-medida"></td>
-                                </tr>
                             </tbody>
                         </table>
                         <div class="tabla-controls">
