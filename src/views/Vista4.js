@@ -6,6 +6,31 @@ class Vista4 {
     constructor() {
         this.data = {};
         this.container = null;
+        this.colorRowCounter = 2; // Contador para nuevas filas de color
+        
+        // Definir paleta de colores estilo Excel (igual que Vista1)
+        this.colorPalette = {
+            theme: [
+                { name: 'Blanco', value: '#FFFFFF' },
+                { name: 'Negro', value: '#000000' },
+                { name: 'Gris Oscuro', value: '#404040' },
+                { name: 'Azul Oscuro', value: '#1F4E79' },
+                { name: 'Azul', value: '#4472C4' },
+                { name: 'Rojo', value: '#C5504B' }
+            ],
+            standard: [
+                { name: 'Rojo Oscuro', value: '#C00000' },
+                { name: 'Rojo', value: '#FF0000' },
+                { name: 'Naranja', value: '#FFC000' },
+                { name: 'Amarillo', value: '#FFFF00' },
+                { name: 'Verde Claro', value: '#92D050' },
+                { name: 'Verde', value: '#00B050' },
+                { name: 'Azul Claro', value: '#00B0F0' },
+                { name: 'Azul', value: '#0070C0' },
+                { name: 'Azul Oscuro', value: '#002060' },
+                { name: 'Púrpura', value: '#7030A0' }
+            ]
+        };
     }
 
     /**
@@ -63,10 +88,12 @@ class Vista4 {
                 
                 <!-- Contenedor principal con distribución 25%-75% -->
                 <div class="contenedor-principal-vista4">
-                    <!-- Componente MUESTRA DE MATERIALES (100% ancho) -->
-                    <div class="seccion-muestra-materiales-completa">
-                        <h3>MUESTRA DE MATERIALES</h3>
-                        <div id="contenedorMuestraMateriales" class="contenedor-muestras">
+                    <!-- Columna izquierda (25%) - Materiales y Taller de Corte -->
+                    <div class="columna-izquierda-vista4">
+                        <!-- Componente MUESTRA DE MATERIALES -->
+                        <div class="seccion-muestra-materiales-completa">
+                            <h3>MUESTRA DE MATERIALES</h3>
+                            <div id="contenedorMuestraMateriales" class="contenedor-muestras">
                             <!-- Muestra 1 -->
                             <div class="muestra-item">
                                 <div class="muestra-foto-container">
@@ -100,7 +127,82 @@ class Vista4 {
                         </div>
                     </div>
                     
-                    <!-- Componente de Fotos (100% ancho debajo) -->
+                    <!-- Componente TALLER DE CORTE (mismo ancho que muestra de materiales) -->
+                    <div class="seccion-taller-corte">
+                        <h3>TALLER DE CORTE</h3>
+                        <div class="contenedor-taller-corte">
+                            <div class="tabla-taller-corte">
+                                <div class="fila-header">
+                                    <div class="columna-color-header">Color</div>
+                                    <div class="columna-talles-header">Talles</div>
+                                </div>
+                                <div class="fila-subheader">
+                                    <div class="columna-color-subheader"></div>
+                                    <div class="columna-talles-grid">
+                                        <div class="talle-header">XS</div>
+                                        <div class="talle-header">S</div>
+                                        <div class="talle-header">M</div>
+                                        <div class="talle-header">L</div>
+                                        <div class="talle-header">XL</div>
+                                        <div class="talle-header">XXL</div>
+                                    </div>
+                                </div>
+                                <!-- Fila de color ejemplo 1 (Amarillo) -->
+                                <div class="fila-color" data-color-row="1">
+                                    <div class="columna-color">
+                                        <div class="color-selector-taller" data-color-id="taller-color-1">
+                                            <div class="color-display-button" onclick="Vista4Instance.toggleColorPalette('taller-color-1')">
+                                                <div class="color-display-preview" style="background-color: #FFFF00"></div>
+                                            </div>
+                                            <div class="color-palette" id="palette-taller-color-1" style="display: none;">
+                                                ${this.createColorPaletteHTML()}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="columna-talles-grid">
+                                        <input type="number" class="input-talle" data-talle="XS" min="0" onchange="Vista4Instance.calcularTotalPrendas()">
+                                        <input type="number" class="input-talle" data-talle="S" min="0" onchange="Vista4Instance.calcularTotalPrendas()">
+                                        <input type="number" class="input-talle" data-talle="M" min="0" onchange="Vista4Instance.calcularTotalPrendas()">
+                                        <input type="number" class="input-talle" data-talle="L" min="0" onchange="Vista4Instance.calcularTotalPrendas()">
+                                        <input type="number" class="input-talle" data-talle="XL" min="0" onchange="Vista4Instance.calcularTotalPrendas()">
+                                        <input type="number" class="input-talle" data-talle="XXL" min="0" onchange="Vista4Instance.calcularTotalPrendas()">
+                                    </div>
+                                </div>
+                                <!-- Fila de color ejemplo 2 (Rojo) -->
+                                <div class="fila-color" data-color-row="2">
+                                    <div class="columna-color">
+                                        <div class="color-selector-taller" data-color-id="taller-color-2">
+                                            <div class="color-display-button" onclick="Vista4Instance.toggleColorPalette('taller-color-2')">
+                                                <div class="color-display-preview" style="background-color: #C5504B"></div>
+                                            </div>
+                                            <div class="color-palette" id="palette-taller-color-2" style="display: none;">
+                                                ${this.createColorPaletteHTML()}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="columna-talles-grid">
+                                        <input type="number" class="input-talle" data-talle="XS" min="0" onchange="Vista4Instance.calcularTotalPrendas()">
+                                        <input type="number" class="input-talle" data-talle="S" min="0" onchange="Vista4Instance.calcularTotalPrendas()">
+                                        <input type="number" class="input-talle" data-talle="M" min="0" onchange="Vista4Instance.calcularTotalPrendas()">
+                                        <input type="number" class="input-talle" data-talle="L" min="0" onchange="Vista4Instance.calcularTotalPrendas()">
+                                        <input type="number" class="input-talle" data-talle="XL" min="0" onchange="Vista4Instance.calcularTotalPrendas()">
+                                        <input type="number" class="input-talle" data-talle="XXL" min="0" onchange="Vista4Instance.calcularTotalPrendas()">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="total-prendas-container">
+                                <span class="total-prendas-label">Cantidad total de prendas:</span>
+                                <span class="total-prendas-valor" id="total-prendas">-</span>
+                            </div>
+                            <div class="controles-taller">
+                                <button class="btn-eliminar-color" onclick="Vista4Instance.eliminarFilaColor()" title="Eliminar color">-</button>
+                                <button class="btn-agregar-color" onclick="Vista4Instance.agregarFilaColor()" title="Agregar color">+</button>
+                            </div>
+                        </div>
+                    </div>
+                    </div>
+                    
+                    <!-- Componente de Fotos (75% derecha) -->
                     <div class="seccion-fotos-vista4">
                         <h3>FOTOS ADICIONALES</h3>
                         <div class="contenedor-fotos-vista4">
@@ -136,6 +238,157 @@ class Vista4 {
         inputs.forEach(input => {
             input.addEventListener('change', () => this.saveData());
         });
+    }
+
+    /**
+     * Crea el HTML de la paleta de colores para el componente TALLER DE CORTE
+     * @returns {string} HTML de la paleta de colores
+     */
+    createColorPaletteHTML() {
+        return `
+            <div class="color-section">
+                <div class="color-section-title">Colores del tema</div>
+                <div class="color-grid theme-colors">
+                    ${this.colorPalette.theme.map(color => 
+                        `<div class="color-option" 
+                             style="background-color: ${color.value}" 
+                             title="${color.name}"
+                             onclick="Vista4Instance.selectColorTaller(event, '${color.value}')"></div>`
+                    ).join('')}
+                </div>
+            </div>
+            <div class="color-section">
+                <div class="color-section-title">Colores estándar</div>
+                <div class="color-grid standard-colors">
+                    ${this.colorPalette.standard.map(color => 
+                        `<div class="color-option" 
+                             style="background-color: ${color.value}" 
+                             title="${color.name}"
+                             onclick="Vista4Instance.selectColorTaller(event, '${color.value}')"></div>`
+                    ).join('')}
+                </div>
+            </div>
+        `;
+    }
+
+    /**
+     * Alterna la visibilidad de la paleta de colores para TALLER DE CORTE
+     * @param {string} id - ID del selector de color
+     */
+    toggleColorPalette(id) {
+        const palette = document.getElementById(`palette-${id}`);
+        const allPalettes = document.querySelectorAll('.color-palette');
+        
+        // Cerrar todas las otras paletas
+        allPalettes.forEach(p => {
+            if (p.id !== `palette-${id}`) {
+                p.style.display = 'none';
+            }
+        });
+        
+        // Alternar la paleta actual
+        if (palette.style.display === 'none' || palette.style.display === '') {
+            palette.style.display = 'block';
+        } else {
+            palette.style.display = 'none';
+        }
+    }
+
+    /**
+     * Selecciona un color para el componente TALLER DE CORTE
+     * @param {Event} event - Evento del clic
+     * @param {string} colorValue - Valor del color seleccionado
+     */
+    selectColorTaller(event, colorValue) {
+        const colorOption = event.target;
+        const palette = colorOption.closest('.color-palette');
+        const container = palette.closest('.color-selector-taller');
+        const preview = container.querySelector('.color-display-preview');
+        
+        // Actualizar preview
+        preview.style.backgroundColor = colorValue;
+        
+        // Actualizar selección visual
+        const options = palette.querySelectorAll('.color-option');
+        options.forEach(option => option.classList.remove('selected'));
+        colorOption.classList.add('selected');
+        
+        // Cerrar paleta
+        palette.style.display = 'none';
+        
+        // Almacenar valor seleccionado
+        container.setAttribute('data-selected-color', colorValue);
+    }
+
+    /**
+     * Calcula el total de prendas automáticamente
+     */
+    calcularTotalPrendas() {
+        const inputs = document.querySelectorAll('.input-talle');
+        let total = 0;
+        let hasValues = false;
+        
+        inputs.forEach(input => {
+            if (input.value && input.value.trim() !== '') {
+                hasValues = true;
+                const valor = parseInt(input.value) || 0;
+                total += valor;
+            }
+        });
+        
+        // Si no hay valores ingresados, mostrar "-", sino mostrar el total
+        document.getElementById('total-prendas').textContent = hasValues ? total : '-';
+    }
+
+    /**
+     * Agrega una nueva fila de color al componente TALLER DE CORTE
+     */
+    agregarFilaColor() {
+        this.colorRowCounter++;
+        const tabla = document.querySelector('.tabla-taller-corte');
+        const controles = document.querySelector('.controles-taller');
+        
+        const nuevaFila = document.createElement('div');
+        nuevaFila.className = 'fila-color';
+        nuevaFila.setAttribute('data-color-row', this.colorRowCounter);
+        
+        nuevaFila.innerHTML = `
+            <div class="columna-color">
+                <div class="color-selector-taller" data-color-id="taller-color-${this.colorRowCounter}">
+                    <div class="color-display-button" onclick="Vista4Instance.toggleColorPalette('taller-color-${this.colorRowCounter}')">
+                        <div class="color-display-preview" style="background-color: #FFFFFF"></div>
+                    </div>
+                    <div class="color-palette" id="palette-taller-color-${this.colorRowCounter}" style="display: none;">
+                        ${this.createColorPaletteHTML()}
+                    </div>
+                </div>
+            </div>
+            <div class="columna-talles-grid">
+                <input type="number" class="input-talle" data-talle="XS" min="0" onchange="Vista4Instance.calcularTotalPrendas()">
+                <input type="number" class="input-talle" data-talle="S" min="0" onchange="Vista4Instance.calcularTotalPrendas()">
+                <input type="number" class="input-talle" data-talle="M" min="0" onchange="Vista4Instance.calcularTotalPrendas()">
+                <input type="number" class="input-talle" data-talle="L" min="0" onchange="Vista4Instance.calcularTotalPrendas()">
+                <input type="number" class="input-talle" data-talle="XL" min="0" onchange="Vista4Instance.calcularTotalPrendas()">
+                <input type="number" class="input-talle" data-talle="XXL" min="0" onchange="Vista4Instance.calcularTotalPrendas()">
+            </div>
+        `;
+        
+        tabla.appendChild(nuevaFila);
+        this.calcularTotalPrendas();
+    }
+
+    /**
+     * Elimina la última fila de color del componente TALLER DE CORTE
+     */
+    eliminarFilaColor() {
+        const tabla = document.querySelector('.tabla-taller-corte');
+        const filas = tabla.querySelectorAll('.fila-color');
+        
+        if (filas.length > 1) {
+            filas[filas.length - 1].remove();
+            this.colorRowCounter--;
+            this.calcularTotalPrendas();
+        }
     }
 
     /**

@@ -1492,10 +1492,19 @@ body {
     gap: 20px;
     margin: 20px 0;
     width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    overflow: hidden;
+}
+
+.columna-izquierda-vista4 {
+    flex: 0 0 25%;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
 }
 
 .seccion-muestra-materiales-completa {
-    flex: 0 0 25%;
     background: white;
     border: 1px solid #ddd;
     border-radius: 5px;
@@ -1684,11 +1693,14 @@ body {
 }
 
 .seccion-fotos-vista4 {
-    flex: 0 0 75%;
+    flex: 0 0 calc(75% - 15px);
     background: white;
     border: 1px solid #ddd;
     border-radius: 5px;
     padding: 15px;
+    max-width: calc(75% - 15px);
+    box-sizing: border-box;
+    overflow: hidden;
 }
 
 .seccion-fotos-vista4 h3 {
@@ -1705,6 +1717,9 @@ body {
     display: flex;
     flex-direction: column;
     gap: 15px;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
 }
 
 .foto-upload-vista4 {
@@ -1719,6 +1734,9 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
 }
 
 .foto-upload-vista4:hover {
@@ -1731,6 +1749,9 @@ body {
     grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
     gap: 15px;
     margin-top: 15px;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
 }
 
 .photo-preview-vista4 {
@@ -1740,6 +1761,9 @@ body {
     overflow: hidden;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     transition: transform 0.3s ease;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
 }
 
 .photo-preview-vista4:hover {
@@ -1749,8 +1773,11 @@ body {
 
 .preview-image-vista4 {
     width: 100%;
-    height: 500px;
+    height: 300px;
+    max-height: 300px;
     object-fit: cover;
+    max-width: 100%;
+    box-sizing: border-box;
 }
 
 .photo-controls-vista4 {
@@ -1791,11 +1818,20 @@ body {
     .contenedor-principal-vista4 {
         flex-direction: column;
         gap: 15px;
+        overflow-x: hidden;
+    }
+    
+    .columna-izquierda-vista4 {
+        flex: 1;
+        max-width: 100%;
+        width: 100%;
     }
     
     .seccion-muestra-materiales-completa,
     .seccion-fotos-vista4 {
         flex: 1;
+        max-width: 100%;
+        width: 100%;
     }
     
     .muestra-item {
@@ -1820,9 +1856,331 @@ body {
     .preview-container-vista4 {
         grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
         gap: 10px;
+        width: 100%;
+        max-width: 100%;
     }
     
     .preview-image-vista4 {
-        height: 400px;
+        height: 250px;
+        max-height: 250px;
+    }
+}
+
+/* Estilos para componente TALLER DE CORTE */
+.seccion-taller-corte {
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 15px;
+    margin-bottom: 20px;
+}
+
+.seccion-taller-corte h3 {
+    font-size: 14px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 15px;
+    text-align: center;
+    border: 2px solid #333;
+    padding: 10px;
+    background: white;
+}
+
+.contenedor-taller-corte {
+    border: 1px solid #ddd;
+    padding: 15px;
+    background: #f8f9fa;
+}
+
+.tabla-taller-corte {
+    background: white;
+    border: 2px solid #333;
+    overflow: hidden;
+}
+
+.fila-header {
+    display: grid;
+    grid-template-columns: 150px 1fr;
+    background: #f0f0f0;
+    border-bottom: 2px solid #333;
+}
+
+.columna-color-header,
+.columna-talles-header {
+    padding: 10px;
+    font-weight: bold;
+    text-align: center;
+    border-right: 1px solid #333;
+}
+
+.columna-color-header {
+    border-right: 2px solid #333;
+}
+
+.fila-subheader {
+    display: grid;
+    grid-template-columns: 150px 1fr;
+    background: #f8f9fa;
+    border-bottom: 1px solid #333;
+}
+
+.columna-color-subheader {
+    border-right: 2px solid #333;
+}
+
+.columna-talles-grid {
+    display: grid;
+    grid-template-columns: repeat(6, minmax(50px, 1fr));
+    border-left: 0;
+}
+
+.talle-header {
+    padding: 4px;
+    font-weight: bold;
+    text-align: center;
+    border-right: 1px solid #333;
+    background: #f0f0f0;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 50px;
+    box-sizing: border-box;
+}
+
+.talle-header:last-child {
+    border-right: none;
+}
+
+.fila-color {
+    display: grid;
+    grid-template-columns: 150px 1fr;
+    border-bottom: 1px solid #ddd;
+}
+
+.fila-color:last-child {
+    border-bottom: none;
+}
+
+.columna-color {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 5px;
+    gap: 3px;
+    border-right: 2px solid #333;
+    background: white;
+    height: 40px;
+}
+
+.color-selector-taller {
+    position: relative;
+}
+
+.color-display-button {
+    width: 30px;
+    height: 30px;
+    border: 2px solid #333;
+    border-radius: 4px;
+    cursor: pointer;
+    position: relative;
+    background: white;
+    padding: 2px;
+}
+
+.color-display-preview {
+    width: 100%;
+    height: 100%;
+    border-radius: 2px;
+    border: 1px solid #ccc;
+}
+
+.color-palette {
+    position: absolute;
+    top: 35px;
+    left: 0;
+    background: white;
+    border: 2px solid #333;
+    border-radius: 4px;
+    padding: 10px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    z-index: 1000;
+    min-width: 200px;
+}
+
+.color-section {
+    margin-bottom: 10px;
+}
+
+.color-section:last-child {
+    margin-bottom: 0;
+}
+
+.color-section-title {
+    font-size: 11px;
+    font-weight: bold;
+    margin-bottom: 5px;
+    color: #333;
+}
+
+.color-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 2px;
+}
+
+.color-option {
+    width: 20px;
+    height: 20px;
+    border: 1px solid #333;
+    cursor: pointer;
+    border-radius: 2px;
+    transition: transform 0.1s;
+}
+
+.color-option:hover {
+    transform: scale(1.1);
+}
+
+.color-option.selected {
+    border: 2px solid #007acc;
+    transform: scale(1.1);
+}
+
+.cantidad-label {
+    font-size: 10px;
+    font-weight: bold;
+    color: #666;
+}
+
+.input-talle {
+    width: 100%;
+    padding: 4px;
+    border: none;
+    border-right: 1px solid #333;
+    text-align: center;
+    font-size: 14px;
+    font-weight: bold;
+    background: white;
+    height: 40px;
+    appearance: textfield;
+    -moz-appearance: textfield;
+    min-width: 50px;
+    box-sizing: border-box;
+}
+
+.input-talle::-webkit-outer-spin-button,
+.input-talle::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.input-talle:last-child {
+    border-right: none;
+}
+
+.input-talle:focus {
+    background: #f0f8ff;
+    outline: 2px solid #007acc;
+}
+
+.total-prendas-container {
+    margin: 15px 0;
+    padding: 10px;
+    background: white;
+    border: 2px solid #333;
+    border-radius: 5px;
+    text-align: center;
+}
+
+.total-prendas-label {
+    font-weight: bold;
+    margin-right: 10px;
+}
+
+.total-prendas-valor {
+    font-size: 18px;
+    font-weight: bold;
+    color: #007acc;
+}
+
+.controles-taller {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+}
+
+.btn-agregar-color,
+.btn-eliminar-color {
+    width: 30px;
+    height: 30px;
+    border: none;
+    border-radius: 4px;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-agregar-color {
+    background: #28a745;
+    color: white;
+}
+
+.btn-agregar-color:hover {
+    background: #218838;
+}
+
+.btn-eliminar-color {
+    background: #dc3545;
+    color: white;
+}
+
+.btn-eliminar-color:hover {
+    background: #c82333;
+}
+
+/* Responsive para TALLER DE CORTE */
+@media (max-width: 768px) {
+    .fila-header,
+    .fila-subheader,
+    .fila-color {
+        grid-template-columns: 120px 1fr;
+    }
+    
+    .columna-talles-grid {
+        grid-template-columns: repeat(3, minmax(40px, 1fr));
+    }
+    
+    .talle-header,
+    .input-talle {
+        font-size: 10px;
+        padding: 3px;
+        height: 30px;
+        min-width: 40px;
+    }
+    
+    .input-talle::-webkit-outer-spin-button,
+    .input-talle::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+    
+    .color-display-button {
+        width: 25px;
+        height: 25px;
+    }
+    
+    .total-prendas-container {
+        font-size: 14px;
+    }
+    
+    .controles-taller {
+        flex-direction: column;
+        align-items: center;
     }
 }
