@@ -1489,6 +1489,38 @@ body {
     padding-bottom: 8px;
 }
 
+/* Contenedor de fotos en Vista3 - sin gap para ocupar todo el ancho */
+.seccion-fotos-vista3 .fotos-container {
+    display: flex;
+    gap: 0;
+    width: 100%;
+}
+
+/* Foto principal en Vista3 - ocupa todo el ancho disponible */
+.seccion-fotos-vista3 .foto-principal {
+    width: 100%;
+    flex: 1;
+}
+
+/* Upload container para Vista3 */
+.seccion-fotos-vista3 .foto-upload {
+    width: 100%;
+    min-height: 350px;
+    border: 2px dashed #ddd;
+    border-radius: 8px;
+    background: #fafafa;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.seccion-fotos-vista3 .foto-upload:hover {
+    border-color: #007acc;
+    background: #f0f8ff;
+}
+
 .contenedor-fotos-vista3 {
     display: flex;
     flex-direction: column;

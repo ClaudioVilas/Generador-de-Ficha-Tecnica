@@ -96,15 +96,28 @@ class Vista3 {
                     <!-- Componente de Fotos (75%) -->
                     <div class="seccion-fotos-vista3">
                         <h3>FOTOS DEL PATRÓN</h3>
-                        <div class="contenedor-fotos-vista3">
-                            <div class="foto-upload-vista3" onclick="Vista3Instance.triggerFileInput()">
-                                <input type="file" id="fileInput-vista3" accept="image/*" style="display: none;" onchange="Vista3Instance.handleFileUpload(event)">
-                                <div class="upload-placeholder">
-                                    <span class="upload-icon">📷</span>
-                                    <span class="upload-text">Hacer clic para agregar foto</span>
+                        <div class="fotos-container">
+                            <div class="foto-principal">
+                                <div class="foto-upload" id="fotoPrincipal">
+                                    <div class="foto-placeholder">
+                                        <i class="📷"></i>
+                                        <p>Imagen Principal</p>
+                                        <button type="button" class="btn-upload" onclick="Vista3Instance.subirFoto('principal')">
+                                            Subir Imagen
+                                        </button>
+                                    </div>
+                                    <img class="foto-preview" style="display: none;" alt="Imagen Principal">
+                                    <input type="file" class="file-input" accept="image/*" style="display: none;" data-field="fotoPrincipal">
+                                    <div class="foto-controls" style="display: none;">
+                                        <button type="button" class="btn-cambiar" onclick="Vista3Instance.subirFoto('principal')">
+                                            Cambiar
+                                        </button>
+                                        <button type="button" class="btn-eliminar" onclick="Vista3Instance.eliminarFoto('principal')">
+                                            Eliminar
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
-                            <div id="preview-container-vista3" class="preview-container-vista3"></div>
                         </div>
                     </div>
                 </div>
@@ -128,6 +141,12 @@ class Vista3 {
         const inputs = this.container.querySelectorAll('input, select, textarea');
         inputs.forEach(input => {
             input.addEventListener('change', () => this.saveData());
+        });
+
+        // Eventos de archivos de fotos
+        const fileInputs = this.container.querySelectorAll('.file-input');
+        fileInputs.forEach(input => {
+            input.addEventListener('change', (e) => this.manejarCambioFoto(e));
         });
         
         // Actualizar numeración de la tabla al cargar
@@ -187,40 +206,7 @@ class Vista3 {
     }
 
     /**
-     * Activa el input de archivo para seleccionar fotos
-     */
-    triggerFileInput() {
-        document.getElementById('fileInput-vista3').click();
-    }
-
-    /**
-     * Maneja la carga de archivos de imagen
-     */
-    handleFileUpload(event) {
-        const file = event.target.files[0];
-        if (!file) return;
-
-        // Validar que sea una imagen
-        if (!file.type.startsWith('image/')) {
-            alert('Por favor selecciona un archivo de imagen válido.');
-            return;
-        }
-
-        // Validar tamaño (máximo 5MB)
-        if (file.size > 5 * 1024 * 1024) {
-            alert('El archivo es demasiado grande. El tamaño máximo permitido es 5MB.');
-            return;
-        }
-
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            this.addPhotoPreview(e.target.result, file.name);
-        };
-        reader.readAsDataURL(file);
-
-        // Limpiar el input para permitir seleccionar el mismo archivo nuevamente
-        event.target.value = '';
-    }
+     * Obtiene los datos de la tabla DESPIECE
 
     /**
      * Agrega una vista previa de la foto cargada
@@ -310,8 +296,14 @@ class Vista3 {
         // Agregar datos de la tabla DESPIECE
         data.despiece = this.getDespieceData();
         
-        // Agregar datos de las fotos
-        data.fotos = this.getPhotosData();
+        // Obtener foto principal (base64)
+        const fotoPrincipal = this.container.querySelector('#fotoPrincipal .foto-preview');
+        
+        if (fotoPrincipal && fotoPrincipal.src && !fotoPrincipal.src.includes('data:')) {
+            data.fotoPrincipal = fotoPrincipal.src;
+        } else if (fotoPrincipal && fotoPrincipal.src) {
+            data.fotoPrincipal = fotoPrincipal.src;
+        }
 
         return data;
     }
@@ -335,9 +327,9 @@ class Vista3 {
             this.loadDespieceData(data.despiece);
         }
 
-        // Cargar datos de las fotos
-        if (data.fotos && data.fotos.length > 0) {
-            this.loadPhotosData(data.fotos);
+        // Cargar foto principal
+        if (data.fotoPrincipal) {
+            this.mostrarFoto('principal', data.fotoPrincipal);
         }
     }
 
@@ -368,17 +360,80 @@ class Vista3 {
     }
 
     /**
-     * Carga los datos de las fotos
+     * Abre el selector de archivos para subir una foto
+     * @param {string} lado - 'principal'
      */
-    loadPhotosData(photosData) {
-        const previewContainer = document.getElementById('preview-container-vista3');
-        if (!previewContainer) return;
+    subirFoto(lado) {
+        const input = this.container.querySelector(`#foto${lado.charAt(0).toUpperCase() + lado.slice(1)} .file-input`);
+        if (input) {
+            input.click();
+        }
+    }
 
-        previewContainer.innerHTML = ''; // Limpiar fotos existentes
+    /**
+     * Maneja el cambio de archivo de foto
+     * @param {Event} event - Evento de cambio
+     */
+    manejarCambioFoto(event) {
+        const file = event.target.files[0];
+        if (!file) return;
 
-        photosData.forEach(photo => {
-            this.addPhotoPreview(photo.src, photo.name);
-        });
+        // Validar que sea una imagen
+        if (!file.type.startsWith('image/')) {
+            alert('Por favor selecciona un archivo de imagen válido');
+            return;
+        }
+
+        // Validar tamaño (máximo 5MB)
+        if (file.size > 5 * 1024 * 1024) {
+            alert('La imagen es demasiado grande. Máximo 5MB permitido');
+            return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            const lado = event.target.getAttribute('data-field') === 'fotoPrincipal' ? 'principal' : 'principal';
+            this.mostrarFoto(lado, e.target.result);
+            this.saveData();
+        };
+        reader.readAsDataURL(file);
+    }
+
+    /**
+     * Muestra la foto en el contenedor correspondiente
+     * @param {string} lado - 'principal'
+     * @param {string} dataUrl - URL de la imagen en base64
+     */
+    mostrarFoto(lado, dataUrl) {
+        const container = this.container.querySelector(`#foto${lado.charAt(0).toUpperCase() + lado.slice(1)}`);
+        const placeholder = container.querySelector('.foto-placeholder');
+        const preview = container.querySelector('.foto-preview');
+        const controls = container.querySelector('.foto-controls');
+
+        placeholder.style.display = 'none';
+        preview.src = dataUrl;
+        preview.style.display = 'block';
+        controls.style.display = 'flex';
+    }
+
+    /**
+     * Elimina la foto del contenedor correspondiente
+     * @param {string} lado - 'principal'
+     */
+    eliminarFoto(lado) {
+        const container = this.container.querySelector(`#foto${lado.charAt(0).toUpperCase() + lado.slice(1)}`);
+        const placeholder = container.querySelector('.foto-placeholder');
+        const preview = container.querySelector('.foto-preview');
+        const controls = container.querySelector('.foto-controls');
+        const input = container.querySelector('.file-input');
+
+        placeholder.style.display = 'block';
+        preview.style.display = 'none';
+        preview.src = '';
+        controls.style.display = 'none';
+        input.value = '';
+
+        this.saveData();
     }
 
     /**
