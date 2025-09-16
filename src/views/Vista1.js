@@ -302,33 +302,33 @@ class Vista1 {
                             <tbody>
                                 <tr>
                                     <td><strong>A</strong></td>
-                                    <td>Ancho total delantero</td>
+                                    <td><input type="text" value="Ancho total delantero" class="input-celda"></td>
                                     <td>CM</td>
-                                    <td><input type="number" placeholder="35" class="input-numero-medida"></td>
+                                    <td><input type="number" placeholder="0" class="input-numero-medida"></td>
                                 </tr>
                                 <tr>
                                     <td><strong>B</strong></td>
-                                    <td>Ancho de hombros total</td>
+                                    <td><input type="text" value="Ancho de hombros total" class="input-celda"></td>
                                     <td>CM</td>
-                                    <td><input type="number" placeholder="44" class="input-numero-medida"></td>
+                                    <td><input type="number" placeholder="0" class="input-numero-medida"></td>
                                 </tr>
                                 <tr>
                                     <td><strong>C</strong></td>
-                                    <td>Ancho cuello</td>
+                                    <td><input type="text" value="Ancho cuello" class="input-celda"></td>
                                     <td>CM</td>
-                                    <td><input type="number" placeholder="22" class="input-numero-medida"></td>
+                                    <td><input type="number" placeholder="0" class="input-numero-medida"></td>
                                 </tr>
                                 <tr>
                                     <td><strong>D</strong></td>
-                                    <td>Largo total delantero</td>
+                                    <td><input type="text" value="Largo total delantero" class="input-celda"></td>
                                     <td>CM</td>
-                                    <td><input type="number" placeholder="97" class="input-numero-medida"></td>
+                                    <td><input type="number" placeholder="0" class="input-numero-medida"></td>
                                 </tr>
                                 <tr>
                                     <td><strong>E</strong></td>
-                                    <td>Largo manga</td>
+                                    <td><input type="text" value="Largo manga" class="input-celda"></td>
                                     <td>CM</td>
-                                    <td><input type="number" placeholder="32" class="input-numero-medida"></td>
+                                    <td><input type="number" placeholder="0" class="input-numero-medida"></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -359,6 +359,9 @@ class Vista1 {
         
         // Eventos de entrada de datos
         this.setupDataEvents();
+        
+        // Forzar estructura correcta de la tabla de medidas
+        this.fixTablaMedidasStructure();
     }
 
     /**
@@ -535,6 +538,7 @@ class Vista1 {
         nuevaFila.innerHTML = `
             <td><strong>${letra}</strong></td>
             <td><input type="text" placeholder="Descripción medida" class="input-celda"></td>
+            <td>CM</td>
             <td><input type="number" placeholder="0" class="input-numero-medida"></td>
         `;
         
@@ -548,6 +552,22 @@ class Vista1 {
         const tabla = this.container.querySelector('#tablaMedidasTalles tbody');
         if (tabla.rows.length > 1) {
             tabla.deleteRow(tabla.rows.length - 1);
+        }
+        
+        // Reordenar las letras después de eliminar
+        this.reordenarLetrasTablaMedias();
+    }
+
+    /**
+     * Reordena las letras de la tabla de medidas para mantener secuencia A, B, C...
+     */
+    reordenarLetrasTablaMedias() {
+        const tabla = this.container.querySelector('#tablaMedidasTalles tbody');
+        
+        for (let i = 0; i < tabla.rows.length; i++) {
+            const letra = String.fromCharCode(65 + i); // A=65, B=66, etc.
+            const primeraColumna = tabla.rows[i].cells[0];
+            primeraColumna.innerHTML = `<strong>${letra}</strong>`;
         }
     }
 
@@ -659,6 +679,9 @@ class Vista1 {
             this.loadTableData('tablaMedidasTalles', data.medidasTalles);
         }
 
+        // Forzar estructura correcta de la tabla de medidas
+        this.fixTablaMedidasStructure();
+
         this.data = data;
         console.log('Datos cargados en Vista1:', data);
     }
@@ -684,6 +707,12 @@ class Vista1 {
                 if (tableId === 'tablaMedidasTalles' && cellIndex === 0) {
                     // Para la tabla de medidas, la primera columna es la letra
                     celda.innerHTML = `<strong>${cellData}</strong>`;
+                } else if (tableId === 'tablaMedidasTalles' && cellIndex === 1) {
+                    // Para la tabla de medidas, la segunda columna (Descripción) siempre es un input
+                    celda.innerHTML = `<input type="text" value="${cellData}" class="input-celda">`;
+                } else if (tableId === 'tablaMedidasTalles' && cellIndex === 2) {
+                    // Para la tabla de medidas, la tercera columna (U) siempre es "CM"
+                    celda.innerHTML = 'CM';
                 } else if (tableId === 'tablaCorte' && cellIndex === 0) {
                     // Para la tabla de corte, la primera columna es el selector de color personalizado
                     celda.className = 'color-cell';
@@ -706,14 +735,58 @@ class Vista1 {
                 } else {
                     // Input de texto normal o número
                     const inputType = (tableId === 'tablaCorte' && cellIndex > 0) ? 'number' : 'text';
-                    const inputClass = tableId === 'tablaMedidasTalles' && cellIndex === 2 ? 'input-numero-medida' : 
-                                     (tableId === 'tablaCorte' && cellIndex > 0) ? 'input-numero' : 'input-celda';
-                    celda.innerHTML = `<input type="${inputType}" value="${cellData}" class="${inputClass}">`;
+                    let inputClass = 'input-celda';
+                    let placeholder = '';
+                    
+                    if (tableId === 'tablaMedidasTalles' && cellIndex === 3) {
+                        inputClass = 'input-numero-medida';
+                        placeholder = 'placeholder="0"';
+                    } else if (tableId === 'tablaCorte' && cellIndex > 0) {
+                        inputClass = 'input-numero';
+                    }
+                    
+                    celda.innerHTML = `<input type="${inputType}" value="${cellData}" class="${inputClass}" ${placeholder}>`;
                 }
             });
         });
 
         this.setupDataEvents();
+    }
+
+    /**
+     * Fuerza la estructura correcta de la tabla de medidas
+     */
+    fixTablaMedidasStructure() {
+        const tabla = this.container.querySelector('#tablaMedidasTalles tbody');
+        if (!tabla) return;
+
+        Array.from(tabla.rows).forEach((fila, index) => {
+            const letra = String.fromCharCode(65 + index); // A, B, C, etc.
+            
+            // Asegurar que la primera columna sea la letra en negrita
+            if (fila.cells[0]) {
+                fila.cells[0].innerHTML = `<strong>${letra}</strong>`;
+            }
+            
+            // Asegurar que la segunda columna (Descripción) sea un input
+            if (fila.cells[1]) {
+                const currentValue = fila.cells[1].querySelector('input')?.value || fila.cells[1].textContent || '';
+                fila.cells[1].innerHTML = `<input type="text" value="${currentValue}" class="input-celda">`;
+            }
+            
+            // Asegurar que la tercera columna (U) sea "CM"
+            if (fila.cells[2]) {
+                fila.cells[2].innerHTML = 'CM';
+            }
+            
+            // Asegurar que la cuarta columna (M) sea un input numérico
+            if (fila.cells[3]) {
+                const currentValue = fila.cells[3].querySelector('input')?.value || '';
+                fila.cells[3].innerHTML = `<input type="number" value="${currentValue}" placeholder="0" class="input-numero-medida">`;
+            }
+        });
+        
+        console.log('Estructura de tabla de medidas corregida');
     }
 
     /**

@@ -1102,3 +1102,20 @@ body {
     padding: 2px;
     border-radius: 2px;
 }
+
+/* Input específico para la columna descripción en tabla de medidas */
+#tablaMedidasTalles td:nth-child(2) .input-celda {
+    border: none;
+    outline: none;
+    background: transparent;
+    width: 100%;
+    text-align: left;
+    font-size: 10px;
+    padding: 2px;
+    border-radius: 2px;
+}
+
+#tablaMedidasTalles td:nth-child(2) .input-celda:focus {
+    background: #f0f8ff;
+    outline: 1px solid #007acc;
+}
