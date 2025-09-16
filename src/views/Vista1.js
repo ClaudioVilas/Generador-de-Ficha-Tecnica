@@ -135,11 +135,6 @@ class Vista1 {
         
         const vista1HTML = `
             <div class="vista1-container">
-                <div class="vista-header">
-                    <h2>📋 Ficha tecnica 1</h2>
-                    <p>Información básica, materiales y especificaciones de producción de la prenda</p>
-                </div>
-
                 <!-- Información general de la ficha -->
                 ${this.getGeneralInfoHTML()}
 

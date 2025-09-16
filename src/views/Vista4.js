@@ -58,11 +58,6 @@ class Vista4 {
         
         const vista4HTML = `
             <div class="vista4-container">
-                <div class="vista-header">
-                    <h2>✅ Control de Calidad y Aprobación Final</h2>
-                    <p>Revisión final, control de calidad y aprobaciones</p>
-                </div>
-
                 <!-- Información general de la ficha -->
                 ${this.getGeneralInfoHTML()}
 

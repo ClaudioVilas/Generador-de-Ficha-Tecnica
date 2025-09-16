@@ -17,11 +17,6 @@ class Vista2 {
         
         const vista2HTML = `
             <div class="vista2-container">
-                <div class="vista-header">
-                    <h2>📊 Ficha tecnica 1 dorso</h2>
-                    <p>Detalles técnicos, medidas y especificaciones del producto</p>
-                </div>
-
                 <!-- Información general de la ficha -->
                 ${this.getGeneralInfoHTML()}
 
