@@ -1485,3 +1485,344 @@ body {
         height: 400px;
     }
 }
+
+/* Estilos específicos para Vista4 */
+.contenedor-principal-vista4 {
+    display: flex;
+    gap: 20px;
+    margin: 20px 0;
+    width: 100%;
+}
+
+.seccion-muestra-materiales-completa {
+    flex: 0 0 25%;
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 15px;
+}
+
+.seccion-muestra-materiales-completa h3 {
+    font-size: 14px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 15px;
+    text-align: center;
+    border: 2px solid #333;
+    padding: 10px;
+    background: white;
+}
+
+.contenedor-muestras {
+    border: 1px solid #ddd;
+    padding: 15px;
+    background: #f8f9fa;
+}
+
+.muestra-item {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 15px;
+    padding: 10px;
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+.muestra-item:last-child {
+    margin-bottom: 0;
+}
+
+.muestra-foto-container {
+    position: relative;
+    flex-shrink: 0;
+}
+
+.foto-muestra-box {
+    width: 50px;
+    height: 50px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background: #f9f9f9;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.btn-agregar-foto {
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    width: 16px;
+    height: 16px;
+    border-radius: 2px;
+    background: #007acc;
+    color: white;
+    border: none;
+    font-size: 10px;
+    font-weight: bold;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
+}
+
+.btn-agregar-foto:hover {
+    background: #005999;
+}
+
+.input-foto-material-hidden {
+    display: none;
+}
+
+.foto-preview-muestra {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.material-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 6px;
+}
+
+.btn-remove-material {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: rgba(220, 53, 69, 0.9);
+    color: white;
+    border: none;
+    font-size: 12px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-remove-material:hover {
+    background: rgba(200, 35, 51, 1);
+}
+
+.muestra-descripcion {
+    flex: 1;
+}
+
+.input-descripcion-material {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 11px;
+    background: white;
+    text-align: left;
+}
+
+.input-descripcion-material:focus {
+    outline: none;
+    border-color: #007acc;
+    box-shadow: 0 0 0 2px rgba(0, 122, 204, 0.2);
+}
+
+.controles-muestra {
+    display: flex;
+    justify-content: center;
+    gap: 5px;
+    margin-top: 10px;
+    padding: 8px;
+    background: #f8f9fa;
+    border-radius: 5px;
+}
+
+.btn-eliminar-muestra {
+    background: #dc3545;
+    color: white;
+    border: none;
+    padding: 4px 8px;
+    border-radius: 3px;
+    cursor: pointer;
+    font-size: 10px;
+    font-weight: bold;
+    opacity: 0.7;
+    transition: opacity 0.2s ease;
+}
+
+.btn-eliminar-muestra:hover {
+    background: #c82333;
+    opacity: 1;
+}
+
+.btn-agregar-muestra {
+    background: #28a745;
+    color: white;
+    border: none;
+    padding: 4px 8px;
+    border-radius: 3px;
+    cursor: pointer;
+    font-size: 10px;
+    font-weight: bold;
+    opacity: 0.7;
+    transition: opacity 0.2s ease;
+    margin-left: 3px;
+}
+
+.btn-agregar-muestra:hover {
+    background: #218838;
+    opacity: 1;
+}
+
+.seccion-fotos-vista4 {
+    flex: 0 0 75%;
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 15px;
+}
+
+.seccion-fotos-vista4 h3 {
+    font-size: 14px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 15px;
+    text-align: center;
+    border-bottom: 2px solid #007acc;
+    padding-bottom: 8px;
+}
+
+.contenedor-fotos-vista4 {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.foto-upload-vista4 {
+    border: 2px dashed #ddd;
+    border-radius: 8px;
+    background: #fafafa;
+    padding: 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    min-height: 120px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.foto-upload-vista4:hover {
+    border-color: #007acc;
+    background: #f0f8ff;
+}
+
+.preview-container-vista4 {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 15px;
+    margin-top: 15px;
+}
+
+.photo-preview-vista4 {
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease;
+}
+
+.photo-preview-vista4:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+.preview-image-vista4 {
+    width: 100%;
+    height: 500px;
+    object-fit: cover;
+}
+
+.photo-controls-vista4 {
+    padding: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #f8f9fa;
+}
+
+.photo-name-vista4 {
+    font-size: 12px;
+    color: #666;
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    margin-right: 10px;
+}
+
+.btn-delete-photo-vista4 {
+    background: #dc3545;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 4px 8px;
+    cursor: pointer;
+    font-size: 12px;
+    transition: background 0.3s ease;
+}
+
+.btn-delete-photo-vista4:hover {
+    background: #c82333;
+}
+
+/* Responsive para Vista4 */
+@media (max-width: 768px) {
+    .contenedor-principal-vista4 {
+        flex-direction: column;
+        gap: 15px;
+    }
+    
+    .seccion-muestra-materiales-completa,
+    .seccion-fotos-vista4 {
+        flex: 1;
+    }
+    
+    .muestra-item {
+        flex-direction: row;
+        align-items: center;
+        gap: 15px;
+    }
+    
+    .muestra-foto-container {
+        flex-shrink: 0;
+    }
+    
+    .foto-muestra-box {
+        width: 50px;
+        height: 50px;
+    }
+    
+    .muestra-descripcion {
+        flex: 1;
+    }
+    
+    .preview-container-vista4 {
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        gap: 10px;
+    }
+    
+    .preview-image-vista4 {
+        height: 400px;
+    }
+}
