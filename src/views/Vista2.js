@@ -18,199 +18,60 @@ class Vista2 {
         const vista2HTML = `
             <div class="vista2-container">
                 <div class="vista-header">
-                    <h2>📊 Especificaciones Técnicas y Medidas</h2>
+                    <h2>📊 Ficha tecnica 1 dorso</h2>
                     <p>Detalles técnicos, medidas y especificaciones del producto</p>
                 </div>
 
                 <!-- Información general de la ficha -->
                 ${this.getGeneralInfoHTML()}
 
-                <!-- Información técnica específica -->
-                <div class="seccion-tecnica-especifica">
-                    <h3>ESPECIFICACIONES TÉCNICAS</h3>
-                    <div class="campos-tecnicos">
-                        <div class="campo-grupo">
-                            <label>Tipo de Prenda:</label>
-                            <select class="input-text" data-field="tipoPrenda">
-                                <option value="vestido">Vestido</option>
-                                <option value="blusa">Blusa</option>
-                                <option value="pantalon">Pantalón</option>
-                                <option value="falda">Falda</option>
-                                <option value="chaqueta">Chaqueta</option>
-                            </select>
+                <!-- Sección de fotos -->
+                <div class="seccion-fotos">
+                    <h3>IMÁGENES DEL PRODUCTO</h3>
+                    <div class="fotos-container">
+                        <div class="foto-izquierda">
+                            <div class="foto-upload" id="fotoIzquierda">
+                                <div class="foto-placeholder">
+                                    <i class="📷"></i>
+                                    <p>Imagen Principal</p>
+                                    <button type="button" class="btn-upload" onclick="Vista2Instance.subirFoto('izquierda')">
+                                        Subir Imagen
+                                    </button>
+                                </div>
+                                <img class="foto-preview" style="display: none;" alt="Imagen Principal">
+                                <input type="file" class="file-input" accept="image/*" style="display: none;" data-field="fotoIzquierda">
+                                <div class="foto-controls" style="display: none;">
+                                    <button type="button" class="btn-cambiar" onclick="Vista2Instance.subirFoto('izquierda')">
+                                        Cambiar
+                                    </button>
+                                    <button type="button" class="btn-eliminar" onclick="Vista2Instance.eliminarFoto('izquierda')">
+                                        Eliminar
+                                    </button>
+                                </div>
+                            </div>
                         </div>
-                        <div class="campo-grupo">
-                            <label>Temporada:</label>
-                            <select class="input-text" data-field="temporada">
-                                <option value="verano">Verano</option>
-                                <option value="invierno">Invierno</option>
-                                <option value="primavera">Primavera</option>
-                                <option value="otono">Otoño</option>
-                                <option value="todo-ano">Todo el año</option>
-                            </select>
-                        </div>
-                        <div class="campo-grupo">
-                            <label>Género:</label>
-                            <select class="input-text" data-field="genero">
-                                <option value="mujer">Mujer</option>
-                                <option value="hombre">Hombre</option>
-                                <option value="unisex">Unisex</option>
-                                <option value="ninos">Niños</option>
-                            </select>
-                        </div>
-                        <div class="campo-grupo">
-                            <label>Nivel de Dificultad:</label>
-                            <select class="input-text" data-field="dificultad">
-                                <option value="basico">Básico</option>
-                                <option value="intermedio">Intermedio</option>
-                                <option value="avanzado">Avanzado</option>
-                                <option value="experto">Experto</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Tabla de medidas -->
-                <div class="seccion-medidas">
-                    <h3>TABLA DE MEDIDAS</h3>
-                    <table class="tabla" id="tablaMedidas">
-                        <thead>
-                            <tr>
-                                <th>Medida</th>
-                                <th>XS</th>
-                                <th>S</th>
-                                <th>M</th>
-                                <th>L</th>
-                                <th>XL</th>
-                                <th>XXL</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td><input type="text" value="Busto" class="input-celda medida-nombre"></td>
-                                <td><input type="text" value="86" class="input-celda"></td>
-                                <td><input type="text" value="90" class="input-celda"></td>
-                                <td><input type="text" value="94" class="input-celda"></td>
-                                <td><input type="text" value="98" class="input-celda"></td>
-                                <td><input type="text" value="102" class="input-celda"></td>
-                                <td><input type="text" value="106" class="input-celda"></td>
-                            </tr>
-                            <tr>
-                                <td><input type="text" value="Cintura" class="input-celda medida-nombre"></td>
-                                <td><input type="text" value="70" class="input-celda"></td>
-                                <td><input type="text" value="74" class="input-celda"></td>
-                                <td><input type="text" value="78" class="input-celda"></td>
-                                <td><input type="text" value="82" class="input-celda"></td>
-                                <td><input type="text" value="86" class="input-celda"></td>
-                                <td><input type="text" value="90" class="input-celda"></td>
-                            </tr>
-                            <tr>
-                                <td><input type="text" value="Cadera" class="input-celda medida-nombre"></td>
-                                <td><input type="text" value="94" class="input-celda"></td>
-                                <td><input type="text" value="98" class="input-celda"></td>
-                                <td><input type="text" value="102" class="input-celda"></td>
-                                <td><input type="text" value="106" class="input-celda"></td>
-                                <td><input type="text" value="110" class="input-celda"></td>
-                                <td><input type="text" value="114" class="input-celda"></td>
-                            </tr>
-                        </tbody>
-                    </table>
-                    <div class="tabla-controls">
-                        <button class="btn-eliminar-ultima" onclick="Vista2Instance.eliminarUltimaMedida()" title="Eliminar última medida">-</button>
-                        <button class="btn-agregar-fila" onclick="Vista2Instance.agregarMedida()" title="Agregar medida">+</button>
-                    </div>
-                </div>
-
-                <!-- Especificaciones de construcción -->
-                <div class="seccion-construccion">
-                    <h3>ESPECIFICACIONES DE CONSTRUCCIÓN</h3>
-                    <div class="grid-construccion">
-                        <div class="construccion-item">
-                            <label>Tipo de Costura:</label>
-                            <select class="input-text" data-field="tipoCostura">
-                                <option value="overlock">Overlock</option>
-                                <option value="recta">Recta</option>
-                                <option value="francesa">Francesa</option>
-                                <option value="inglesa">Inglesa</option>
-                                <option value="remallado">Remallado</option>
-                            </select>
-                        </div>
-                        <div class="construccion-item">
-                            <label>Acabado de Bordes:</label>
-                            <select class="input-text" data-field="acabadoBordes">
-                                <option value="dobladillo">Dobladillo</option>
-                                <option value="bias">Bies</option>
-                                <option value="overlock">Overlock</option>
-                                <option value="zigzag">Zigzag</option>
-                                <option value="festoneado">Festoneado</option>
-                            </select>
-                        </div>
-                        <div class="construccion-item">
-                            <label>Tipo de Cierre:</label>
-                            <select class="input-text" data-field="tipoCierre">
-                                <option value="cremallera">Cremallera</option>
-                                <option value="botones">Botones</option>
-                                <option value="velcro">Velcro</option>
-                                <option value="automaticos">Automáticos</option>
-                                <option value="ninguno">Ninguno</option>
-                            </select>
-                        </div>
-                        <div class="construccion-item">
-                            <label>Refuerzos:</label>
-                            <input type="text" value="En costuras de stress" class="input-text" data-field="refuerzos">
+                        <div class="foto-derecha">
+                            <div class="foto-upload" id="fotoDerecha">
+                                <div class="foto-placeholder">
+                                    <i class="📷"></i>
+                                    <p>Imagen Secundaria</p>
+                                    <button type="button" class="btn-upload" onclick="Vista2Instance.subirFoto('derecha')">
+                                        Subir Imagen
+                                    </button>
+                                </div>
+                                <img class="foto-preview" style="display: none;" alt="Imagen Secundaria">
+                                <input type="file" class="file-input" accept="image/*" style="display: none;" data-field="fotoDerecha">
+                                <div class="foto-controls" style="display: none;">
+                                    <button type="button" class="btn-cambiar" onclick="Vista2Instance.subirFoto('derecha')">
+                                        Cambiar
+                                    </button>
+                                    <button type="button" class="btn-eliminar" onclick="Vista2Instance.eliminarFoto('derecha')">
+                                        Eliminar
+                                    </button>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </div>
-
-                <!-- Instrucciones de cuidado -->
-                <div class="seccion-cuidado">
-                    <h3>INSTRUCCIONES DE CUIDADO</h3>
-                    <div class="cuidado-grid">
-                        <div class="cuidado-item">
-                            <label>
-                                <input type="checkbox" data-field="lavadoMaquina" checked> 
-                                Lavado a máquina (30°C)
-                            </label>
-                        </div>
-                        <div class="cuidado-item">
-                            <label>
-                                <input type="checkbox" data-field="secadoTendedero" checked> 
-                                Secado al aire libre
-                            </label>
-                        </div>
-                        <div class="cuidado-item">
-                            <label>
-                                <input type="checkbox" data-field="planchado"> 
-                                Plancha temperatura media
-                            </label>
-                        </div>
-                        <div class="cuidado-item">
-                            <label>
-                                <input type="checkbox" data-field="noLejia" checked> 
-                                No usar lejía
-                            </label>
-                        </div>
-                        <div class="cuidado-item">
-                            <label>
-                                <input type="checkbox" data-field="noTintoreria"> 
-                                No tintorería
-                            </label>
-                        </div>
-                        <div class="cuidado-item">
-                            <label>
-                                <input type="checkbox" data-field="lavadoDelicado"> 
-                                Lavado delicado
-                            </label>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Notas técnicas -->
-                <div class="seccion-notas">
-                    <h3>NOTAS TÉCNICAS</h3>
-                    <textarea class="textarea-notas" data-field="notasTecnicas" placeholder="Agregar observaciones técnicas, detalles especiales de construcción, consideraciones especiales...">Considerar pre-lavado de tela antes del corte.
-Verificar dirección de la tela antes del trazado.
-Usar puntada de refuerzo en áreas de stress.</textarea>
                 </div>
             </div>
         `;
@@ -234,36 +95,89 @@ Usar puntada de refuerzo en áreas de stress.</textarea>
             input.addEventListener('input', () => this.saveData());
             input.addEventListener('change', () => this.saveData());
         });
+
+        // Eventos de archivos de fotos
+        const fileInputs = this.container.querySelectorAll('.file-input');
+        fileInputs.forEach(input => {
+            input.addEventListener('change', (e) => this.manejarCambioFoto(e));
+        });
     }
 
     /**
-     * Agrega una nueva medida a la tabla
+     * Abre el selector de archivos para subir una foto
+     * @param {string} lado - 'izquierda' o 'derecha'
      */
-    agregarMedida() {
-        const tabla = this.container.querySelector('#tablaMedidas tbody');
-        
-        const nuevaFila = tabla.insertRow();
-        nuevaFila.innerHTML = `
-            <td><input type="text" value="" class="input-celda medida-nombre" placeholder="Nueva medida"></td>
-            <td><input type="text" value="" class="input-celda"></td>
-            <td><input type="text" value="" class="input-celda"></td>
-            <td><input type="text" value="" class="input-celda"></td>
-            <td><input type="text" value="" class="input-celda"></td>
-            <td><input type="text" value="" class="input-celda"></td>
-            <td><input type="text" value="" class="input-celda"></td>
-        `;
-        
-        this.setupEvents();
-    }
-
-    /**
-     * Elimina la última medida de la tabla
-     */
-    eliminarUltimaMedida() {
-        const tabla = this.container.querySelector('#tablaMedidas tbody');
-        if (tabla.rows.length > 1) {
-            tabla.deleteRow(tabla.rows.length - 1);
+    subirFoto(lado) {
+        const input = this.container.querySelector(`#foto${lado.charAt(0).toUpperCase() + lado.slice(1)} .file-input`);
+        if (input) {
+            input.click();
         }
+    }
+
+    /**
+     * Maneja el cambio de archivo de foto
+     * @param {Event} event - Evento de cambio
+     */
+    manejarCambioFoto(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        // Validar que sea una imagen
+        if (!file.type.startsWith('image/')) {
+            alert('Por favor selecciona un archivo de imagen válido');
+            return;
+        }
+
+        // Validar tamaño (máximo 5MB)
+        if (file.size > 5 * 1024 * 1024) {
+            alert('La imagen es demasiado grande. Máximo 5MB permitido');
+            return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            const lado = event.target.getAttribute('data-field') === 'fotoIzquierda' ? 'izquierda' : 'derecha';
+            this.mostrarFoto(lado, e.target.result);
+            this.saveData();
+        };
+        reader.readAsDataURL(file);
+    }
+
+    /**
+     * Muestra la foto en el contenedor correspondiente
+     * @param {string} lado - 'izquierda' o 'derecha'
+     * @param {string} dataUrl - URL de la imagen en base64
+     */
+    mostrarFoto(lado, dataUrl) {
+        const container = this.container.querySelector(`#foto${lado.charAt(0).toUpperCase() + lado.slice(1)}`);
+        const placeholder = container.querySelector('.foto-placeholder');
+        const preview = container.querySelector('.foto-preview');
+        const controls = container.querySelector('.foto-controls');
+
+        placeholder.style.display = 'none';
+        preview.src = dataUrl;
+        preview.style.display = 'block';
+        controls.style.display = 'flex';
+    }
+
+    /**
+     * Elimina la foto del contenedor correspondiente
+     * @param {string} lado - 'izquierda' o 'derecha'
+     */
+    eliminarFoto(lado) {
+        const container = this.container.querySelector(`#foto${lado.charAt(0).toUpperCase() + lado.slice(1)}`);
+        const placeholder = container.querySelector('.foto-placeholder');
+        const preview = container.querySelector('.foto-preview');
+        const controls = container.querySelector('.foto-controls');
+        const input = container.querySelector('.file-input');
+
+        placeholder.style.display = 'block';
+        preview.style.display = 'none';
+        preview.src = '';
+        controls.style.display = 'none';
+        input.value = '';
+
+        this.saveData();
     }
 
     /**
@@ -283,32 +197,22 @@ Usar puntada de refuerzo en áreas de stress.</textarea>
             }
         });
 
-        // Tabla de medidas
-        data.medidas = this.getMedidasData();
-
-        return data;
-    }
-
-    /**
-     * Obtiene los datos de la tabla de medidas
-     * @returns {Array} Datos de medidas
-     */
-    getMedidasData() {
-        const tabla = this.container.querySelector('#tablaMedidas tbody');
-        const data = [];
+        // Obtener fotos (base64)
+        const fotoIzquierda = this.container.querySelector('#fotoIzquierda .foto-preview');
+        const fotoDerecha = this.container.querySelector('#fotoDerecha .foto-preview');
         
-        for (let i = 0; i < tabla.rows.length; i++) {
-            const row = tabla.rows[i];
-            const rowData = [];
-            
-            for (let j = 0; j < row.cells.length; j++) {
-                const cell = row.cells[j];
-                const input = cell.querySelector('input');
-                rowData.push(input ? input.value : cell.textContent);
-            }
-            data.push(rowData);
+        if (fotoIzquierda && fotoIzquierda.src && !fotoIzquierda.src.includes('data:')) {
+            data.fotoIzquierda = fotoIzquierda.src;
+        } else if (fotoIzquierda && fotoIzquierda.src) {
+            data.fotoIzquierda = fotoIzquierda.src;
         }
         
+        if (fotoDerecha && fotoDerecha.src && !fotoDerecha.src.includes('data:')) {
+            data.fotoDerecha = fotoDerecha.src;
+        } else if (fotoDerecha && fotoDerecha.src) {
+            data.fotoDerecha = fotoDerecha.src;
+        }
+
         return data;
     }
 
@@ -331,36 +235,17 @@ Usar puntada de refuerzo en áreas de stress.</textarea>
             }
         });
 
-        // Cargar tabla de medidas si existe
-        if (data.medidas) {
-            this.loadMedidasData(data.medidas);
+        // Cargar fotos
+        if (data.fotoIzquierda) {
+            this.mostrarFoto('izquierda', data.fotoIzquierda);
+        }
+        
+        if (data.fotoDerecha) {
+            this.mostrarFoto('derecha', data.fotoDerecha);
         }
 
         this.data = data;
         console.log('Datos cargados en Vista2:', data);
-    }
-
-    /**
-     * Carga datos de medidas en la tabla
-     * @param {Array} medidasData - Datos de medidas
-     */
-    loadMedidasData(medidasData) {
-        const tabla = this.container.querySelector('#tablaMedidas tbody');
-        tabla.innerHTML = ''; // Limpiar tabla
-        
-        medidasData.forEach(medida => {
-            const fila = tabla.insertRow();
-            medida.forEach((valor, index) => {
-                const celda = fila.insertCell();
-                if (index === 0) {
-                    celda.innerHTML = `<input type="text" value="${valor}" class="input-celda medida-nombre">`;
-                } else {
-                    celda.innerHTML = `<input type="text" value="${valor}" class="input-celda">`;
-                }
-            });
-        });
-        
-        this.setupEvents();
     }
 
     /**
