@@ -79,144 +79,165 @@ class Vista4 {
      * Renderiza la Vista4 en el contenedor especificado
      */
     render(container) {
-        this.container = container;
-        
-        const vista4HTML = `
-            <div class="vista4-container">
+        try {
+            this.container = container;
+            
+            const vista4HTML = `
+                <div class="vista4-container">
                 <!-- Información general de la ficha -->
                 ${this.getGeneralInfoHTML()}
                 
                 <!-- Contenedor principal con distribución 25%-75% -->
                 <div class="contenedor-principal-vista4">
-                    <!-- Columna izquierda (25%) - Materiales y Taller de Corte -->
-                    <div class="columna-izquierda-vista4">
-                        <!-- Componente MUESTRA DE MATERIALES -->
-                        <div class="seccion-muestra-materiales-completa">
-                            <h3>MUESTRA DE MATERIALES</h3>
-                            <div id="contenedorMuestraMateriales" class="contenedor-muestras">
-                            <!-- Muestra 1 -->
-                            <div class="muestra-item">
-                                <div class="muestra-foto-container">
-                                    <input type="file" accept="image/*" class="input-foto-material-hidden" onchange="Vista4Instance.handleMaterialPhotoUpload(event, this)">
-                                    <div class="foto-muestra-box">
-                                        <button class="btn-agregar-foto" onclick="Vista4Instance.triggerMaterialInput(this)">+</button>
-                                        <div class="foto-preview-muestra"></div>
+                    <!-- Fila superior: Muestra de Materiales + Imágenes -->
+                    <div class="fila-materiales-imagenes">
+                        <!-- Columna izquierda (25%) - Muestra de Materiales -->
+                        <div class="columna-materiales">
+                            <!-- Componente MUESTRA DE MATERIALES -->
+                            <div class="seccion-muestra-materiales-completa">
+                                <h3>MUESTRA DE MATERIALES</h3>
+                                <div id="contenedorMuestraMateriales" class="contenedor-muestras">
+                                <!-- Muestra 1 -->
+                                <div class="muestra-item">
+                                    <div class="muestra-foto-container">
+                                        <input type="file" accept="image/*" class="input-foto-material-hidden" onchange="Vista4Instance.handleMaterialPhotoUpload(event, this)">
+                                        <div class="foto-muestra-box">
+                                            <button class="btn-agregar-foto" onclick="Vista4Instance.triggerMaterialInput(this)">+</button>
+                                            <div class="foto-preview-muestra"></div>
+                                        </div>
+                                    </div>
+                                    <div class="muestra-descripcion">
+                                        <input type="text" value="Hilo de poliester de color rojo y mostaza" placeholder="Descripción del material" class="input-descripcion-material">
                                     </div>
                                 </div>
-                                <div class="muestra-descripcion">
-                                    <input type="text" value="Hilo de poliester de color rojo y mostaza" placeholder="Descripción del material" class="input-descripcion-material">
+                                <!-- Muestra 2 -->
+                                <div class="muestra-item">
+                                    <div class="muestra-foto-container">
+                                        <input type="file" accept="image/*" class="input-foto-material-hidden" onchange="Vista4Instance.handleMaterialPhotoUpload(event, this)">
+                                        <div class="foto-muestra-box">
+                                            <button class="btn-agregar-foto" onclick="Vista4Instance.triggerMaterialInput(this)">+</button>
+                                            <div class="foto-preview-muestra"></div>
+                                        </div>
+                                    </div>
+                                    <div class="muestra-descripcion">
+                                        <input type="text" value="Cierre invisible de 35 cm" placeholder="Descripción del material" class="input-descripcion-material">
+                                    </div>
                                 </div>
                             </div>
-                            <!-- Muestra 2 -->
-                            <div class="muestra-item">
-                                <div class="muestra-foto-container">
-                                    <input type="file" accept="image/*" class="input-foto-material-hidden" onchange="Vista4Instance.handleMaterialPhotoUpload(event, this)">
-                                    <div class="foto-muestra-box">
-                                        <button class="btn-agregar-foto" onclick="Vista4Instance.triggerMaterialInput(this)">+</button>
-                                        <div class="foto-preview-muestra"></div>
-                                    </div>
-                                </div>
-                                <div class="muestra-descripcion">
-                                    <input type="text" value="Cierre invisible de 35 cm" placeholder="Descripción del material" class="input-descripcion-material">
-                                </div>
+                            <div class="controles-muestra">
+                                <button class="btn-eliminar-muestra" onclick="Vista4Instance.eliminarUltimaMuestra()" title="Eliminar última muestra">-</button>
+                                <button class="btn-agregar-muestra" onclick="Vista4Instance.agregarMuestra()" title="Agregar muestra">+</button>
                             </div>
                         </div>
-                        <div class="controles-muestra">
-                            <button class="btn-eliminar-muestra" onclick="Vista4Instance.eliminarUltimaMuestra()" title="Eliminar última muestra">-</button>
-                            <button class="btn-agregar-muestra" onclick="Vista4Instance.agregarMuestra()" title="Agregar muestra">+</button>
-                        </div>
-                    </div>
-                    
-                    <!-- Componente TALLER DE CORTE (mismo ancho que muestra de materiales) -->
-                    <div class="seccion-taller-corte">
-                        <h3>TALLER DE CORTE</h3>
-                        <div class="contenedor-taller-corte">
-                            <div class="tabla-taller-corte">
-                                <div class="fila-header">
-                                    <div class="columna-color-header">Color</div>
-                                    <div class="columna-talles-header">Talles</div>
-                                </div>
-                                <div class="fila-subheader">
-                                    <div class="columna-color-subheader"></div>
-                                    <div class="columna-talles-grid">
-                                        <div class="talle-header">XS</div>
-                                        <div class="talle-header">S</div>
-                                        <div class="talle-header">M</div>
-                                        <div class="talle-header">L</div>
-                                        <div class="talle-header">XL</div>
-                                        <div class="talle-header">XXL</div>
-                                    </div>
-                                </div>
-                                <!-- Fila de color ejemplo 1 (Amarillo) -->
-                                <div class="fila-color" data-color-row="1">
-                                    <div class="columna-color">
-                                        <div class="color-selector-taller" data-color-id="taller-color-1">
-                                            <div class="color-display-button" onclick="Vista4Instance.toggleColorPalette('taller-color-1')">
-                                                <div class="color-display-preview" style="background-color: #FFFF00"></div>
+                        
+                        <!-- Columna derecha (75%) - Taller de Corte -->
+                        <div class="columna-imagenes">
+                            <div class="seccion-taller-corte">
+                                <h3>TALLER DE CORTE</h3>
+                                <div class="contenedor-taller-corte">
+                                    <div class="tabla-taller-corte">
+                                        <div class="fila-header">
+                                            <div class="columna-color-header">Color</div>
+                                            <div class="columna-talles-header">Talles</div>
+                                        </div>
+                                        <div class="fila-subheader">
+                                            <div class="columna-color-subheader"></div>
+                                            <div class="columna-talles-grid">
+                                                <div class="talle-header">XS</div>
+                                                <div class="talle-header">S</div>
+                                                <div class="talle-header">M</div>
+                                                <div class="talle-header">L</div>
+                                                <div class="talle-header">XL</div>
+                                                <div class="talle-header">XXL</div>
                                             </div>
-                                            <div class="color-palette" id="palette-taller-color-1" style="display: none;">
-                                                ${this.createColorPaletteHTML()}
+                                        </div>
+                                        <!-- Fila de color ejemplo 1 (Amarillo) -->
+                                        <div class="fila-color" data-color-row="1">
+                                            <div class="columna-color">
+                                                <div class="color-selector-taller" data-color-id="taller-color-1">
+                                                    <div class="color-display-button" onclick="Vista4Instance.toggleColorPalette('taller-color-1')">
+                                                        <div class="color-display-preview" style="background-color: #FFFF00"></div>
+                                                    </div>
+                                                    <div class="color-palette" id="palette-taller-color-1" style="display: none;">
+                                                        ${this.createColorPaletteHTML()}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="columna-talles-grid">
+                                                <input type="number" class="input-talle" data-talle="XS" min="0" onchange="Vista4Instance.calcularTotalPrendas()">
+                                                <input type="number" class="input-talle" data-talle="S" min="0" onchange="Vista4Instance.calcularTotalPrendas()">
+                                                <input type="number" class="input-talle" data-talle="M" min="0" onchange="Vista4Instance.calcularTotalPrendas()">
+                                                <input type="number" class="input-talle" data-talle="L" min="0" onchange="Vista4Instance.calcularTotalPrendas()">
+                                                <input type="number" class="input-talle" data-talle="XL" min="0" onchange="Vista4Instance.calcularTotalPrendas()">
+                                                <input type="number" class="input-talle" data-talle="XXL" min="0" onchange="Vista4Instance.calcularTotalPrendas()">
+                                            </div>
+                                        </div>
+                                        <!-- Fila de color ejemplo 2 (Rojo) -->
+                                        <div class="fila-color" data-color-row="2">
+                                            <div class="columna-color">
+                                                <div class="color-selector-taller" data-color-id="taller-color-2">
+                                                    <div class="color-display-button" onclick="Vista4Instance.toggleColorPalette('taller-color-2')">
+                                                        <div class="color-display-preview" style="background-color: #C5504B"></div>
+                                                    </div>
+                                                    <div class="color-palette" id="palette-taller-color-2" style="display: none;">
+                                                        ${this.createColorPaletteHTML()}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="columna-talles-grid">
+                                                <input type="number" class="input-talle" data-talle="XS" min="0" onchange="Vista4Instance.calcularTotalPrendas()">
+                                                <input type="number" class="input-talle" data-talle="S" min="0" onchange="Vista4Instance.calcularTotalPrendas()">
+                                                <input type="number" class="input-talle" data-talle="M" min="0" onchange="Vista4Instance.calcularTotalPrendas()">
+                                                <input type="number" class="input-talle" data-talle="L" min="0" onchange="Vista4Instance.calcularTotalPrendas()">
+                                                <input type="number" class="input-talle" data-talle="XL" min="0" onchange="Vista4Instance.calcularTotalPrendas()">
+                                                <input type="number" class="input-talle" data-talle="XXL" min="0" onchange="Vista4Instance.calcularTotalPrendas()">
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="columna-talles-grid">
-                                        <input type="number" class="input-talle" data-talle="XS" min="0" onchange="Vista4Instance.calcularTotalPrendas()">
-                                        <input type="number" class="input-talle" data-talle="S" min="0" onchange="Vista4Instance.calcularTotalPrendas()">
-                                        <input type="number" class="input-talle" data-talle="M" min="0" onchange="Vista4Instance.calcularTotalPrendas()">
-                                        <input type="number" class="input-talle" data-talle="L" min="0" onchange="Vista4Instance.calcularTotalPrendas()">
-                                        <input type="number" class="input-talle" data-talle="XL" min="0" onchange="Vista4Instance.calcularTotalPrendas()">
-                                        <input type="number" class="input-talle" data-talle="XXL" min="0" onchange="Vista4Instance.calcularTotalPrendas()">
+                                    <div class="total-prendas-container">
+                                        <span class="total-prendas-label">Cantidad total de prendas:</span>
+                                        <span class="total-prendas-valor" id="total-prendas">-</span>
+                                    </div>
+                                    <div class="controles-taller">
+                                        <button class="btn-eliminar-color" onclick="Vista4Instance.eliminarFilaColor()" title="Eliminar color">-</button>
+                                        <button class="btn-agregar-color" onclick="Vista4Instance.agregarFilaColor()" title="Agregar color">+</button>
                                     </div>
                                 </div>
-                                <!-- Fila de color ejemplo 2 (Rojo) -->
-                                <div class="fila-color" data-color-row="2">
-                                    <div class="columna-color">
-                                        <div class="color-selector-taller" data-color-id="taller-color-2">
-                                            <div class="color-display-button" onclick="Vista4Instance.toggleColorPalette('taller-color-2')">
-                                                <div class="color-display-preview" style="background-color: #C5504B"></div>
-                                            </div>
-                                            <div class="color-palette" id="palette-taller-color-2" style="display: none;">
-                                                ${this.createColorPaletteHTML()}
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="columna-talles-grid">
-                                        <input type="number" class="input-talle" data-talle="XS" min="0" onchange="Vista4Instance.calcularTotalPrendas()">
-                                        <input type="number" class="input-talle" data-talle="S" min="0" onchange="Vista4Instance.calcularTotalPrendas()">
-                                        <input type="number" class="input-talle" data-talle="M" min="0" onchange="Vista4Instance.calcularTotalPrendas()">
-                                        <input type="number" class="input-talle" data-talle="L" min="0" onchange="Vista4Instance.calcularTotalPrendas()">
-                                        <input type="number" class="input-talle" data-talle="XL" min="0" onchange="Vista4Instance.calcularTotalPrendas()">
-                                        <input type="number" class="input-talle" data-talle="XXL" min="0" onchange="Vista4Instance.calcularTotalPrendas()">
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="total-prendas-container">
-                                <span class="total-prendas-label">Cantidad total de prendas:</span>
-                                <span class="total-prendas-valor" id="total-prendas">-</span>
-                            </div>
-                            <div class="controles-taller">
-                                <button class="btn-eliminar-color" onclick="Vista4Instance.eliminarFilaColor()" title="Eliminar color">-</button>
-                                <button class="btn-agregar-color" onclick="Vista4Instance.agregarFilaColor()" title="Agregar color">+</button>
                             </div>
                         </div>
-                    </div>
                     </div>
                     
-                    <!-- Componente de Fotos (75% derecha) -->
-                    <div class="seccion-fotos-vista4">
-                        <h3>FOTOS ADICIONALES</h3>
-                        <div class="contenedor-fotos-vista4">
-                            <div class="foto-upload-vista4" onclick="Vista4Instance.triggerFileInput()">
-                                <input type="file" id="fileInput-vista4" accept="image/*" style="display: none;" onchange="Vista4Instance.handleFileUpload(event)">
-                                <div class="upload-placeholder">
-                                    <span class="upload-icon">📷</span>
-                                    <span class="upload-text">Hacer clic para agregar foto</span>
+                    <!-- Fila inferior: Imágenes del Producto -->
+                    <div class="fila-taller">
+                        <!-- Columna completa - Imágenes del Producto -->
+                        <div class="seccion-fotos seccion-fotos-lateral">
+                            <h3>IMÁGENES DEL PRODUCTO</h3>
+                            <div class="fotos-container">
+                                <div class="foto-principal">
+                                    <div class="foto-upload" id="fotoPrincipal">
+                                        <div class="foto-placeholder">
+                                            <i class="📷"></i>
+                                            <p>Imagen Principal</p>
+                                            <button type="button" class="btn-upload" onclick="Vista4Instance.subirFoto('principal')">
+                                                Subir Imagen
+                                            </button>
+                                        </div>
+                                        <img class="foto-preview" style="display: none;" alt="Imagen Principal">
+                                        <input type="file" class="file-input" accept="image/*" style="display: none;" data-field="fotoPrincipal">
+                                        <div class="foto-controls" style="display: none;">
+                                            <button type="button" class="btn-cambiar" onclick="Vista4Instance.subirFoto('principal')">
+                                                Cambiar
+                                            </button>
+                                            <button type="button" class="btn-eliminar" onclick="Vista4Instance.eliminarFoto('principal')">
+                                                Eliminar
+                                            </button>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                            <div id="preview-container-vista4" class="preview-container-vista4"></div>
                         </div>
                     </div>
-                </div>
+                    
             </div>
         `;
 
@@ -227,6 +248,9 @@ class Vista4 {
         window.Vista4Instance = this;
         
         console.log('Vista4 renderizada correctamente');
+        } catch (error) {
+            console.error('Error al renderizar Vista4:', error);
+        }
     }
 
     /**
@@ -236,7 +260,14 @@ class Vista4 {
         // Event listeners para actualización automática de datos
         const inputs = this.container.querySelectorAll('input, select, textarea');
         inputs.forEach(input => {
+            input.addEventListener('input', () => this.saveData());
             input.addEventListener('change', () => this.saveData());
+        });
+
+        // Eventos de archivos de fotos
+        const fileInputs = this.container.querySelectorAll('.file-input');
+        fileInputs.forEach(input => {
+            input.addEventListener('change', (e) => this.manejarCambioFoto(e));
         });
     }
 
@@ -498,68 +529,78 @@ class Vista4 {
     }
 
     /**
-     * Activa el input de archivo para seleccionar fotos adicionales
+     * Abre el selector de archivos para subir una foto
+     * @param {string} lado - 'principal'
      */
-    triggerFileInput() {
-        document.getElementById('fileInput-vista4').click();
+    subirFoto(lado) {
+        const input = this.container.querySelector(`#foto${lado.charAt(0).toUpperCase() + lado.slice(1)} .file-input`);
+        if (input) {
+            input.click();
+        }
     }
 
     /**
-     * Maneja la carga de archivos de imagen adicionales
+     * Maneja el cambio de archivo de foto
+     * @param {Event} event - Evento de cambio
      */
-    handleFileUpload(event) {
+    manejarCambioFoto(event) {
         const file = event.target.files[0];
         if (!file) return;
 
         // Validar que sea una imagen
         if (!file.type.startsWith('image/')) {
-            alert('Por favor selecciona un archivo de imagen válido.');
+            alert('Por favor selecciona un archivo de imagen válido');
             return;
         }
 
         // Validar tamaño (máximo 5MB)
         if (file.size > 5 * 1024 * 1024) {
-            alert('El archivo es demasiado grande. El tamaño máximo permitido es 5MB.');
+            alert('La imagen es demasiado grande. Máximo 5MB permitido');
             return;
         }
 
         const reader = new FileReader();
         reader.onload = (e) => {
-            this.addPhotoPreview(e.target.result, file.name);
+            const lado = event.target.getAttribute('data-field') === 'fotoPrincipal' ? 'principal' : 'principal';
+            this.mostrarFoto(lado, e.target.result);
+            this.saveData();
         };
         reader.readAsDataURL(file);
-
-        // Limpiar el input para permitir seleccionar el mismo archivo nuevamente
-        event.target.value = '';
     }
 
     /**
-     * Agrega una vista previa de la foto cargada
+     * Muestra la foto en el contenedor correspondiente
+     * @param {string} lado - 'principal'
+     * @param {string} dataUrl - URL de la imagen en base64
      */
-    addPhotoPreview(imageSrc, fileName) {
-        const previewContainer = document.getElementById('preview-container-vista4');
-        
-        const photoDiv = document.createElement('div');
-        photoDiv.className = 'photo-preview-vista4';
-        
-        photoDiv.innerHTML = `
-            <img src="${imageSrc}" alt="${fileName}" class="preview-image-vista4">
-            <div class="photo-controls-vista4">
-                <span class="photo-name-vista4">${fileName}</span>
-                <button class="btn-delete-photo-vista4" onclick="Vista4Instance.deletePhoto(this)">🗑️</button>
-            </div>
-        `;
-        
-        previewContainer.appendChild(photoDiv);
-        this.saveData();
-    }
+    mostrarFoto(lado, dataUrl) {
+        const container = this.container.querySelector(`#foto${lado.charAt(0).toUpperCase() + lado.slice(1)}`);
+        const placeholder = container.querySelector('.foto-placeholder');
+        const preview = container.querySelector('.foto-preview');
+        const controls = container.querySelector('.foto-controls');
 
+        placeholder.style.display = 'none';
+        preview.src = dataUrl;
+        preview.style.display = 'block';
+        controls.style.display = 'flex';
+    }
     /**
-     * Elimina una foto del preview
+     * Elimina la foto del contenedor correspondiente
+     * @param {string} lado - 'principal'
      */
-    deletePhoto(button) {
-        const photoDiv = button.closest('.photo-preview-vista4');
-        photoDiv.remove();
+    eliminarFoto(lado) {
+        const container = this.container.querySelector(`#foto${lado.charAt(0).toUpperCase() + lado.slice(1)}`);
+        const placeholder = container.querySelector('.foto-placeholder');
+        const preview = container.querySelector('.foto-preview');
+        const controls = container.querySelector('.foto-controls');
+        const input = container.querySelector('.file-input');
+
+        placeholder.style.display = 'block';
+        preview.style.display = 'none';
+        preview.src = '';
+        controls.style.display = 'none';
+        input.value = '';
+
         this.saveData();
     }
 
@@ -587,30 +628,13 @@ class Vista4 {
     }
 
     /**
-     * Obtiene los datos de las fotos adicionales
-     */
-    getPhotosData() {
-        const previewContainer = document.getElementById('preview-container-vista4');
-        const photos = previewContainer.querySelectorAll('.photo-preview-vista4');
-        const photosData = [];
-
-        photos.forEach(photo => {
-            const img = photo.querySelector('.preview-image-vista4');
-            const name = photo.querySelector('.photo-name-vista4').textContent;
-            photosData.push({
-                src: img.src,
-                name: name
-            });
-        });
-
-        return photosData;
-    }
-
-    /**
      * Obtiene todos los datos de la vista
      */
     getData() {
         const data = {};
+        
+        // Validar que el contenedor existe
+        if (!this.container) return data;
         
         // Recopilar datos de inputs generales
         const inputs = this.container.querySelectorAll('input[data-field], select[data-field], textarea[data-field]');
@@ -629,8 +653,14 @@ class Vista4 {
         // Agregar datos de la tabla de muestra de materiales
         data.muestraMateriales = this.getMuestraMaterialesData();
         
-        // Agregar datos de las fotos adicionales
-        data.fotosAdicionales = this.getPhotosData();
+        // Obtener foto principal (base64)
+        const fotoPrincipal = this.container.querySelector('#fotoPrincipal .foto-preview');
+        
+        if (fotoPrincipal && fotoPrincipal.src && !fotoPrincipal.src.includes('data:')) {
+            data.fotoPrincipal = fotoPrincipal.src;
+        } else if (fotoPrincipal && fotoPrincipal.src) {
+            data.fotoPrincipal = fotoPrincipal.src;
+        }
 
         return data;
     }
@@ -662,10 +692,13 @@ class Vista4 {
             this.loadMuestraMaterialesData(data.muestraMateriales);
         }
 
-        // Cargar datos de las fotos adicionales
-        if (data.fotosAdicionales && data.fotosAdicionales.length > 0) {
-            this.loadPhotosData(data.fotosAdicionales);
+        // Cargar foto principal
+        if (data.fotoPrincipal) {
+            this.mostrarFoto('principal', data.fotoPrincipal);
         }
+
+        this.data = data;
+        console.log('Datos cargados en Vista4:', data);
     }
 
     /**
@@ -707,26 +740,22 @@ class Vista4 {
     }
 
     /**
-     * Carga los datos de las fotos adicionales
-     */
-    loadPhotosData(photosData) {
-        const previewContainer = document.getElementById('preview-container-vista4');
-        if (!previewContainer) return;
-
-        previewContainer.innerHTML = ''; // Limpiar fotos existentes
-
-        photosData.forEach(photo => {
-            this.addPhotoPreview(photo.src, photo.name);
-        });
-    }
-
-    /**
      * Guarda los datos de la vista
      */
     saveData() {
-        this.data = this.getData();
-        if (window.ViewManager) {
-            window.ViewManager.setViewData('vista4', this.data);
+        try {
+            // Validar que la vista esté inicializada
+            if (!this.container) {
+                console.warn('Vista4: Intento de guardar datos antes de la inicialización');
+                return;
+            }
+            
+            this.data = this.getData();
+            if (window.NavBarViewManager) {
+                window.NavBarViewManager.setViewData('vista4', this.data);
+            }
+        } catch (error) {
+            console.error('Error al guardar datos de Vista4:', error);
         }
     }
 

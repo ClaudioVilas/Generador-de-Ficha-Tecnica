@@ -248,8 +248,8 @@ class Vista2 {
      */
     saveData() {
         this.data = this.getData();
-        if (window.ViewManager) {
-            window.ViewManager.setViewData('vista2', this.data);
+        if (window.NavBarViewManager) {
+            window.NavBarViewManager.setViewData('vista2', this.data);
         }
     }
 

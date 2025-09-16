@@ -386,8 +386,8 @@ class Vista3 {
      */
     saveData() {
         this.data = this.getData();
-        if (window.ViewManager) {
-            window.ViewManager.setViewData('vista3', this.data);
+        if (window.NavBarViewManager) {
+            window.NavBarViewManager.setViewData('vista3', this.data);
         }
     }
 
