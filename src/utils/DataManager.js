@@ -535,7 +535,7 @@ class DataManager {
         try {
             const currentView = this.viewManager.getCurrentView();
             const { jsPDF } = window.jspdf;
-            const pdf = new jsPDF('p', 'mm', 'a4');
+            const pdf = new jsPDF('l', 'mm', 'a4');
 
             // Título
             pdf.setFontSize(14);

@@ -217,16 +217,16 @@ class NavBar {
 
             console.log('Iniciando exportación de todas las vistas...');
             
-            // Crear el PDF con márgenes de 1.5cm (15mm)
+            // Crear el PDF en orientación horizontal con márgenes de 1.5cm (15mm)
             const { jsPDF } = window.jspdf;
-            const pdf = new jsPDF('p', 'mm', 'a4');
+            const pdf = new jsPDF('l', 'mm', 'a4');
             
-            // Configuración de márgenes (1.5cm = 15mm)
+            // Configuración de márgenes adaptada para landscape (1.5cm = 15mm)
             const marginLeft = 15;
             const marginRight = 15;
-            const pageWidth = 210; // A4 width
-            const contentWidth = pageWidth - marginLeft - marginRight; // 180mm
-            const pageHeight = 297; // A4 height
+            const pageWidth = 297; // A4 landscape width (anteriormente height)
+            const contentWidth = pageWidth - marginLeft - marginRight; // 267mm
+            const pageHeight = 210; // A4 landscape height (anteriormente width)
             
             // Configurar primera página
             let currentY = 20; // Margen superior
@@ -248,10 +248,10 @@ class NavBar {
             // Lista de vistas a exportar
             const vistas = ['vista1', 'vista2', 'vista3', 'vista4'];
             const titulosVistas = [
-                'Vista 1 - Detalle General',
-                'Vista 2 - Especificaciones Técnicas', 
-                'Vista 3 - Patrones y Moldes',
-                'Vista 4 - Control de Calidad'
+                'Vista 1',
+                'Vista 2',
+                'Vista 3',
+                'Vista 4'
             ];
 
             // Exportar cada vista
