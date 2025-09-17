@@ -1,0 +1,268 @@
+/**
+ * ESTILOS UNIFICADOS PARA ADAPTACIÓN DE FOTOS
+ * ============================================
+ * 
+ * Este archivo contiene estilos CSS para asegurar que todas las imágenes
+ * se adapten al tamaño predefinido de sus contenedores sin deformarse
+ * y sin que el contenedor cambie su tamaño.
+ * 
+ * PRINCIPIOS APLICADOS:
+ * 1. Contenedores con tamaño FIJO (width/height definidos)
+ * 2. Imágenes que se adaptan al contenedor: object-fit: contain
+ * 3. Mantener proporción sin deformación
+ * 4. Centrado automático de imágenes pequeñas
+ * 5. Evitar desbordamiento de imágenes grandes
+ */
+
+/* ===================================================
+   VISTA 2 - IMÁGENES IZQUIERDA Y DERECHA
+   =================================================== */
+
+/* Contenedores de fotos con tamaño fijo en Vista2 */
+.vista2-container .foto-upload {
+    /* TAMAÑO FIJO: El contenedor nunca cambia de dimensiones */
+    width: 100%;
+    height: 400px; /* Altura fija para mantener consistencia */
+    border: 2px dashed #ddd;
+    border-radius: 8px;
+    background: #fafafa;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    
+    /* IMPORTANTE: Evitar que el contenedor se redimensione */
+    flex-shrink: 0;
+    flex-grow: 0;
+}
+
+/* Imágenes en Vista2 - se adaptan al contenedor sin deformarse */
+.vista2-container .foto-preview {
+    /* ADAPTACIÓN SIN DEFORMACIÓN */
+    width: 100%;
+    height: 100%;
+    object-fit: contain; /* Mantiene proporción, no corta la imagen */
+    object-position: center; /* Centra la imagen en el contenedor */
+    border-radius: 6px;
+    background: #f8f9fa; /* Fondo visible si la imagen no llena todo el espacio */
+    
+    /* EXPLICACIÓN DEL COMPORTAMIENTO:
+     * - object-fit: contain = La imagen se escala para caber completamente
+     * - Si la imagen es más grande: se reduce proporcionalmente
+     * - Si la imagen es más pequeña: se agranda proporcionalmente (hasta llenar el espacio disponible)
+     * - object-position: center = La imagen se centra en el contenedor
+     * - background: visible cuando la imagen no llena todo el espacio
+     */
+}
+
+/* ===================================================
+   VISTA 3 - IMAGEN PRINCIPAL
+   =================================================== */
+
+/* Contenedor de foto principal con tamaño fijo en Vista3 */
+.vista3-container .foto-upload {
+    /* TAMAÑO FIJO: El contenedor mantiene dimensiones consistentes */
+    width: 100%;
+    height: 450px; /* Altura fija mayor por ser imagen principal */
+    border: 2px dashed #ddd;
+    border-radius: 8px;
+    background: #fafafa;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    
+    /* IMPORTANTE: Mantener tamaño fijo independiente de la imagen */
+    flex-shrink: 0;
+    flex-grow: 0;
+}
+
+/* Imagen principal en Vista3 - adaptación proporcional */
+.vista3-container .foto-preview {
+    /* ADAPTACIÓN PROPORCIONAL AL CONTENEDOR */
+    width: 100%;
+    height: 100%;
+    object-fit: contain; /* Imagen completa visible, sin cortes */
+    object-position: center; /* Centrada en el contenedor */
+    border-radius: 6px;
+    background: #f8f9fa;
+    
+    /* COMPORTAMIENTO ESPERADO:
+     * - Fotos panorámicas: se ajustan al ancho, quedan márgenes arriba/abajo
+     * - Fotos verticales: se ajustan a la altura, quedan márgenes izquierda/derecha
+     * - Fotos cuadradas: se ajustan al menor de los dos lados
+     * - Siempre mantienen su proporción original
+     */
+}
+
+/* ===================================================
+   VISTA 4 - IMAGEN PRINCIPAL Y MATERIALES
+   =================================================== */
+
+/* Contenedor de foto principal en Vista4 */
+.vista4-container .foto-upload {
+    /* TAMAÑO FIJO PARA IMAGEN PRINCIPAL */
+    width: 100%;
+    height: 400px; /* Altura fija consistente */
+    border: 2px dashed #ddd;
+    border-radius: 8px;
+    background: #fafafa;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    
+    /* Mantener dimensiones fijas */
+    flex-shrink: 0;
+    flex-grow: 0;
+}
+
+/* Imagen principal en Vista4 */
+.vista4-container .foto-preview {
+    /* ADAPTACIÓN SIN DEFORMACIÓN */
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    object-position: center;
+    border-radius: 6px;
+    background: #f8f9fa;
+}
+
+/* Contenedores de materiales - tamaño fijo para consistencia */
+.vista4-container .foto-muestra-box {
+    /* TAMAÑO FIJO PARA MUESTRAS DE MATERIALES */
+    width: 60px; /* Incrementado de 50px para mejor visibilidad */
+    height: 60px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background: #f9f9f9;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+    /* IMPORTANTE: Tamaño fijo para materiales */
+    flex-shrink: 0;
+    flex-grow: 0;
+    overflow: hidden; /* Evitar que imágenes grandes desborden */
+}
+
+/* Imágenes de materiales - adaptación a contenedor pequeño */
+.vista4-container .material-image {
+    /* ADAPTACIÓN A CONTENEDOR PEQUEÑO DE MATERIALES */
+    width: 100%;
+    height: 100%;
+    object-fit: contain; /* Cambio importante: de 'cover' a 'contain' */
+    object-position: center;
+    border-radius: 4px;
+    
+    /* EXPLICACIÓN PARA MATERIALES:
+     * - object-fit: contain asegura que se vea la imagen completa
+     * - Es preferible ver toda la muestra de material aunque queden espacios
+     * - object-fit: cover cortaría partes importantes del material
+     * - Contenedor pequeño (60x60px) requiere imagen completa visible
+     */
+}
+
+/* Preview de muestra con adaptación */
+.vista4-container .foto-preview-muestra {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    border-radius: 4px;
+    overflow: hidden;
+    
+    /* Asegurar que el preview también mantenga el tamaño */
+    flex-shrink: 0;
+    flex-grow: 0;
+}
+
+/* ===================================================
+   COMPATIBILIDAD CON EXPORTACIÓN PDF
+   =================================================== */
+
+/* Estilos específicos para exportación PDF */
+.pdf-export .foto-preview,
+.pdf-export .material-image {
+    /* MANTENER ADAPTACIÓN DURANTE EXPORTACIÓN PDF */
+    object-fit: contain !important;
+    object-position: center !important;
+    
+    /* Asegurar visibilidad en PDF */
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+/* Asegurar que contenedores mantengan tamaño durante PDF */
+.pdf-export .foto-upload,
+.pdf-export .foto-muestra-box {
+    /* MANTENER DIMENSIONES FIJAS EN PDF */
+    flex-shrink: 0 !important;
+    flex-grow: 0 !important;
+    overflow: hidden !important;
+}
+
+/* ===================================================
+   ESTILOS RESPONSIVOS
+   =================================================== */
+
+/* Ajustes para pantallas pequeñas manteniendo proporción */
+@media (max-width: 768px) {
+    .vista2-container .foto-upload,
+    .vista3-container .foto-upload,
+    .vista4-container .foto-upload {
+        /* Reducir altura en móviles pero mantener proporción */
+        height: 300px;
+    }
+    
+    .vista4-container .foto-muestra-box {
+        /* Mantener tamaño mínimo legible para materiales */
+        width: 50px;
+        height: 50px;
+    }
+}
+
+/* ===================================================
+   DOCUMENTACIÓN DE COMPORTAMIENTOS
+   =================================================== */
+
+/*
+COMPORTAMIENTOS ESPERADOS DESPUÉS DE ESTOS CAMBIOS:
+
+1. FOTOS GRANDES (ej: 4000x3000px):
+   - Se reducen proporcionalmente para caber en el contenedor
+   - No cortan ni deforman la imagen
+   - No agrandan el contenedor
+
+2. FOTOS PEQUEÑAS (ej: 200x150px):
+   - Se agrandan proporcionalmente hasta llenar el espacio disponible
+   - No pixelan excesivamente (navegador maneja el escalado)
+   - Se centran en el contenedor
+
+3. FOTOS PANORÁMICAS (ej: 3000x1000px):
+   - Se ajustan al ancho del contenedor
+   - Quedan espacios (background visible) arriba y abajo
+   - Imagen completa visible sin cortes
+
+4. FOTOS VERTICALES (ej: 1000x3000px):
+   - Se ajustan a la altura del contenedor
+   - Quedan espacios (background visible) a los lados
+   - Imagen completa visible sin cortes
+
+5. MATERIALES (Vista4):
+   - Siempre visible la muestra completa en 60x60px
+   - Mejor identificación de texturas y colores
+   - Sin cortes que oculten detalles importantes
+
+6. EXPORTACIÓN PDF:
+   - Mantiene el mismo comportamiento visual
+   - Imágenes se exportan con proporciones correctas
+   - No afecta el layout del documento
+*/

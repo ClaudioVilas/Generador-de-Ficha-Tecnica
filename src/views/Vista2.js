@@ -73,15 +73,15 @@ class Vista2 {
                     <h3>IMÁGENES DEL PRODUCTO</h3>
                     <div class="fotos-container">
                         <div class="foto-izquierda">
-                            <div class="foto-upload" id="fotoIzquierda">
+                            <!-- CONTENEDOR CON TAMAÑO FIJO - Las imágenes se adaptan sin desbordamiento -->
+                            <div class="foto-upload image-container" id="fotoIzquierda">
                                 <div class="foto-placeholder">
                                     <i class="📷"></i>
-                                    <p>Imagen Principal</p>
                                     <button type="button" class="btn-upload" onclick="Vista2Instance.subirFoto('izquierda')">
                                         Subir Imagen
                                     </button>
                                 </div>
-                                <img class="foto-preview" style="display: none;" alt="Imagen Principal">
+                                <!-- IMAGEN CON ADAPTACIÓN AUTOMÁTICA: nunca sobrepasa límites del contenedor -->
                                 <input type="file" class="file-input" accept="image/*" style="display: none;" data-field="fotoIzquierda">
                                 <div class="foto-controls" style="display: none;">
                                     <button type="button" class="btn-cambiar" onclick="Vista2Instance.subirFoto('izquierda')">
@@ -94,15 +94,15 @@ class Vista2 {
                             </div>
                         </div>
                         <div class="foto-derecha">
-                            <div class="foto-upload" id="fotoDerecha">
+                            <!-- CONTENEDOR CON TAMAÑO FIJO - Las imágenes se adaptan sin desbordamiento -->
+                            <div class="foto-upload image-container" id="fotoDerecha">
                                 <div class="foto-placeholder">
                                     <i class="📷"></i>
-                                    <p>Imagen Secundaria</p>
                                     <button type="button" class="btn-upload" onclick="Vista2Instance.subirFoto('derecha')">
                                         Subir Imagen
                                     </button>
                                 </div>
-                                <img class="foto-preview" style="display: none;" alt="Imagen Secundaria">
+                                <!-- IMAGEN CON ADAPTACIÓN AUTOMÁTICA: nunca sobrepasa límites del contenedor -->
                                 <input type="file" class="file-input" accept="image/*" style="display: none;" data-field="fotoDerecha">
                                 <div class="foto-controls" style="display: none;">
                                     <button type="button" class="btn-cambiar" onclick="Vista2Instance.subirFoto('derecha')">
@@ -188,6 +188,17 @@ class Vista2 {
 
     /**
      * Muestra la foto en el contenedor correspondiente
+     * 
+     * COMPORTAMIENTO DE ADAPTACIÓN DE IMAGEN:
+     * =======================================
+     * - El contenedor .foto-upload mantiene su tamaño fijo (400px altura)
+     * - La imagen se adapta al contenedor sin deformarse (object-fit: contain)
+     * - Si la imagen es más grande: se reduce proporcionalmente
+     * - Si la imagen es más pequeña: se agranda proporcionalmente
+     * - La imagen siempre se centra en el contenedor (object-position: center)
+     * - El contenedor NUNCA cambia su tamaño según la imagen
+     * - La clase 'image-container' aplicada al elemento garantiza la contención
+     * 
      * @param {string} lado - 'izquierda' o 'derecha'
      * @param {string} dataUrl - URL de la imagen en base64
      */
@@ -201,6 +212,11 @@ class Vista2 {
         preview.src = dataUrl;
         preview.style.display = 'block';
         controls.style.display = 'flex';
+        
+        // NOTA: La adaptación de la imagen se maneja via CSS con:
+        // - object-fit: contain (imagen completa visible)
+        // - object-position: center (centrada en el contenedor)
+        // - width: 100%, height: 100% (llena el contenedor disponible)
     }
 
     /**

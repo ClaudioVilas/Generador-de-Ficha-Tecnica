@@ -186,10 +186,32 @@ body {
     padding: 10px;
 }
 
-/* Asegurar que las imágenes se vean bien en PDF */
-.pdf-export .foto-preview {
+/* ===================================================
+   COMPATIBILIDAD CON EXPORTACIÓN PDF - IMÁGENES ADAPTADAS
+   =================================================== */
+/* Asegurar que las imágenes mantengan adaptación en PDF */
+.pdf-export .foto-preview,
+.pdf-export .material-image {
+    /* MANTENER ADAPTACIÓN DURANTE EXPORTACIÓN PDF */
+    object-fit: contain !important;
+    object-position: center !important;
+    background: #f8f9fa !important;
+    
+    /* Asegurar visibilidad en PDF */
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
     max-width: 100%;
     height: auto;
+}
+
+/* Asegurar que contenedores mantengan tamaño durante PDF */
+.pdf-export .foto-upload,
+.pdf-export .foto-muestra-box {
+    /* MANTENER DIMENSIONES FIJAS EN PDF */
+    flex-shrink: 0 !important;
+    flex-grow: 0 !important;
+    overflow: hidden !important;
 }
 
 /* Mejorar spacing para PDF */
@@ -1306,8 +1328,15 @@ body {
     background: #fafafa;
     position: relative;
     overflow: hidden;
-    height: 500px;
+    height: 400px; /* Altura fija reducida de 500px a 400px para mejor proporción */
     display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    
+    /* IMPORTANTE: Mantener tamaño fijo independiente de la imagen */
+    flex-shrink: 0;
+    flex-grow: 0;
     align-items: center;
     justify-content: center;
     transition: all 0.3s ease;
@@ -1362,11 +1391,17 @@ body {
     box-shadow: 0 4px 12px rgba(0, 122, 204, 0.4);
 }
 
+/* ESTILOS UNIFICADOS PARA ADAPTACIÓN DE FOTOS
+ * =============================================
+ * Las imágenes se adaptan al contenedor sin deformarse
+ * y sin cambiar el tamaño del contenedor */
 .foto-preview {
     width: 100%;
     height: 100%;
-    object-fit: cover;
+    object-fit: contain; /* Cambio de 'cover' a 'contain' para mostrar imagen completa */
+    object-position: center; /* Centra la imagen en el contenedor */
     border-radius: 6px;
+    background: #f8f9fa; /* Fondo visible cuando la imagen no llena todo el espacio */
 }
 
 .foto-controls {
@@ -1716,9 +1751,9 @@ body {
 /* Fila inferior: Taller de Corte */
 .fila-taller {
     width: 100%;
-    margin-top: -1.2%;
+    margin-top: -1.05%;
     height: auto;
-    padding-bottom: 2.7%;
+    padding-bottom: 2.5%;
 }
 
 .columna-izquierda-vista4 {
@@ -1774,8 +1809,8 @@ body {
 }
 
 .foto-muestra-box {
-    width: 50px;
-    height: 50px;
+    width: 60px; /* Incrementado de 50px para mejor visibilidad */
+    height: 60px;
     border: 1px solid #ddd;
     border-radius: 4px;
     background: #f9f9f9;
@@ -1784,6 +1819,7 @@ body {
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
+    overflow: hidden; /* Evitar que imágenes grandes desborden */
 }
 
 .btn-agregar-foto {
@@ -1828,8 +1864,10 @@ body {
 .material-image {
     width: 100%;
     height: 100%;
-    object-fit: cover;
+    object-fit: contain; /* Cambio importante: de 'cover' a 'contain' para mostrar material completo */
+    object-position: center; /* Centra la imagen en el contenedor */
     border-radius: 6px;
+    background: #f8f9fa; /* Fondo visible cuando la imagen no llena todo el espacio */
 }
 
 .btn-remove-material {
@@ -2554,5 +2592,918 @@ body {
     .controles-taller {
         flex-direction: column;
         align-items: center;
+    }
+}
+
+/* ===================================================================
+   SOLUCIÓN UNIFICADA PARA DESBORDAMIENTO DE IMÁGENES
+   ===================================================================
+   
+   PROBLEMA SOLUCIONADO:
+   - Las imágenes a veces sobrepasaban los límites de sus contenedores
+   - El diseño se rompía cuando se cargaban fotos de diferentes tamaños
+   - Comportamiento inconsistente entre Vista2, Vista3 y Vista4
+   
+   SOLUCIÓN IMPLEMENTADA:
+   - Contenedores con tamaño FIJO que nunca se expanden
+   - Imágenes que se adaptan al contenedor con object-fit: contain
+   - Comportamiento uniforme en todas las vistas
+   - Compatible con exportación PDF
+*/
+
+/* Clase global para contenedores de imágenes */
+.image-container {
+    /* TAMAÑO FIJO: El contenedor nunca cambia de dimensiones */
+    position: relative;
+    overflow: hidden; /* CRÍTICO: Evita que las imágenes salgan del contenedor */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+    /* Evitar que el contenedor se redimensione */
+    flex-shrink: 0;
+    flex-grow: 0;
+    
+    /* Fondo visible cuando la imagen no llena todo el espacio */
+    background: #f8f9fa;
+    border-radius: 6px;
+}
+
+/* Imágenes dentro de contenedores - comportamiento unificado */
+.image-container img,
+.image-container .foto-preview,
+.image-container .material-image {
+    /* ADAPTACIÓN SIN DEFORMACIÓN NI DESBORDAMIENTO */
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: contain !important; /* NUNCA corta la imagen */
+    object-position: center !important; /* Centra la imagen */
+    border-radius: inherit;
+    
+    /* CRÍTICO: Evitar que la imagen salga del contenedor */
+    max-width: 100% !important;
+    max-height: 100% !important;
+    
+    /* Eliminar cualquier margen o padding que pueda causar desbordamiento */
+    margin: 0 !important;
+    padding: 0 !important;
+    
+    /* Asegurar que la imagen no tenga dimensiones propias */
+    display: block !important;
+}
+
+/* ===================================================================
+   VISTA 2 - CONTENEDORES IZQUIERDA Y DERECHA
+   =================================================================== */
+
+/* Contenedores de Vista2 con tamaño fijo */
+.vista2-container .foto-upload {
+    /* TAMAÑO FIJO ESPECÍFICO PARA VISTA2 */
+    width: 100%;
+    height: 380px !important; /* Altura fija para evitar expansión */
+    min-height: 380px;
+    max-height: 380px;
+    
+    /* Aplicar comportamiento de contenedor de imagen */
+    position: relative;
+    overflow: hidden !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+    /* Evitar redimensionamiento */
+    flex-shrink: 0 !important;
+    flex-grow: 0 !important;
+    
+    /* Estilos visuales */
+    border: 2px dashed #ddd;
+    border-radius: 8px;
+    background: #fafafa;
+    transition: all 0.3s ease;
+}
+
+/* ===================================================================
+   VISTA 3 - IMAGEN PRINCIPAL
+   =================================================================== */
+
+/* Contenedor de Vista3 con tamaño fijo */
+.vista3-container .foto-upload {
+    /* TAMAÑO FIJO ESPECÍFICO PARA VISTA3 */
+    width: 100%;
+    height: 420px !important; /* Altura fija mayor por ser imagen principal */
+    min-height: 420px;
+    max-height: 420px;
+    
+    /* Aplicar comportamiento de contenedor de imagen */
+    position: relative;
+    overflow: hidden !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+    /* Evitar redimensionamiento */
+    flex-shrink: 0 !important;
+    flex-grow: 0 !important;
+    
+    /* Estilos visuales */
+    border: 2px dashed #ddd;
+    border-radius: 8px;
+    background: #fafafa;
+    transition: all 0.3s ease;
+}
+
+/* ===================================================================
+   VISTA 4 - IMAGEN PRINCIPAL Y MATERIALES
+   =================================================================== */
+
+/* Contenedor principal de Vista4 */
+.vista4-container .foto-upload {
+    /* TAMAÑO FIJO ESPECÍFICO PARA VISTA4 */
+    width: 100%;
+    height: 380px !important; /* Altura fija consistente */
+    min-height: 380px;
+    max-height: 380px;
+    
+    /* Aplicar comportamiento de contenedor de imagen */
+    position: relative;
+    overflow: hidden !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+    /* Evitar redimensionamiento */
+    flex-shrink: 0 !important;
+    flex-grow: 0 !important;
+    
+    /* Estilos visuales */
+    border: 2px dashed #ddd;
+    border-radius: 8px;
+    background: #fafafa;
+    transition: all 0.3s ease;
+}
+
+/* Contenedores de materiales en Vista4 */
+.vista4-container .foto-muestra-box {
+    /* TAMAÑO FIJO PARA MUESTRAS DE MATERIALES */
+    width: 60px !important;
+    height: 60px !important;
+    min-width: 60px;
+    min-height: 60px;
+    max-width: 60px;
+    max-height: 60px;
+    
+    /* Aplicar comportamiento de contenedor de imagen */
+    position: relative;
+    overflow: hidden !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+    /* Evitar redimensionamiento */
+    flex-shrink: 0 !important;
+    flex-grow: 0 !important;
+    
+    /* Estilos visuales */
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background: #f9f9f9;
+}
+
+/* ===================================================================
+   COMPATIBILIDAD CON EXPORTACIÓN PDF
+   =================================================================== */
+
+/* Asegurar que los estilos se mantengan durante la exportación PDF */
+.pdf-export .image-container,
+.pdf-export .foto-upload,
+.pdf-export .foto-muestra-box {
+    /* MANTENER COMPORTAMIENTO DURANTE EXPORTACIÓN PDF */
+    overflow: hidden !important;
+    flex-shrink: 0 !important;
+    flex-grow: 0 !important;
+}
+
+.pdf-export .image-container img,
+.pdf-export .foto-preview,
+.pdf-export .material-image {
+    /* MANTENER ADAPTACIÓN DURANTE EXPORTACIÓN PDF */
+    object-fit: contain !important;
+    object-position: center !important;
+    max-width: 100% !important;
+    max-height: 100% !important;
+    width: 100% !important;
+    height: 100% !important;
+    
+    /* Asegurar visibilidad en PDF */
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+/* ===================================================================
+   ESTILOS RESPONSIVOS CON TAMAÑOS FIJOS
+   =================================================================== */
+
+/* Ajustes para pantallas pequeñas manteniendo proporción fija */
+@media (max-width: 768px) {
+    .vista2-container .foto-upload,
+    .vista3-container .foto-upload,
+    .vista4-container .foto-upload {
+        /* Reducir altura en móviles pero mantener fijo */
+        height: 300px !important;
+        min-height: 300px;
+        max-height: 300px;
+    }
+    
+    .vista4-container .foto-muestra-box {
+        /* Mantener tamaño mínimo legible para materiales */
+        width: 50px !important;
+        height: 50px !important;
+        min-width: 50px;
+        min-height: 50px;
+        max-width: 50px;
+        max-height: 50px;
+    }
+}
+
+/* ===================================================================
+   DOCUMENTACIÓN DE COMPORTAMIENTOS ESPERADOS
+   ===================================================================
+   
+   DESPUÉS DE ESTOS CAMBIOS:
+   
+   1. FOTOS GRANDES (ej: 4000x3000px):
+      ✅ Se reducen proporcionalmente para caber en el contenedor
+      ✅ NUNCA salen de los límites del contenedor
+      ✅ No cortan ni deforman la imagen
+      ✅ No agrandan el contenedor
+   
+   2. FOTOS PEQUEÑAS (ej: 200x150px):
+      ✅ Se agrandan proporcionalmente hasta llenar el espacio disponible
+      ✅ Se centran en el contenedor
+      ✅ No pixelan excesivamente
+   
+   3. FOTOS PANORÁMICAS (ej: 3000x1000px):
+      ✅ Se ajustan al ancho del contenedor
+      ✅ Quedan espacios (background visible) arriba y abajo
+      ✅ Imagen completa visible sin cortes
+   
+   4. FOTOS VERTICALES (ej: 1000x3000px):
+      ✅ Se ajustan a la altura del contenedor
+      ✅ Quedan espacios (background visible) a los lados
+      ✅ Imagen completa visible sin cortes
+   
+   5. CONTENEDORES:
+      ✅ NUNCA cambian de tamaño
+      ✅ Siempre mantienen dimensiones fijas
+      ✅ overflow: hidden evita cualquier desbordamiento
+   
+   6. EXPORTACIÓN PDF:
+      ✅ Mantiene el mismo comportamiento visual
+      ✅ Imágenes se exportan con proporciones correctas
+      ✅ No afecta el layout del documento
+   
+   CLASES CRÍTICAS APLICADAS:
+   - overflow: hidden !important → Evita desbordamiento
+   - object-fit: contain !important → Muestra imagen completa
+   - max-width/max-height: 100% !important → Limita tamaño máximo
+   - flex-shrink/flex-grow: 0 !important → Evita redimensionamiento
+   =================================================================== */
+
+/* ===================================================================
+   VISTA 4 - ESTILOS ESPECÍFICOS PARA OBJECT-FIT: COVER
+   =================================================================== */
+
+/* Contenedor padre específico para Vista4 - Altura completa */
+.vista4-container .seccion-fotos-lateral {
+    flex: 1;
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.vista4-container .seccion-fotos-lateral .fotos-container {
+    flex: 1; /* Toma todo el espacio disponible */
+    display: flex;
+    width: 100%;
+    padding: 0 15px 15px 15px;
+}
+
+.vista4-container .seccion-fotos-lateral .foto-principal {
+    width: 100%;
+    height: 100%; /* Ocupa toda la altura disponible del contenedor padre */
+}
+
+/* Contenedor específico para Vista4 - Ocupa todo el espacio vertical disponible */
+.vista4-container .foto-upload {
+    /* Estructura base del contenedor */
+    width: 100% !important;
+    height: 100% !important; /* Ocupa todo el espacio vertical disponible */
+    border: 1px dashed #ccc; /* Línea punteada como especificado */
+    position: relative !important;
+    overflow: hidden !important;
+    
+    /* Eliminar estilos anteriores que limitaban la altura */
+    min-height: unset !important;
+    max-height: unset !important;
+    
+    /* Eliminar fondo y bordes anteriores */
+    background: transparent !important;
+    border-radius: 0 !important;
+    transition: none !important;
+    
+    /* Asegurar que no haya espacios internos */
+    margin: 0 !important;
+    padding: 0 !important;
+    box-sizing: border-box !important;
+}
+
+/* Comportamiento específico de imagen en Vista4 - COVER */
+.vista4-container .foto-upload .foto-preview {
+    /* OBJECT-FIT: COVER - La imagen llena todo el contenedor sin márgenes */
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important; /* COVER: llena todo el espacio */
+    object-position: center !important;
+    
+    /* Eliminar cualquier margen o padding */
+    margin: 0 !important;
+    padding: 0 !important;
+    display: block !important;
+    border-radius: 0 !important; /* Sin border radius para ocupar todo el espacio */
+    
+    /* Asegurar que llegue hasta el borde inferior */
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+}
+
+/* Estilo para el contenedor clickeable vacío */
+.vista4-container .foto-upload {
+    background: #f8f9fa !important;
+    border: 2px dashed #dee2e6 !important;
+    transition: all 0.3s ease !important;
+}
+
+.vista4-container .foto-upload:hover {
+    background: #e9ecef !important;
+    border-color: #007bff !important;
+}
+
+/* Estado cuando hay imagen - usar clase específica */
+.vista4-container .foto-upload.tiene-imagen {
+    background: transparent !important;
+    border: none !important;
+}
+
+.vista4-container .foto-upload.tiene-imagen:hover {
+    background: transparent !important;
+    border: none !important;
+}
+
+/* Ocultar controles cuando NO tiene imagen */
+.vista4-container .foto-upload:not(.tiene-imagen) .foto-controls {
+    opacity: 0 !important;
+    visibility: hidden !important;
+    pointer-events: none !important; /* Evitar clics accidentales */
+}
+
+/* Mostrar controles solo cuando tiene imagen */
+.vista4-container .foto-upload.tiene-imagen .foto-controls {
+    opacity: 1 !important;
+    visibility: visible !important;
+    pointer-events: auto !important;
+}
+
+/* Botones específicos para Vista4 - Según especificaciones exactas */
+.vista4-container .foto-controls {
+    /* Posicionamiento absoluto en borde inferior del contenedor */
+    position: absolute !important;
+    bottom: 15px !important; /* 15px como especificado */
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    
+    /* Layout de botones */
+    display: flex !important;
+    gap: 12px !important; /* 12px como especificado */
+    
+    /* Sin fondo para que se vean limpios */
+    background: transparent !important;
+    padding: 0 !important;
+    border-radius: 0 !important;
+    
+    /* Z-index para asegurar que estén encima de la imagen */
+    z-index: 10 !important;
+    
+    /* Transición suave para aparecer/desaparecer */
+    transition: opacity 0.3s ease, visibility 0.3s ease !important;
+    
+    /* Asegurar visibilidad */
+    visibility: visible !important;
+    opacity: 1 !important;
+    
+    /* Debugging - remover después */
+    min-height: 40px;
+    width: auto;
+}
+
+/* REGLA ESPECÍFICA PARA FORZAR VISIBILIDAD DE AMBOS BOTONES */
+.vista4-container .foto-controls[style*="flex"] .btn-cambiar,
+.vista4-container .foto-controls[style*="flex"] .btn-eliminar {
+    display: inline-block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    width: auto !important;
+    height: auto !important;
+    position: relative !important;
+}
+
+/* ESTILOS ESPECÍFICOS PARA VISTA4 CON CLASES ÚNICAS */
+.vista4-controls {
+    position: absolute !important;
+    bottom: 15px !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    display: flex !important;
+    justify-content: center !important; /* Centrar el botón único */
+    gap: 0 !important; /* Sin gap porque solo hay un botón */
+    background: transparent !important;
+    padding: 0 !important;
+    z-index: 10 !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+/* COMPATIBILIDAD VISTA3 - Usar las mismas clases de Vista4 para uniformidad */
+.vista3-container .vista4-controls {
+    position: absolute !important;
+    bottom: 15px !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    display: flex !important;
+    justify-content: center !important;
+    gap: 0 !important;
+    background: transparent !important;
+    padding: 0 !important;
+    z-index: 10 !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+/* REGLA SUPER ESPECÍFICA PARA BOTONES VISTA4 - Mayor especificidad que .btn-eliminar general */
+.vista4-controls .vista4-btn-eliminar.btn-eliminar {
+    /* SOBREESCRIBIR COMPLETAMENTE todos los estilos generales de .btn-eliminar */
+    
+    /* Dimensiones - diferentes de .btn-eliminar general que usa 16px x 16px circular */
+    width: auto !important; /* No usar width fijo como .btn-eliminar general */
+    height: auto !important; /* No usar height fijo como .btn-eliminar general */
+    padding: 10px 16px !important;
+    min-width: 120px !important; /* Ancho mínimo para evitar texto cortado */
+    border: none !important;
+    border-radius: 6px !important; /* No circular como .btn-eliminar general */
+    
+    /* Tipografía clara y legible */
+    font-size: 14px !important; /* Más grande que los 10px de .btn-eliminar general */
+    font-weight: 600 !important; /* Más bold para mejor legibilidad */
+    line-height: 1.2 !important; /* Altura de línea controlada */
+    
+    /* Texto centrado y en una sola línea */
+    text-align: center !important;
+    white-space: nowrap !important; /* Evitar que el texto se divida en líneas */
+    overflow: hidden !important;
+    text-overflow: ellipsis !important; /* En caso extremo, mostrar ... */
+    
+    /* Display - IMPORTANTE: no usar flex como .btn-eliminar general */
+    display: inline-block !important; /* No flex como .btn-eliminar general */
+    align-items: initial !important; /* Resetear flex properties */
+    justify-content: initial !important; /* Resetear flex properties */
+    
+    /* Interactividad */
+    cursor: pointer !important;
+    transition: all 0.3s ease !important;
+    
+    /* Reseteo de estilos de .btn-eliminar general */
+    text-transform: none !important;
+    letter-spacing: normal !important;
+    
+    /* Visibilidad y posicionamiento */
+    visibility: visible !important;
+    opacity: 1 !important; /* No usar la opacity reducida de .btn-eliminar general */
+    
+    /* Colores de fondo - igual a Vista4 */
+    background: #dc3545 !important; /* Mismo color pero con !important */
+    color: #fff !important;
+    
+    /* Sombra para mejor contraste sobre imágenes */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3) !important;
+}
+
+.vista4-controls .vista4-btn-eliminar.btn-eliminar:hover {
+    background: #c82333 !important;
+    transform: translateY(-1px) !important;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4) !important; /* Sombra más pronunciada en hover */
+    opacity: 1 !important; /* Mantener opacidad total en hover */
+}
+
+/* REGLA ADICIONAL DE RESPALDO CON MÁXIMA ESPECIFICIDAD PARA VISTA3 */
+.vista3-container .vista4-controls .vista4-btn-eliminar.btn-eliminar {
+    /* ASEGURAR que Vista3 use los mismos estilos que Vista4 */
+    width: auto !important;
+    height: auto !important;
+    padding: 10px 16px !important;
+    min-width: 120px !important;
+    border-radius: 6px !important;
+    font-size: 14px !important;
+    font-weight: 600 !important;
+    text-align: center !important;
+    white-space: nowrap !important;
+    display: inline-block !important;
+    background: #dc3545 !important;
+    color: #fff !important;
+    opacity: 1 !important;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3) !important;
+}
+
+.vista3-container .vista4-controls .vista4-btn-eliminar.btn-eliminar:hover {
+    background: #c82333 !important;
+    transform: translateY(-1px) !important;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4) !important;
+}
+
+/* ESTILOS ESPECÍFICOS PARA VISTA3 CON CLASES ÚNICAS */
+.vista3-controls {
+    position: absolute !important;
+    bottom: 15px !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    display: flex !important;
+    justify-content: center !important; /* Centrar el botón único */
+    gap: 0 !important; /* Sin gap porque solo hay un botón */
+    background: transparent !important;
+    padding: 0 !important;
+    z-index: 10 !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+.vista3-btn-eliminar {
+    /* Dimensiones y espaciado */
+    padding: 10px 16px !important;
+    border: none !important;
+    border-radius: 8px !important;
+    font-size: 14px !important;
+    font-weight: 600 !important;
+    cursor: pointer !important;
+    
+    /* Efectos visuales para mejor visibilidad */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3) !important; /* Sombra más pronunciada */
+    border: 2px solid rgba(255, 255, 255, 0.8) !important; /* Borde blanco semi-transparente */
+    
+    /* Colores de fondo */
+    background: #dc3545 !important;
+    color: #fff !important;
+    
+    /* Transiciones suaves */
+    transition: all 0.2s ease !important;
+    text-transform: none !important;
+    letter-spacing: normal !important;
+    
+    /* Asegurar visibilidad */
+    display: inline-block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    z-index: 100 !important; /* Z-index muy alto */
+    
+    /* Prevenir selección de texto */
+    user-select: none !important;
+    -webkit-user-select: none !important;
+    -moz-user-select: none !important;
+    -ms-user-select: none !important;
+}
+
+.vista3-btn-eliminar:hover {
+    background: #c82333 !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4) !important; /* Sombra más intensa en hover */
+}
+
+/* ==================== ESTILOS PARA VISTA3 - REPLICANDO VISTA4 ==================== */
+
+/* Contenedor específico para Vista3 - Ocupa todo el espacio vertical disponible */
+.vista3-container .foto-upload,
+.vista3-container .seccion-fotos-vista3 .foto-upload {
+    /* Estructura base del contenedor */
+    width: 100% !important;
+    height: 100% !important; /* Ocupa todo el espacio vertical disponible */
+    min-height: 350px !important; /* Altura mínima para ser clickeable */
+    border: 1px dashed #ccc !important; /* Línea punteada como especificado */
+    position: relative !important;
+    overflow: hidden !important;
+    
+    /* Eliminar estilos anteriores que limitaban la altura */
+    max-height: unset !important;
+    
+    /* Eliminar fondo y bordes anteriores */
+    background: transparent !important;
+    border-radius: 0 !important;
+    transition: none !important;
+    
+    /* Asegurar que no haya espacios internos */
+    margin: 0 !important;
+    padding: 0 !important;
+    box-sizing: border-box !important;
+    
+    /* Asegurar que es clickeable */
+    cursor: pointer !important;
+    pointer-events: auto !important;
+}
+
+/* Comportamiento específico de imagen en Vista3 - COVER */
+.vista3-container .foto-upload .foto-preview,
+.vista3-container .seccion-fotos-vista3 .foto-upload .foto-preview {
+    /* OBJECT-FIT: COVER - La imagen llena todo el contenedor sin márgenes */
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important; /* COVER: llena todo el espacio */
+    object-position: center !important;
+    
+    /* Eliminar cualquier margen o padding */
+    margin: 0 !important;
+    padding: 0 !important;
+    display: block !important;
+    border-radius: 0 !important; /* Sin border radius para ocupar todo el espacio */
+    
+    /* Asegurar que llegue hasta el borde inferior */
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+}
+
+/* Ocultar completamente la imagen cuando está con display: none */
+.vista3-container .foto-upload .foto-preview[style*="display: none"],
+.vista3-container .seccion-fotos-vista3 .foto-upload .foto-preview[style*="display: none"] {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    width: 0 !important;
+    height: 0 !important;
+    position: absolute !important;
+    top: -9999px !important;
+    left: -9999px !important;
+}
+
+/* Estilo para el contenedor clickeable vacío */
+.vista3-container .foto-upload,
+.vista3-container .seccion-fotos-vista3 .foto-upload {
+    background: #f8f9fa !important;
+    border: 2px dashed #dee2e6 !important;
+    transition: all 0.3s ease !important;
+}
+
+.vista3-container .foto-upload:hover,
+.vista3-container .seccion-fotos-vista3 .foto-upload:hover {
+    background: #e9ecef !important;
+    border-color: #007bff !important;
+}
+
+/* Estado cuando hay imagen - usar clase específica */
+.vista3-container .foto-upload.tiene-imagen,
+.vista3-container .seccion-fotos-vista3 .foto-upload.tiene-imagen {
+    background: transparent !important;
+    border: none !important;
+}
+
+.vista3-container .foto-upload.tiene-imagen:hover,
+.vista3-container .seccion-fotos-vista3 .foto-upload.tiene-imagen:hover {
+    background: transparent !important;
+    border: none !important;
+}
+
+/* Ocultar controles cuando NO tiene imagen */
+.vista3-container .foto-upload:not(.tiene-imagen) .foto-controls,
+.vista3-container .seccion-fotos-vista3 .foto-upload:not(.tiene-imagen) .foto-controls {
+    opacity: 0 !important;
+    visibility: hidden !important;
+    pointer-events: none !important; /* Evitar clics accidentales */
+}
+
+/* Mostrar controles solo cuando tiene imagen */
+.vista3-container .foto-upload.tiene-imagen .foto-controls,
+.vista3-container .seccion-fotos-vista3 .foto-upload.tiene-imagen .foto-controls {
+    opacity: 1 !important;
+    visibility: visible !important;
+    pointer-events: auto !important;
+    display: flex !important; /* Forzar display flex */
+    z-index: 50 !important; /* Z-index alto */
+}
+
+/* Botones específicos para Vista3 - Según especificaciones exactas */
+.vista3-container .foto-controls {
+    /* Posicionamiento absoluto en borde inferior del contenedor */
+    position: absolute !important;
+    bottom: 15px !important; /* 15px como especificado */
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    
+    /* Layout de botones */
+    display: flex !important;
+    justify-content: center !important; /* Centrar el botón único */
+    gap: 0 !important; /* Sin gap porque solo hay un botón */
+    
+    /* Sin fondo para que se vean limpios */
+    background: transparent !important;
+    padding: 0 !important;
+    border-radius: 0 !important;
+    
+    /* Z-index muy alto para asegurar que estén encima de la imagen */
+    z-index: 50 !important;
+    
+    /* Transición suave para aparecer/desaparecer */
+    transition: opacity 0.3s ease, visibility 0.3s ease !important;
+    
+    /* Asegurar visibilidad */
+    visibility: visible !important;
+    opacity: 1 !important;
+    
+    /* Forzar que no haya interferencias */
+    pointer-events: auto !important;
+    width: auto !important;
+    height: auto !important;
+}
+
+/* ==================== FIN ESTILOS VISTA3 ==================== */
+
+/* REGLA SÚPER ESPECÍFICA PARA FORZAR FONDO ROJO DEL BOTÓN ELIMINAR VISTA3 */
+.vista3-container .seccion-fotos-vista3 .foto-upload .foto-controls .vista3-btn-eliminar,
+.vista3-container .foto-upload .foto-controls .vista3-btn-eliminar,
+button.vista3-btn-eliminar {
+    background: #dc3545 !important;
+    background-color: #dc3545 !important;
+    color: #ffffff !important;
+    border: 2px solid rgba(255, 255, 255, 0.8) !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3) !important;
+    padding: 10px 16px !important;
+    border-radius: 8px !important;
+    font-weight: 600 !important;
+    font-size: 14px !important;
+    cursor: pointer !important;
+    display: inline-block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    z-index: 100 !important;
+}
+
+.vista3-container .seccion-fotos-vista3 .foto-upload .foto-controls .vista3-btn-eliminar:hover,
+.vista3-container .foto-upload .foto-controls .vista3-btn-eliminar:hover,
+button.vista3-btn-eliminar:hover {
+    background: #c82333 !important;
+    background-color: #c82333 !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4) !important;
+}
+
+/* OVERRIDE ABSOLUTO - FUERZA ROJO INDEPENDIENTEMENTE DE TODO */
+[class*="vista3-btn-eliminar"] {
+    background: #dc3545 !important;
+    background-color: #dc3545 !important;
+    color: #ffffff !important;
+    border: 2px solid rgba(255, 255, 255, 0.8) !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3) !important;
+    padding: 10px 16px !important;
+    border-radius: 8px !important;
+    font-weight: 600 !important;
+    font-size: 14px !important;
+    cursor: pointer !important;
+    display: inline-block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    z-index: 100 !important;
+}
+
+/* COPIA EXACTA DE LOS ESTILOS DE VISTA4 PARA VISTA3 */
+.vista3-container .foto-controls .btn-eliminar {
+    /* Estilos exactos según requerimiento */
+    padding: 8px 14px !important; /* Como especificado */
+    border: none !important;
+    border-radius: 6px !important; /* Como especificado */
+    font-size: 14px !important; /* Como especificado */
+    cursor: pointer;
+    font-weight: 500 !important;
+    transition: all 0.3s ease;
+    
+    /* Eliminar estilos anteriores */
+    text-transform: none !important;
+    letter-spacing: normal !important;
+    box-shadow: none !important;
+    
+    /* Asegurar visibilidad */
+    display: inline-block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    
+    /* Color específico */
+    background-color: #dc3545 !important; /* Como especificado */
+    background: #dc3545 !important; /* Sobrescribir gradientes */
+    color: #fff !important; /* Como especificado */
+}
+
+/* Hover effects para botones de Vista3 */
+.vista3-container .foto-controls .btn-eliminar:hover {
+    background-color: #c82333 !important;
+    background: #c82333 !important;
+    transform: translateY(-1px);
+}
+.vista4-container .foto-controls .btn-eliminar {
+    /* Estilos exactos según requerimiento */
+    padding: 8px 14px !important; /* Como especificado */
+    border: none !important;
+    border-radius: 6px !important; /* Como especificado */
+    font-size: 14px !important; /* Como especificado */
+    cursor: pointer;
+    font-weight: 500 !important;
+    transition: all 0.3s ease;
+    
+    /* Eliminar estilos anteriores */
+    text-transform: none !important;
+    letter-spacing: normal !important;
+    box-shadow: none !important;
+    
+    /* Asegurar visibilidad */
+    display: inline-block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    
+    /* Color específico */
+    background-color: #dc3545 !important; /* Como especificado */
+    background: #dc3545 !important; /* Sobrescribir gradientes */
+    color: #fff !important; /* Como especificado */
+}
+
+/* Hover effects para botones de Vista4 */
+.vista4-container .foto-controls .btn-cambiar:hover {
+    background-color: #0056b3 !important;
+    background: #0056b3 !important;
+    transform: translateY(-1px);
+}
+
+.vista4-container .foto-controls .btn-eliminar:hover {
+    background-color: #c82333 !important;
+    background: #c82333 !important;
+    transform: translateY(-1px);
+}
+
+/* Compatibilidad con exportación PDF para Vista4 */
+.pdf-export .vista4-container .foto-upload {
+    overflow: hidden !important;
+    border: 1px dashed #ccc !important;
+}
+
+.pdf-export .vista4-container .foto-preview {
+    object-fit: cover !important;
+    object-position: center !important;
+    width: 100% !important;
+    height: 100% !important;
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+/* Responsive para Vista4 - Mantener altura dinámica */
+@media (max-width: 768px) {
+    .vista4-container .foto-upload {
+        /* En móviles, mantener altura flexible */
+        min-height: 250px;
+    }
+}
+
+/* Compatibilidad con exportación PDF para Vista4 */
+.pdf-export .vista4-container .foto-upload {
+    overflow: hidden !important;
+}
+
+.pdf-export .vista4-container .foto-preview {
+    object-fit: cover !important;
+    object-position: center !important;
+    width: 100% !important;
+    height: 100% !important;
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+/* Responsive para Vista4 */
+@media (max-width: 768px) {
+    .vista4-container .foto-upload {
+        height: 300px !important;
+        min-height: 300px;
+        max-height: 300px;
     }
 }

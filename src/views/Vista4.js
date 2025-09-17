@@ -179,7 +179,8 @@ class Vista4 {
                                 <div class="muestra-item">
                                     <div class="muestra-foto-container">
                                         <input type="file" accept="image/*" class="input-foto-material-hidden" onchange="Vista4Instance.handleMaterialPhotoUpload(event, this)">
-                                        <div class="foto-muestra-box">
+                                        <!-- CONTENEDOR DE MATERIAL CON TAMAÑO FIJO - Las imágenes se adaptan sin desbordamiento -->
+                                        <div class="foto-muestra-box image-container">
                                             <button class="btn-agregar-foto" onclick="Vista4Instance.triggerMaterialInput(this)">+</button>
                                             <div class="foto-preview-muestra"></div>
                                         </div>
@@ -192,7 +193,8 @@ class Vista4 {
                                 <div class="muestra-item">
                                     <div class="muestra-foto-container">
                                         <input type="file" accept="image/*" class="input-foto-material-hidden" onchange="Vista4Instance.handleMaterialPhotoUpload(event, this)">
-                                        <div class="foto-muestra-box">
+                                        <!-- CONTENEDOR DE MATERIAL CON TAMAÑO FIJO - Las imágenes se adaptan sin desbordamiento -->
+                                        <div class="foto-muestra-box image-container">
                                             <button class="btn-agregar-foto" onclick="Vista4Instance.triggerMaterialInput(this)">+</button>
                                             <div class="foto-preview-muestra"></div>
                                         </div>
@@ -342,22 +344,15 @@ class Vista4 {
                             <h3>IMÁGENES DEL PRODUCTO</h3>
                             <div class="fotos-container">
                                 <div class="foto-principal">
-                                    <div class="foto-upload" id="fotoPrincipal">
-                                        <div class="foto-placeholder">
-                                            <i class="📷"></i>
-                                            <p>Imagen Principal</p>
-                                            <button type="button" class="btn-upload" onclick="Vista4Instance.subirFoto('principal')">
-                                                Subir Imagen
-                                            </button>
-                                        </div>
-                                        <img class="foto-preview" style="display: none;" alt="Imagen Principal">
+                                    <!-- CONTENEDOR DE IMAGEN LIMPIO - Sin texto ni íconos innecesarios -->
+                                    <div class="foto-upload image-container" id="fotoPrincipal" onclick="Vista4Instance.subirFoto('principal')" style="cursor: pointer;">
+                                        <!-- IMAGEN CON OBJECT-FIT: COVER - Llena todo el contenedor sin márgenes -->
+                                        <img class="foto-preview" style="display: none;" src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMSIgaGVpZ2h0PSIxIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjwvc3ZnPg==">
                                         <input type="file" class="file-input" accept="image/*" style="display: none;" data-field="fotoPrincipal">
-                                        <div class="foto-controls" style="display: none;">
-                                            <button type="button" class="btn-cambiar" onclick="Vista4Instance.subirFoto('principal')">
-                                                Cambiar
-                                            </button>
-                                            <button type="button" class="btn-eliminar" onclick="Vista4Instance.eliminarFoto('principal')">
-                                                Eliminar
+                                        <!-- BOTONES POSICIONADOS EN BORDE INFERIOR DEL CONTENEDOR -->
+                                        <div class="foto-controls vista4-controls" style="display: none;">
+                                            <button type="button" class="btn-eliminar vista4-btn-eliminar" onclick="event.stopPropagation(); Vista4Instance.eliminarFoto('principal')">
+                                                Eliminar Foto
                                             </button>
                                         </div>
                                     </div>
@@ -584,7 +579,8 @@ class Vista4 {
         nuevaMuestra.innerHTML = `
             <div class="muestra-foto-container">
                 <input type="file" accept="image/*" class="input-foto-material-hidden" onchange="Vista4Instance.handleMaterialPhotoUpload(event, this)">
-                <div class="foto-muestra-box">
+                <!-- CONTENEDOR DE MATERIAL CON TAMAÑO FIJO - Las imágenes se adaptan sin desbordamiento -->
+                <div class="foto-muestra-box image-container">
                     <button class="btn-agregar-foto" onclick="Vista4Instance.triggerMaterialInput(this)">+</button>
                     <div class="foto-preview-muestra"></div>
                 </div>
@@ -673,6 +669,13 @@ class Vista4 {
             const botonAgregar = container.querySelector('.btn-agregar-foto');
             
             // Crear elemento img con el Base64 como src
+            // ADAPTACIÓN DE IMÁGENES DE MATERIALES:
+            // ====================================
+            // - Contenedor fijo: 60x60px (foto-muestra-box)
+            // - object-fit: contain = muestra el material completo sin cortes
+            // - object-position: center = centra la imagen en el contenedor
+            // - Es preferible ver toda la muestra aunque queden espacios en blanco
+            // - Evita cortar detalles importantes de texturas o colores
             previewDiv.innerHTML = `
                 <img src="${base64Image}" alt="Material" class="material-image">
                 <button class="btn-remove-material" onclick="Vista4Instance.removeMaterialPhoto(this)">×</button>
@@ -767,19 +770,57 @@ class Vista4 {
 
     /**
      * Muestra la foto en el contenedor correspondiente
+     * 
+     * COMPORTAMIENTO DE ADAPTACIÓN DE IMAGEN VISTA4:
+     * ==============================================
+     * - El contenedor .foto-upload mantiene su tamaño fijo (380px altura)
+     * - La imagen se adapta con object-fit: COVER para llenar todo el contenedor
+     * - NO quedan márgenes en blanco dentro del contenedor
+     * - La imagen puede ser cortada para llenar completamente el espacio
+     * - El contenedor NUNCA cambia su tamaño según la imagen
+     * - Los botones se posicionan en el borde inferior, centrados horizontalmente
+     * 
      * @param {string} lado - 'principal'
      * @param {string} dataUrl - URL de la imagen en base64
      */
     mostrarFoto(lado, dataUrl) {
         const container = this.container.querySelector(`#foto${lado.charAt(0).toUpperCase() + lado.slice(1)}`);
-        const placeholder = container.querySelector('.foto-placeholder');
         const preview = container.querySelector('.foto-preview');
         const controls = container.querySelector('.foto-controls');
 
-        placeholder.style.display = 'none';
+        // Validar que todos los elementos existen
+        if (!container || !preview || !controls) {
+            console.error('Vista4: Error - elementos no encontrados:', {
+                container: !!container,
+                preview: !!preview,
+                controls: !!controls
+            });
+            return;
+        }
+
         preview.src = dataUrl;
         preview.style.display = 'block';
         controls.style.display = 'flex';
+        controls.style.visibility = 'visible'; // Asegurar visibilidad
+        
+        // Agregar clase para indicar que tiene imagen
+        container.classList.add('tiene-imagen');
+
+        // Verificar que el botón eliminar exista y sea visible
+        const btnEliminar = controls.querySelector('.vista4-btn-eliminar');
+        
+        if (btnEliminar) {
+            // Forzar visibilidad del botón eliminar con clase específica de Vista4
+            btnEliminar.style.display = 'inline-block';
+            btnEliminar.style.visibility = 'visible';
+            btnEliminar.style.opacity = '1';
+            
+            console.log('Vista4: Botón eliminar configurado como visible');
+        } else {
+            console.error('Vista4: Botón eliminar no encontrado:', {
+                btnEliminar: !!btnEliminar
+            });
+        }
     }
     /**
      * Elimina la foto del contenedor correspondiente
@@ -787,17 +828,21 @@ class Vista4 {
      */
     eliminarFoto(lado) {
         const container = this.container.querySelector(`#foto${lado.charAt(0).toUpperCase() + lado.slice(1)}`);
-        const placeholder = container.querySelector('.foto-placeholder');
         const preview = container.querySelector('.foto-preview');
         const controls = container.querySelector('.foto-controls');
         const input = container.querySelector('.file-input');
 
-        placeholder.style.display = 'block';
+        // Solo eliminar la imagen y ocultar controles - mantener toda la funcionalidad del contenedor
         preview.style.display = 'none';
-        preview.src = '';
+        preview.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMSIgaGVpZ2h0PSIxIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjwvc3ZnPg==';
         controls.style.display = 'none';
+        controls.style.visibility = 'hidden'; // Forzar ocultación adicional por si hay CSS con !important
         input.value = '';
 
+        // Remover la clase para volver al estado sin imagen (con fondo y borde)
+        container.classList.remove('tiene-imagen');
+        
+        console.log('Vista4: Imagen eliminada - contenedor listo para nueva imagen');
         this.saveData();
     }
 

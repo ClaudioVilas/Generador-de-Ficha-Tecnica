@@ -146,22 +146,15 @@ class Vista3 {
                         <h3>FOTOS DEL PATRÓN</h3>
                         <div class="fotos-container">
                             <div class="foto-principal">
-                                <div class="foto-upload" id="fotoPrincipal">
-                                    <div class="foto-placeholder">
-                                        <i class="📷"></i>
-                                        <p>Imagen Principal</p>
-                                        <button type="button" class="btn-upload" onclick="Vista3Instance.subirFoto('principal')">
-                                            Subir Imagen
-                                        </button>
-                                    </div>
-                                    <img class="foto-preview" style="display: none;" alt="Imagen Principal">
+                                <!-- CONTENEDOR CON TAMAÑO FIJO - Las imágenes se adaptan sin desbordamiento -->
+                                <div class="foto-upload image-container" id="fotoPrincipal" onclick="console.log('Click detectado, Vista3Instance:', window.Vista3Instance); if(window.Vista3Instance) { Vista3Instance.subirFoto('principal'); } else { console.error('Vista3Instance no disponible'); }" style="cursor: pointer;">
+                                    <!-- IMAGEN CON OBJECT-FIT: COVER - Llena todo el contenedor sin márgenes -->
+                                    <img class="foto-preview" style="display: none;" src="">
                                     <input type="file" class="file-input" accept="image/*" style="display: none;" data-field="fotoPrincipal">
-                                    <div class="foto-controls" style="display: none;">
-                                        <button type="button" class="btn-cambiar" onclick="Vista3Instance.subirFoto('principal')">
-                                            Cambiar
-                                        </button>
-                                        <button type="button" class="btn-eliminar" onclick="Vista3Instance.eliminarFoto('principal')">
-                                            Eliminar
+                                    <!-- BOTONES POSICIONADOS EN BORDE INFERIOR DEL CONTENEDOR -->
+                                    <div class="foto-controls vista4-controls" style="display: none;">
+                                        <button type="button" class="btn-eliminar vista4-btn-eliminar" onclick="event.stopPropagation(); Vista3Instance.eliminarFoto('principal')">
+                                            Eliminar Foto
                                         </button>
                                     </div>
                                 </div>
@@ -454,9 +447,13 @@ class Vista3 {
      * @param {string} lado - 'principal'
      */
     subirFoto(lado) {
+        console.log('Vista3: subirFoto llamado para lado:', lado);
         const input = this.container.querySelector(`#foto${lado.charAt(0).toUpperCase() + lado.slice(1)} .file-input`);
+        console.log('Vista3: Input encontrado:', !!input);
         if (input) {
             input.click();
+        } else {
+            console.error('Vista3: No se encontró el input file');
         }
     }
 
@@ -491,19 +488,63 @@ class Vista3 {
 
     /**
      * Muestra la foto en el contenedor correspondiente
+     * 
+     * COMPORTAMIENTO DE ADAPTACIÓN DE IMAGEN PRINCIPAL:
+     * =================================================
+     * - El contenedor .foto-upload mantiene su tamaño fijo (450px altura)
+     * - La imagen se adapta proporcionalmente al contenedor (object-fit: contain)
+     * - Fotos panorámicas: se ajustan al ancho, quedan márgenes arriba/abajo
+     * - Fotos verticales: se ajustan a la altura, quedan márgenes izquierda/derecha
+     * - La imagen completa siempre es visible sin cortes
+     * - El contenedor mantiene sus dimensiones independiente de la imagen cargada
+     * - La clase 'image-container' aplicada garantiza la contención y previene overflow
+     * 
      * @param {string} lado - 'principal'
      * @param {string} dataUrl - URL de la imagen en base64
      */
     mostrarFoto(lado, dataUrl) {
         const container = this.container.querySelector(`#foto${lado.charAt(0).toUpperCase() + lado.slice(1)}`);
-        const placeholder = container.querySelector('.foto-placeholder');
         const preview = container.querySelector('.foto-preview');
         const controls = container.querySelector('.foto-controls');
 
-        placeholder.style.display = 'none';
+        // Validar que todos los elementos existen
+        if (!container || !preview || !controls) {
+            console.error('Vista3: Error - elementos no encontrados:', {
+                container: !!container,
+                preview: !!preview,
+                controls: !!controls
+            });
+            return;
+        }
+
+        // Mostrar la imagen
         preview.src = dataUrl;
         preview.style.display = 'block';
+        
+        // Agregar clase para indicar que tiene imagen (esto activa los estilos CSS)
+        container.classList.add('tiene-imagen');
+        
+        // Forzar la visibilidad de los controles
         controls.style.display = 'flex';
+        controls.style.visibility = 'visible';
+        controls.style.opacity = '1';
+        controls.style.zIndex = '50';
+
+        // Verificar que el botón eliminar exista y sea visible
+        const btnEliminar = controls.querySelector('.vista4-btn-eliminar');
+        
+        if (btnEliminar) {
+            // APLICAR LOS MISMOS ESTILOS EN LÍNEA QUE USA VISTA4
+            btnEliminar.style.display = 'inline-block';
+            btnEliminar.style.visibility = 'visible';
+            btnEliminar.style.opacity = '1';
+            
+            console.log('Vista3: Botón eliminar configurado como visible (usando estilos Vista4)');
+        } else {
+            console.error('Vista3: Botón eliminar no encontrado');
+        }
+        
+        console.log('Vista3: Imagen mostrada correctamente con controles visibles');
     }
 
     /**
@@ -512,17 +553,22 @@ class Vista3 {
      */
     eliminarFoto(lado) {
         const container = this.container.querySelector(`#foto${lado.charAt(0).toUpperCase() + lado.slice(1)}`);
-        const placeholder = container.querySelector('.foto-placeholder');
         const preview = container.querySelector('.foto-preview');
         const controls = container.querySelector('.foto-controls');
         const input = container.querySelector('.file-input');
 
-        placeholder.style.display = 'block';
+        // Solo eliminar la imagen y ocultar controles - mantener toda la funcionalidad del contenedor
         preview.style.display = 'none';
-        preview.src = '';
-        controls.style.display = 'none';
+        preview.src = ''; // Usar src vacío en lugar de SVG
         input.value = '';
 
+        // Usar setTimeout para suavizar la transición visual
+        setTimeout(() => {
+            // Remover la clase para volver al estado sin imagen (con fondo y borde)
+            container.classList.remove('tiene-imagen');
+        }, 150); // 150ms de delay para transición suave
+        
+        console.log('Vista3: Imagen eliminada - contenedor listo para nueva imagen');
         this.saveData();
     }
 
