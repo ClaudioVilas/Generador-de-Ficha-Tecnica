@@ -33,6 +33,111 @@ class Vista1 {
     }
 
     /**
+     * Utilidad para preparar la vista antes de exportar PDF
+     * Llamar antes de html2canvas y restaurar después
+     */
+    prepareForPDFExport() {
+        console.log('📋 Vista1Instance: Preparando para exportación PDF...');
+        if (!this.container) {
+            console.log('⚠️ Vista1Instance: No hay contenedor disponible');
+            return null;
+        }
+        console.log('🔧 Vista1Instance: Llamando método estático forceImagesVisibleForPDF');
+        const result = Vista1.forceImagesVisibleForPDF(this.container);
+        console.log('✅ Vista1Instance: Preparación completada');
+        return result;
+    }
+
+    restoreAfterPDFExport(changed) {
+        console.log('🔄 Vista1Instance: Restaurando después de exportación PDF...');
+        Vista1.restoreImagesVisibility(changed);
+        console.log('✅ Vista1Instance: Restauración completada');
+    }
+
+    static forceImagesVisibleForPDF(container) {
+        const imgs = container.querySelectorAll('.imagen-preview, .material-preview');
+        const changed = [];
+        console.log(`🔍 Vista1: Encontradas ${imgs.length} imágenes para hacer visibles`);
+        
+        imgs.forEach((img, index) => {
+            console.log(`🔍 Vista1: Procesando imagen ${index + 1}: ${img.className}`);
+            console.log(`   - Display original: ${img.style.display || 'default'}`);
+            console.log(`   - Visibility original: ${img.style.visibility || 'default'}`);
+            console.log(`   - Opacity original: ${img.style.opacity || 'default'}`);
+            console.log(`   - Src length: ${img.src.length}`);
+            
+            const changeItem = { el: img, prev: {}, changed: false };
+            
+            // Forzar visibilidad completa
+            if (img.style.display === 'none') {
+                changeItem.prev.display = img.style.display;
+                img.style.display = 'block';
+                changeItem.changed = true;
+                console.log(`👁️ Vista1: Display cambiado a block`);
+            }
+            
+            if (img.style.visibility === 'hidden') {
+                changeItem.prev.visibility = img.style.visibility;
+                img.style.visibility = 'visible';
+                changeItem.changed = true;
+                console.log(`👁️ Vista1: Visibility cambiado a visible`);
+            }
+            
+            if (img.style.opacity === '0' || parseFloat(img.style.opacity) < 1) {
+                changeItem.prev.opacity = img.style.opacity;
+                img.style.opacity = '1';
+                changeItem.changed = true;
+                console.log(`👁️ Vista1: Opacity cambiado a 1`);
+            }
+            
+            // Asegurar que la imagen tenga dimensiones
+            if (!img.style.width && !img.style.maxWidth) {
+                changeItem.prev.maxWidth = img.style.maxWidth;
+                img.style.maxWidth = '100%';
+                changeItem.changed = true;
+                console.log(`👁️ Vista1: MaxWidth establecido a 100%`);
+            }
+            
+            if (changeItem.changed) {
+                changed.push(changeItem);
+            }
+        });
+        
+        console.log(`✅ Vista1: ${changed.length} imágenes modificadas para PDF`);
+        return changed;
+    }
+
+    static restoreImagesVisibility(changed) {
+        console.log(`🔄 Vista1: Restaurando ${changed ? changed.length : 0} imágenes`);
+        if (changed && changed.length > 0) {
+            changed.forEach(({ el, prev }, index) => {
+                console.log(`↩️ Vista1: Restaurando imagen ${index + 1}`);
+                
+                if (prev.display !== undefined) {
+                    el.style.display = prev.display;
+                    console.log(`   - Display restaurado a: ${prev.display}`);
+                }
+                
+                if (prev.visibility !== undefined) {
+                    el.style.visibility = prev.visibility;
+                    console.log(`   - Visibility restaurado a: ${prev.visibility}`);
+                }
+                
+                if (prev.opacity !== undefined) {
+                    el.style.opacity = prev.opacity;
+                    console.log(`   - Opacity restaurado a: ${prev.opacity}`);
+                }
+                
+                if (prev.maxWidth !== undefined) {
+                    el.style.maxWidth = prev.maxWidth;
+                    console.log(`   - MaxWidth restaurado a: ${prev.maxWidth}`);
+                }
+            });
+        }
+        console.log(`✅ Vista1: Restauración de imágenes completada`);
+    }
+
+    /**
      * Crea un selector de colores estilo Excel
      * @param {string} selectedValue - Color actualmente seleccionado
      * @param {string} id - ID único del selector

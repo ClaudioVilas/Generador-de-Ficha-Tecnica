@@ -1,5 +1,0 @@
-debajo el sutitulo talles
-columnas U y M
-las filas mantener la dinamica de poder agegar segun necesidad, inicia en la letra a y a medida que se agrega sige  nte letra del abecedario
-la columna U siempre en CM y la M permite agregar un numero
-solo hacer esta funcionalidad sin agregar ningun archivo ni modificar el flujo

@@ -3,6 +3,53 @@
  * Maneja el control de calidad, acabados finales y aprobaciones
  */
 class Vista4 {
+    /**
+     * Utilidad para preparar la vista antes de exportar PDF
+     * Llamar antes de html2canvas y restaurar después
+     */
+    prepareForPDFExport() {
+        console.log('📋 Vista4Instance: Preparando para exportación PDF...');
+        if (!this.container) {
+            console.log('⚠️ Vista4Instance: No hay contenedor disponible');
+            return null;
+        }
+        console.log('🔧 Vista4Instance: Llamando método estático forceImagesVisibleForPDF');
+        const result = Vista4.forceImagesVisibleForPDF(this.container);
+        console.log('✅ Vista4Instance: Preparación completada');
+        return result;
+    }
+
+    restoreAfterPDFExport(changed) {
+        console.log('🔄 Vista4Instance: Restaurando después de exportación PDF...');
+        Vista4.restoreImagesVisibility(changed);
+        console.log('✅ Vista4Instance: Restauración completada');
+    }
+    static forceImagesVisibleForPDF(container) {
+        const imgs = container.querySelectorAll('.foto-preview, .foto-preview-muestra, .material-image');
+        const changed = [];
+        console.log(`🔍 Vista4: Encontradas ${imgs.length} imágenes para hacer visibles`);
+        imgs.forEach(img => {
+            if (img && img.style.display === 'none') {
+                changed.push({ el: img, prev: img.style.display });
+                img.style.display = 'block';
+                console.log(`👁️ Vista4: Imagen hecha visible:`, img.className);
+            }
+        });
+        console.log(`✅ Vista4: ${changed.length} imágenes modificadas para PDF`);
+        return changed;
+    }
+
+    static restoreImagesVisibility(changed) {
+        console.log(`🔄 Vista4: Restaurando ${changed ? changed.length : 0} imágenes`);
+        if (changed && changed.length > 0) {
+            changed.forEach(({ el, prev }) => {
+                el.style.display = prev;
+                console.log(`↩️ Vista4: Imagen restaurada a display: ${prev}`);
+            });
+        }
+        console.log(`✅ Vista4: Restauración de imágenes completada`);
+    }
+
     constructor() {
         this.data = {};
         this.container = null;
@@ -159,7 +206,32 @@ class Vista4 {
                                                         <div class="color-display-preview" style="background-color: #FFFF00"></div>
                                                     </div>
                                                     <div class="color-palette" id="palette-taller-color-1" style="display: none;">
-                                                        ${this.createColorPaletteHTML()}
+                                                        <div class="color-section">
+                                                            <div class="color-section-title">Colores del tema</div>
+                                                            <div class="color-grid theme-colors">
+                                                                <div class="color-option" style="background-color: #FFFFFF" title="Blanco" onclick="Vista4Instance.selectColorTaller(event, '#FFFFFF')"></div>
+                                                                <div class="color-option" style="background-color: #000000" title="Negro" onclick="Vista4Instance.selectColorTaller(event, '#000000')"></div>
+                                                                <div class="color-option" style="background-color: #404040" title="Gris Oscuro" onclick="Vista4Instance.selectColorTaller(event, '#404040')"></div>
+                                                                <div class="color-option" style="background-color: #1F4E79" title="Azul Oscuro" onclick="Vista4Instance.selectColorTaller(event, '#1F4E79')"></div>
+                                                                <div class="color-option" style="background-color: #4472C4" title="Azul" onclick="Vista4Instance.selectColorTaller(event, '#4472C4')"></div>
+                                                                <div class="color-option" style="background-color: #C5504B" title="Rojo" onclick="Vista4Instance.selectColorTaller(event, '#C5504B')"></div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="color-section">
+                                                            <div class="color-section-title">Colores estándar</div>
+                                                            <div class="color-grid standard-colors">
+                                                                <div class="color-option" style="background-color: #C00000" title="Rojo Oscuro" onclick="Vista4Instance.selectColorTaller(event, '#C00000')"></div>
+                                                                <div class="color-option" style="background-color: #FF0000" title="Rojo" onclick="Vista4Instance.selectColorTaller(event, '#FF0000')"></div>
+                                                                <div class="color-option" style="background-color: #FFC000" title="Naranja" onclick="Vista4Instance.selectColorTaller(event, '#FFC000')"></div>
+                                                                <div class="color-option" style="background-color: #FFFF00" title="Amarillo" onclick="Vista4Instance.selectColorTaller(event, '#FFFF00')"></div>
+                                                                <div class="color-option" style="background-color: #92D050" title="Verde Claro" onclick="Vista4Instance.selectColorTaller(event, '#92D050')"></div>
+                                                                <div class="color-option" style="background-color: #00B050" title="Verde" onclick="Vista4Instance.selectColorTaller(event, '#00B050')"></div>
+                                                                <div class="color-option" style="background-color: #00B0F0" title="Azul Claro" onclick="Vista4Instance.selectColorTaller(event, '#00B0F0')"></div>
+                                                                <div class="color-option" style="background-color: #0070C0" title="Azul" onclick="Vista4Instance.selectColorTaller(event, '#0070C0')"></div>
+                                                                <div class="color-option" style="background-color: #002060" title="Azul Oscuro" onclick="Vista4Instance.selectColorTaller(event, '#002060')"></div>
+                                                                <div class="color-option" style="background-color: #7030A0" title="Púrpura" onclick="Vista4Instance.selectColorTaller(event, '#7030A0')"></div>
+                                                            </div>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
@@ -180,7 +252,32 @@ class Vista4 {
                                                         <div class="color-display-preview" style="background-color: #C5504B"></div>
                                                     </div>
                                                     <div class="color-palette" id="palette-taller-color-2" style="display: none;">
-                                                        ${this.createColorPaletteHTML()}
+                                                        <div class="color-section">
+                                                            <div class="color-section-title">Colores del tema</div>
+                                                            <div class="color-grid theme-colors">
+                                                                <div class="color-option" style="background-color: #FFFFFF" title="Blanco" onclick="Vista4Instance.selectColorTaller(event, '#FFFFFF')"></div>
+                                                                <div class="color-option" style="background-color: #000000" title="Negro" onclick="Vista4Instance.selectColorTaller(event, '#000000')"></div>
+                                                                <div class="color-option" style="background-color: #404040" title="Gris Oscuro" onclick="Vista4Instance.selectColorTaller(event, '#404040')"></div>
+                                                                <div class="color-option" style="background-color: #1F4E79" title="Azul Oscuro" onclick="Vista4Instance.selectColorTaller(event, '#1F4E79')"></div>
+                                                                <div class="color-option" style="background-color: #4472C4" title="Azul" onclick="Vista4Instance.selectColorTaller(event, '#4472C4')"></div>
+                                                                <div class="color-option" style="background-color: #C5504B" title="Rojo" onclick="Vista4Instance.selectColorTaller(event, '#C5504B')"></div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="color-section">
+                                                            <div class="color-section-title">Colores estándar</div>
+                                                            <div class="color-grid standard-colors">
+                                                                <div class="color-option" style="background-color: #C00000" title="Rojo Oscuro" onclick="Vista4Instance.selectColorTaller(event, '#C00000')"></div>
+                                                                <div class="color-option" style="background-color: #FF0000" title="Rojo" onclick="Vista4Instance.selectColorTaller(event, '#FF0000')"></div>
+                                                                <div class="color-option" style="background-color: #FFC000" title="Naranja" onclick="Vista4Instance.selectColorTaller(event, '#FFC000')"></div>
+                                                                <div class="color-option" style="background-color: #FFFF00" title="Amarillo" onclick="Vista4Instance.selectColorTaller(event, '#FFFF00')"></div>
+                                                                <div class="color-option" style="background-color: #92D050" title="Verde Claro" onclick="Vista4Instance.selectColorTaller(event, '#92D050')"></div>
+                                                                <div class="color-option" style="background-color: #00B050" title="Verde" onclick="Vista4Instance.selectColorTaller(event, '#00B050')"></div>
+                                                                <div class="color-option" style="background-color: #00B0F0" title="Azul Claro" onclick="Vista4Instance.selectColorTaller(event, '#00B0F0')"></div>
+                                                                <div class="color-option" style="background-color: #0070C0" title="Azul" onclick="Vista4Instance.selectColorTaller(event, '#0070C0')"></div>
+                                                                <div class="color-option" style="background-color: #002060" title="Azul Oscuro" onclick="Vista4Instance.selectColorTaller(event, '#002060')"></div>
+                                                                <div class="color-option" style="background-color: #7030A0" title="Púrpura" onclick="Vista4Instance.selectColorTaller(event, '#7030A0')"></div>
+                                                            </div>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
@@ -237,17 +334,15 @@ class Vista4 {
                             </div>
                         </div>
                     </div>
-                    
+                </div>
             </div>
         `;
 
-        container.innerHTML = vista4HTML;
-        this.setupEvents();
-        
-        // Establecer instancia global para callbacks
-        window.Vista4Instance = this;
-        
-        console.log('Vista4 renderizada correctamente');
+    container.innerHTML = vista4HTML;
+    this.setupEvents();
+    // Establecer instancia global para callbacks
+    window.Vista4Instance = this;
+    console.log('Vista4 renderizada correctamente');
         } catch (error) {
             console.error('Error al renderizar Vista4:', error);
         }
@@ -390,7 +485,32 @@ class Vista4 {
                         <div class="color-display-preview" style="background-color: #FFFFFF"></div>
                     </div>
                     <div class="color-palette" id="palette-taller-color-${this.colorRowCounter}" style="display: none;">
-                        ${this.createColorPaletteHTML()}
+                        <div class="color-section">
+                            <div class="color-section-title">Colores del tema</div>
+                            <div class="color-grid theme-colors">
+                                <div class="color-option" style="background-color: #FFFFFF" title="Blanco" onclick="Vista4Instance.selectColorTaller(event, '#FFFFFF')"></div>
+                                <div class="color-option" style="background-color: #000000" title="Negro" onclick="Vista4Instance.selectColorTaller(event, '#000000')"></div>
+                                <div class="color-option" style="background-color: #404040" title="Gris Oscuro" onclick="Vista4Instance.selectColorTaller(event, '#404040')"></div>
+                                <div class="color-option" style="background-color: #1F4E79" title="Azul Oscuro" onclick="Vista4Instance.selectColorTaller(event, '#1F4E79')"></div>
+                                <div class="color-option" style="background-color: #4472C4" title="Azul" onclick="Vista4Instance.selectColorTaller(event, '#4472C4')"></div>
+                                <div class="color-option" style="background-color: #C5504B" title="Rojo" onclick="Vista4Instance.selectColorTaller(event, '#C5504B')"></div>
+                            </div>
+                        </div>
+                        <div class="color-section">
+                            <div class="color-section-title">Colores estándar</div>
+                            <div class="color-grid standard-colors">
+                                <div class="color-option" style="background-color: #C00000" title="Rojo Oscuro" onclick="Vista4Instance.selectColorTaller(event, '#C00000')"></div>
+                                <div class="color-option" style="background-color: #FF0000" title="Rojo" onclick="Vista4Instance.selectColorTaller(event, '#FF0000')"></div>
+                                <div class="color-option" style="background-color: #FFC000" title="Naranja" onclick="Vista4Instance.selectColorTaller(event, '#FFC000')"></div>
+                                <div class="color-option" style="background-color: #FFFF00" title="Amarillo" onclick="Vista4Instance.selectColorTaller(event, '#FFFF00')"></div>
+                                <div class="color-option" style="background-color: #92D050" title="Verde Claro" onclick="Vista4Instance.selectColorTaller(event, '#92D050')"></div>
+                                <div class="color-option" style="background-color: #00B050" title="Verde" onclick="Vista4Instance.selectColorTaller(event, '#00B050')"></div>
+                                <div class="color-option" style="background-color: #00B0F0" title="Azul Claro" onclick="Vista4Instance.selectColorTaller(event, '#00B0F0')"></div>
+                                <div class="color-option" style="background-color: #0070C0" title="Azul" onclick="Vista4Instance.selectColorTaller(event, '#0070C0')"></div>
+                                <div class="color-option" style="background-color: #002060" title="Azul Oscuro" onclick="Vista4Instance.selectColorTaller(event, '#002060')"></div>
+                                <div class="color-option" style="background-color: #7030A0" title="Púrpura" onclick="Vista4Instance.selectColorTaller(event, '#7030A0')"></div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -608,23 +728,35 @@ class Vista4 {
      * Obtiene los datos de la tabla de muestra de materiales
      */
     getMuestraMaterialesData() {
-        const contenedor = document.getElementById('contenedorMuestraMateriales');
-        if (!contenedor) return [];
+        try {
+            const contenedor = document.getElementById('contenedorMuestraMateriales');
+            if (!contenedor) {
+                console.warn('Contenedor de muestra de materiales no encontrado');
+                return [];
+            }
 
-        const muestras = contenedor.querySelectorAll('.muestra-item');
-        const data = [];
+            const muestras = contenedor.querySelectorAll('.muestra-item');
+            const data = [];
 
-        muestras.forEach(muestra => {
-            const descripcionInput = muestra.querySelector('.input-descripcion-material');
-            const fotoImg = muestra.querySelector('.material-image');
-            
-            data.push({
-                foto: fotoImg ? fotoImg.src : '',
-                descripcion: descripcionInput ? descripcionInput.value : ''
+            muestras.forEach(muestra => {
+                try {
+                    const descripcionInput = muestra.querySelector('.input-descripcion-material');
+                    const fotoImg = muestra.querySelector('.material-image');
+                    
+                    data.push({
+                        foto: fotoImg ? fotoImg.src : '',
+                        descripcion: descripcionInput ? descripcionInput.value : ''
+                    });
+                } catch (error) {
+                    console.warn('Error procesando muestra de material:', error);
+                }
             });
-        });
-        
-        return data;
+            
+            return data;
+        } catch (error) {
+            console.error('Error en getMuestraMaterialesData:', error);
+            return [];
+        }
     }
 
     /**
@@ -633,33 +765,54 @@ class Vista4 {
     getData() {
         const data = {};
         
-        // Validar que el contenedor existe
-        if (!this.container) return data;
-        
-        // Recopilar datos de inputs generales
-        const inputs = this.container.querySelectorAll('input[data-field], select[data-field], textarea[data-field]');
-        inputs.forEach(input => {
-            if (input.type === 'checkbox') {
-                data[input.dataset.field] = input.checked;
-            } else if (input.type === 'radio') {
-                if (input.checked) {
-                    data[input.dataset.field] = input.value;
-                }
-            } else {
-                data[input.dataset.field] = input.value;
+        try {
+            // Validar que el contenedor existe
+            if (!this.container) {
+                console.warn('Container no disponible en Vista4.getData()');
+                return data;
             }
-        });
+            
+            // Recopilar datos de inputs generales
+            const inputs = this.container.querySelectorAll('input[data-field], select[data-field], textarea[data-field]');
+            inputs.forEach(input => {
+                try {
+                    if (input.type === 'checkbox') {
+                        data[input.dataset.field] = input.checked;
+                    } else if (input.type === 'radio') {
+                        if (input.checked) {
+                            data[input.dataset.field] = input.value;
+                        }
+                    } else {
+                        data[input.dataset.field] = input.value;
+                    }
+                } catch (error) {
+                    console.warn('Error procesando input en Vista4:', error);
+                }
+            });
 
-        // Agregar datos de la tabla de muestra de materiales
-        data.muestraMateriales = this.getMuestraMaterialesData();
-        
-        // Obtener foto principal (base64)
-        const fotoPrincipal = this.container.querySelector('#fotoPrincipal .foto-preview');
-        
-        if (fotoPrincipal && fotoPrincipal.src && !fotoPrincipal.src.includes('data:')) {
-            data.fotoPrincipal = fotoPrincipal.src;
-        } else if (fotoPrincipal && fotoPrincipal.src) {
-            data.fotoPrincipal = fotoPrincipal.src;
+            // Agregar datos de la tabla de muestra de materiales
+            try {
+                data.muestraMateriales = this.getMuestraMaterialesData();
+            } catch (error) {
+                console.warn('Error obteniendo datos de muestra de materiales en Vista4:', error);
+                data.muestraMateriales = [];
+            }
+            
+            // Obtener foto principal (base64)
+            try {
+                const fotoPrincipal = this.container.querySelector('#fotoPrincipal .foto-preview');
+                
+                if (fotoPrincipal && fotoPrincipal.src && !fotoPrincipal.src.includes('data:')) {
+                    data.fotoPrincipal = fotoPrincipal.src;
+                } else if (fotoPrincipal && fotoPrincipal.src) {
+                    data.fotoPrincipal = fotoPrincipal.src;
+                }
+            } catch (error) {
+                console.warn('Error procesando foto principal en Vista4:', error);
+            }
+
+        } catch (error) {
+            console.error('Error general en Vista4.getData():', error);
         }
 
         return data;
@@ -669,7 +822,7 @@ class Vista4 {
      * Carga los datos en la vista
      */
     loadData(data) {
-        if (!data) return;
+        if (!data || !this.container) return;
 
         // Cargar datos de inputs generales
         Object.keys(data).forEach(key => {
@@ -688,13 +841,18 @@ class Vista4 {
         });
 
         // Cargar datos de la tabla de muestra de materiales
-        if (data.muestraMateriales && data.muestraMateriales.length > 0) {
-            this.loadMuestraMaterialesData(data.muestraMateriales);
+        if (data.muestraMateriales && Array.isArray(data.muestraMateriales) && data.muestraMateriales.length > 0) {
+            if (typeof this.loadMuestraMaterialesData === 'function') {
+                this.loadMuestraMaterialesData(data.muestraMateriales);
+            }
         }
 
         // Cargar foto principal
         if (data.fotoPrincipal) {
-            this.mostrarFoto('principal', data.fotoPrincipal);
+            const fotoContainer = this.container.querySelector('#fotoPrincipal .foto-preview');
+            if (fotoContainer) {
+                this.mostrarFoto('principal', data.fotoPrincipal);
+            }
         }
 
         this.data = data;

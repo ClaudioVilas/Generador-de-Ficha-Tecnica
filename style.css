@@ -160,8 +160,44 @@ body {
 .pdf-export .btn-eliminar-ultima,
 .pdf-export .btn-eliminar-material,
 .pdf-export .tabla-controls,
-.pdf-export .accion-column {
+.pdf-export .accion-column,
+.pdf-export .btn-upload,
+.pdf-export .btn-cambiar,
+.pdf-export .btn-eliminar,
+.pdf-export .foto-controls,
+.pdf-export .upload-btn,
+.pdf-export .upload-btn-small,
+.pdf-export .color-palette {
     display: none !important;
+}
+
+/* Mejorar vista de tablas en PDF */
+.pdf-export table {
+    page-break-inside: avoid;
+    border-collapse: collapse;
+}
+
+.pdf-export .vista1-container,
+.pdf-export .vista2-container,
+.pdf-export .vista3-container,
+.pdf-export .vista4-container {
+    max-width: 100%;
+    overflow: visible;
+    padding: 10px;
+}
+
+/* Asegurar que las imágenes se vean bien en PDF */
+.pdf-export .foto-preview {
+    max-width: 100%;
+    height: auto;
+}
+
+/* Mejorar spacing para PDF */
+.pdf-export .seccion-principal,
+.pdf-export .seccion-inferior,
+.pdf-export .contenedor-principal-vista3,
+.pdf-export .fila-materiales-imagenes {
+    page-break-inside: avoid;
 }
 
 /* Fila superior de información general */

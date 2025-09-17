@@ -9,6 +9,54 @@ class Vista2 {
     }
 
     /**
+     * Utilidad para preparar la vista antes de exportar PDF
+     * Llamar antes de html2canvas y restaurar después
+     */
+    prepareForPDFExport() {
+        console.log('📋 Vista2Instance: Preparando para exportación PDF...');
+        if (!this.container) {
+            console.log('⚠️ Vista2Instance: No hay contenedor disponible');
+            return null;
+        }
+        console.log('🔧 Vista2Instance: Llamando método estático forceImagesVisibleForPDF');
+        const result = Vista2.forceImagesVisibleForPDF(this.container);
+        console.log('✅ Vista2Instance: Preparación completada');
+        return result;
+    }
+
+    restoreAfterPDFExport(changed) {
+        console.log('🔄 Vista2Instance: Restaurando después de exportación PDF...');
+        Vista2.restoreImagesVisibility(changed);
+        console.log('✅ Vista2Instance: Restauración completada');
+    }
+
+    static forceImagesVisibleForPDF(container) {
+        const imgs = container.querySelectorAll('.foto-preview');
+        const changed = [];
+        console.log(`🔍 Vista2: Encontradas ${imgs.length} imágenes para hacer visibles`);
+        imgs.forEach(img => {
+            if (img && img.style.display === 'none') {
+                changed.push({ el: img, prev: img.style.display });
+                img.style.display = 'block';
+                console.log(`👁️ Vista2: Imagen hecha visible:`, img.className);
+            }
+        });
+        console.log(`✅ Vista2: ${changed.length} imágenes modificadas para PDF`);
+        return changed;
+    }
+
+    static restoreImagesVisibility(changed) {
+        console.log(`🔄 Vista2: Restaurando ${changed ? changed.length : 0} imágenes`);
+        if (changed && changed.length > 0) {
+            changed.forEach(({ el, prev }) => {
+                el.style.display = prev;
+                console.log(`↩️ Vista2: Imagen restaurada a display: ${prev}`);
+            });
+        }
+        console.log(`✅ Vista2: Restauración de imágenes completada`);
+    }
+
+    /**
      * Renderiza la Vista2 en el contenedor especificado
      * @param {HTMLElement} container - Contenedor donde renderizar
      */
@@ -182,36 +230,53 @@ class Vista2 {
     getData() {
         const data = {};
         
-        // Campos básicos
-        const inputs = this.container.querySelectorAll('[data-field]');
-        inputs.forEach(input => {
-            if (input.type === 'checkbox') {
-                data[input.getAttribute('data-field')] = input.checked;
-            } else {
-                data[input.getAttribute('data-field')] = input.value;
+        try {
+            // Verificar que el contenedor existe
+            if (!this.container) {
+                console.warn('Container no disponible en Vista2.getData()');
+                return data;
             }
-        });
+            
+            // Campos básicos
+            const inputs = this.container.querySelectorAll('[data-field]');
+            inputs.forEach(input => {
+                try {
+                    if (input.type === 'checkbox') {
+                        data[input.getAttribute('data-field')] = input.checked;
+                    } else {
+                        data[input.getAttribute('data-field')] = input.value;
+                    }
+                } catch (error) {
+                    console.warn('Error procesando input en Vista2:', error);
+                }
+            });
 
-        // Obtener fotos (base64)
-        const fotoIzquierda = this.container.querySelector('#fotoIzquierda .foto-preview');
-        const fotoDerecha = this.container.querySelector('#fotoDerecha .foto-preview');
-        
-        if (fotoIzquierda && fotoIzquierda.src && !fotoIzquierda.src.includes('data:')) {
-            data.fotoIzquierda = fotoIzquierda.src;
-        } else if (fotoIzquierda && fotoIzquierda.src) {
-            data.fotoIzquierda = fotoIzquierda.src;
-        }
-        
-        if (fotoDerecha && fotoDerecha.src && !fotoDerecha.src.includes('data:')) {
-            data.fotoDerecha = fotoDerecha.src;
-        } else if (fotoDerecha && fotoDerecha.src) {
-            data.fotoDerecha = fotoDerecha.src;
+            // Obtener fotos (base64)
+            try {
+                const fotoIzquierda = this.container.querySelector('#fotoIzquierda .foto-preview');
+                const fotoDerecha = this.container.querySelector('#fotoDerecha .foto-preview');
+                
+                if (fotoIzquierda && fotoIzquierda.src && !fotoIzquierda.src.includes('data:')) {
+                    data.fotoIzquierda = fotoIzquierda.src;
+                } else if (fotoIzquierda && fotoIzquierda.src) {
+                    data.fotoIzquierda = fotoIzquierda.src;
+                }
+
+                if (fotoDerecha && fotoDerecha.src && !fotoDerecha.src.includes('data:')) {
+                    data.fotoDerecha = fotoDerecha.src;
+                } else if (fotoDerecha && fotoDerecha.src) {
+                    data.fotoDerecha = fotoDerecha.src;
+                }
+            } catch (error) {
+                console.warn('Error procesando fotos en Vista2:', error);
+            }
+
+        } catch (error) {
+            console.error('Error general en Vista2.getData():', error);
         }
 
         return data;
-    }
-
-    /**
+    }    /**
      * Carga datos en la Vista2
      * @param {Object} data - Datos a cargar
      */

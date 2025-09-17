@@ -5,19 +5,35 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ficha Técnica de Producción</title>
     <link rel="stylesheet" href="style.css">
+    <!-- Librerías externas para exportación PDF -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
 <body>
-
-    <!-- Scripts del NavBar -->
+    <!-- 
+        ARQUITECTURA DEL PROYECTO:
+        1. Componentes base (NavBar, ViewManager)
+        2. Vistas individuales (Vista1-4)
+        3. Utilidades (DataManager, PDFExporter)
+        4. Controlador principal (NavBarApp)
+        5. Script de inicialización (script.js)
+    -->
+    
+    <!-- Componentes base del sistema NavBar -->
     <script src="src/components/NavBar.js"></script>
     <script src="src/components/ViewManager.js"></script>
+    
+    <!-- Vistas de la aplicación -->
     <script src="src/views/Vista1.js"></script>
     <script src="src/views/Vista2.js"></script>
     <script src="src/views/Vista3.js"></script>
     <script src="src/views/Vista4.js"></script>
+    
+    <!-- Utilidades del sistema -->
     <script src="src/utils/DataManager.js"></script>
+    <script src="src/utils/PDFExporter.js"></script>
+    
+    <!-- Controlador principal y script de inicialización -->
     <script src="src/NavBarApp.js"></script>
     <script src="script.js"></script>
 </body>

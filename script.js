@@ -1,21 +1,73 @@
-// JavaScript para la Ficha Técnica de Producción
+/**
+ * ═══════════════════════════════════════════════════════════════════════════════
+ * FICHA TÉCNICA DE PRODUCCIÓN - SCRIPT PRINCIPAL
+ * ═══════════════════════════════════════════════════════════════════════════════
+ * 
+ * Este archivo contiene las funciones de inicialización y manejo de eventos
+ * para la aplicación de Ficha Técnica de Producción.
+ * 
+ * ARQUITECTURA GENERAL:
+ * 1. Este script inicializa la aplicación NavBar
+ * 2. La aplicación NavBar gestiona múltiples vistas (Vista1-4)
+ * 3. Cada vista maneja su propia lógica de negocio
+ * 4. DataManager centraliza el guardado/carga de datos
+ * 5. PDFExporter maneja la exportación a PDF
+ * 
+ * FLUJO PRINCIPAL:
+ * 1. DOMContentLoaded → Inicialización automática
+ * 2. NavBarApp se carga con Vista1 por defecto
+ * 3. Usuario interactúa con vistas mediante NavBar
+ * 4. Datos se sincronizan automáticamente
+ * 5. Exportación PDF disponible desde cualquier vista
+ * 
+ * @author Claudio Vilas
+ * @version 1.0
+ * @since 2025
+ */
 
+// ═══════════════════════════════════════════════════════════════════════════════
+// INICIALIZACIÓN PRINCIPAL
+// ═══════════════════════════════════════════════════════════════════════════════
+
+/**
+ * Punto de entrada principal de la aplicación
+ * Se ejecuta cuando el DOM está completamente cargado
+ * 
+ * FLUJO DE INICIALIZACIÓN:
+ * 1. Inicializa funciones de exportación PDF
+ * 2. Configura sistema de guardado/carga
+ * 3. Auto-inicializa la aplicación NavBar
+ * 4. La aplicación queda lista para uso
+ */
 document.addEventListener('DOMContentLoaded', function() {
-    // Inicializar funciones esenciales para el NavBar
+    console.log('🚀 Iniciando Ficha Técnica de Producción...');
+    
+    // Inicializar funciones esenciales
     initPDFExport();
     initSaveLoad();
     
-    // Auto-inicializar NavBar con Vista1 al cargar la página
+    // Auto-inicializar NavBar con Vista1 como vista por defecto
+    // Esto crea la interfaz principal de navegación y carga los datos
     autoInitNavBar();
     
-    console.log('Ficha Técnica de Producción inicializada correctamente');
+    console.log('✅ Ficha Técnica de Producción inicializada correctamente');
 });
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// GESTIÓN DE IMÁGENES
+// ═══════════════════════════════════════════════════════════════════════════════
 
 /**
  * Inicializa la funcionalidad de subida de imágenes
+ * 
+ * NOTA: Esta función es parte del sistema legacy y actualmente no se usa
+ * en el flujo principal. El manejo de imágenes se realiza directamente
+ * en cada vista (Vista1-4) a través de sus propios manejadores.
+ * 
+ * @deprecated Esta función se mantiene por compatibilidad pero no es utilizada
  */
 function initImageUploads() {
-    // Imagen del vestido
+    // Imagen del vestido - sistema legacy
     const uploadVestido = document.getElementById('uploadVestido');
     if (uploadVestido) {
         uploadVestido.addEventListener('change', function(e) {
@@ -23,7 +75,7 @@ function initImageUploads() {
         });
     }
 
-    // Imágenes de materiales existentes
+    // Imágenes de materiales existentes - sistema legacy
     const materialUploads = document.querySelectorAll('input[type="file"][id^="upload"]');
     materialUploads.forEach(uploadElement => {
         if (uploadElement.id !== 'uploadVestido') {
@@ -37,8 +89,19 @@ function initImageUploads() {
 
 /**
  * Maneja la subida y preview de imágenes
+ * 
+ * FUNCIONALIDAD:
+ * 1. Valida el archivo seleccionado (tipo y tamaño)
+ * 2. Convierte la imagen a base64 para preview
+ * 3. Actualiza el elemento de imagen en el DOM
+ * 
+ * VALIDACIONES:
+ * - Solo acepta archivos de imagen
+ * - Tamaño máximo: 5MB
+ * 
  * @param {Event} event - Evento de cambio del input file
  * @param {string} containerId - ID del contenedor donde mostrar la imagen
+ * @returns {void}
  */
 function handleImageUpload(event, containerId) {
     const file = event.target.files[0];
@@ -50,44 +113,71 @@ function handleImageUpload(event, containerId) {
         return;
     }
 
-    // Validar tamaño (máximo 5MB)
+    // Validar tamaño (máximo 5MB para evitar problemas de rendimiento)
     if (file.size > 5 * 1024 * 1024) {
         alert('El archivo es demasiado grande. Por favor selecciona una imagen menor a 5MB.');
         return;
     }
 
+    // Procesar la imagen usando FileReader API
     const reader = new FileReader();
     reader.onload = function(e) {
+        // Buscar el contenedor de destino en el DOM
         const container = document.getElementById(containerId);
         if (container) {
             const img = container.querySelector('img');
             if (img) {
+                // Actualizar la imagen con los datos base64
                 img.src = e.target.result;
                 img.style.display = 'block';
             }
         }
     };
+    // Convertir archivo a URL de datos (base64)
     reader.readAsDataURL(file);
 }
 
+// ═══════════════════════════════════════════════════════════════════════════════
+// SELECTORES DE COLOR (LEGACY)
+// ═══════════════════════════════════════════════════════════════════════════════
+
 /**
- * Inicializa los selectores de color
+ * Inicializa los selectores de color del sistema legacy
+ * 
+ * NOTA: Esta función es parte del sistema original y actualmente no se usa
+ * en el flujo principal NavBar. Cada vista maneja sus propios selectores de color.
+ * 
+ * FUNCIONALIDAD:
+ * - Sincroniza el valor del input color con el fondo visual
+ * - Aplica el color inicial al cargar la página
+ * 
+ * @deprecated Mantenido por compatibilidad, no usado en flujo actual
  */
 function initColorPickers() {
     const colorPickers = document.querySelectorAll('.color-picker');
     colorPickers.forEach(picker => {
+        // Agregar evento para sincronizar color visual con valor
         picker.addEventListener('change', function() {
             // Aplicar el color seleccionado como fondo de la celda
             this.style.backgroundColor = this.value;
         });
         
-        // Aplicar color inicial
+        // Aplicar color inicial al cargar
         picker.style.backgroundColor = picker.value;
     });
 }
 
+// ═══════════════════════════════════════════════════════════════════════════════
+// EXPORTACIÓN PDF
+// ═══════════════════════════════════════════════════════════════════════════════
+
 /**
- * Inicializa la funcionalidad de exportación a PDF
+ * Inicializa la funcionalidad de exportación a PDF del sistema legacy
+ * 
+ * NOTA: En el sistema NavBar actual, la exportación PDF se maneja a través
+ * del PDFExporter.js y DataManager.js. Esta función se mantiene por compatibilidad.
+ * 
+ * @deprecated Utilizar PDFExporter.js en su lugar
  */
 function initPDFExport() {
     const exportBtn = document.getElementById('exportPDF');
@@ -97,26 +187,43 @@ function initPDFExport() {
 }
 
 /**
- * Exporta la ficha técnica a PDF
+ * Exporta la ficha técnica a PDF usando html2canvas + jsPDF
+ * 
+ * PROCESO DE EXPORTACIÓN:
+ * 1. Obtiene el contenedor de la ficha
+ * 2. Aplica estilos específicos para PDF (oculta botones)
+ * 3. Captura el contenido con html2canvas
+ * 4. Genera PDF con jsPDF en formato A4 horizontal
+ * 5. Calcula dimensiones para ajustar contenido
+ * 6. Descarga el archivo con nombre basado en fecha
+ * 
+ * CARACTERÍSTICAS:
+ * - Formato: A4 horizontal (297x210mm)
+ * - Calidad: Alta resolución (scale: 2)
+ * - Nombre archivo: ficha-tecnica-YYYY-MM-DD.pdf
+ * 
+ * @async
+ * @returns {Promise<void>}
+ * @throws {Error} Si hay problemas con las librerías o el DOM
  */
 async function exportToPDF() {
     try {
-        // Mostrar indicador de carga
+        // Mostrar indicador de carga al usuario
         const exportBtn = document.getElementById('exportPDF');
         const originalText = exportBtn.textContent;
         exportBtn.textContent = 'Generando PDF...';
         exportBtn.disabled = true;
 
-        // Obtener el contenedor de la ficha
+        // Obtener el contenedor principal de la ficha
         const fichaContainer = document.getElementById('fichaContainer');
         
-        // Agregar clase para ocultar botones durante la captura
+        // Aplicar clase CSS para ocultar elementos no deseados en PDF
         fichaContainer.classList.add('pdf-export');
         
-        // Esperar un poco para que se apliquen los estilos
+        // Esperar para que se apliquen los estilos CSS
         await new Promise(resolve => setTimeout(resolve, 100));
         
-        // Configurar opciones para html2canvas
+        // Configurar opciones para html2canvas (captura de pantalla)
         const canvas = await html2canvas(fichaContainer, {
             scale: 2, // Mayor resolución
             useCORS: true,
@@ -188,276 +295,25 @@ async function exportToPDF() {
     }
 }
 
-/**
- * Inicializa la funcionalidad de filas dinámicas
- */
-function initDynamicRows() {
-    // Inicializar contadores para IDs únicos
-    window.materialCounter = 1;
-    window.costoCounter = 1;
-    window.corteCounter = 1;
-    window.materialMuestraCounter = 1;
-}
+// ═══════════════════════════════════════════════════════════════════════════════
+// GUARDADO Y CARGA DE DATOS
+// ═══════════════════════════════════════════════════════════════════════════════
 
 /**
- * Agrega una nueva fila a la tabla de materiales
- */
-function agregarFilaMateriales() {
-    const tabla = document.getElementById('tablaMateriales').getElementsByTagName('tbody')[0];
-    const numeroFila = tabla.rows.length + 1;
-    
-    const nuevaFila = tabla.insertRow();
-    nuevaFila.innerHTML = `
-        <td>${numeroFila}</td>
-        <td><input type="text" class="input-celda" placeholder="Descripción"></td>
-        <td><input type="text" class="input-celda" placeholder="Color"></td>
-        <td><input type="text" class="input-celda" placeholder="Material"></td>
-        <td><input type="text" class="input-celda" placeholder="Proveedor"></td>
-        <td><input type="text" class="input-celda" placeholder="Cantidad"></td>
-        <td><input type="text" class="input-celda" placeholder="Costo"></td>
-    `;
-    
-    // Aplicar efectos hover y focus a los nuevos inputs
-    aplicarEfectosInputs(nuevaFila);
-}
-
-/**
- * Agrega una nueva fila a la tabla de costos
- */
-function agregarFilaCostos() {
-    const tabla = document.getElementById('tablaCostos').getElementsByTagName('tbody')[0];
-    const totalRow = tabla.querySelector('.total-row');
-    const numeroFila = tabla.rows.length; // Sin contar la fila total
-    
-    const nuevaFila = tabla.insertRow(tabla.rows.length - 1); // Insertar antes de la fila total
-    nuevaFila.innerHTML = `
-        <td>${numeroFila}</td>
-        <td><input type="text" class="input-celda" placeholder="Descripción"></td>
-        <td><input type="text" class="input-celda" placeholder="Cantidad"></td>
-        <td><input type="text" class="input-celda" placeholder="Precio"></td>
-    `;
-    
-    aplicarEfectosInputs(nuevaFila);
-}
-
-/**
- * Agrega una nueva fila a la tabla de taller de corte
- */
-function agregarFilaCorte() {
-    const tabla = document.getElementById('tablaCorte').getElementsByTagName('tbody')[0];
-    
-    const nuevaFila = tabla.insertRow();
-    nuevaFila.innerHTML = `
-        <td class="color-cell">
-            <input type="color" value="#FFFF00" class="color-picker">
-        </td>
-        <td><input type="number" value="0" class="input-numero"></td>
-        <td><input type="number" value="0" class="input-numero"></td>
-        <td><input type="number" value="0" class="input-numero"></td>
-        <td><input type="number" value="0" class="input-numero"></td>
-        <td><input type="number" value="0" class="input-numero"></td>
-        <td><input type="number" value="0" class="input-numero"></td>
-    `;
-    
-    // Inicializar color picker y eventos
-    const colorPicker = nuevaFila.querySelector('.color-picker');
-    colorPicker.style.backgroundColor = colorPicker.value;
-    colorPicker.addEventListener('change', function() {
-        this.style.backgroundColor = this.value;
-    });
-    
-    // Agregar eventos para cálculo automático
-    const inputs = nuevaFila.querySelectorAll('.input-numero');
-    inputs.forEach(input => {
-        input.addEventListener('input', calculateTotalPrendas);
-    });
-    
-    aplicarEfectosInputs(nuevaFila);
-    calculateTotalPrendas();
-}
-
-/**
- * Agrega un nuevo material a la muestra de materiales
- */
-function agregarMaterial() {
-    const grid = document.getElementById('materialesGrid');
-    const materialId = `material${window.materialMuestraCounter++}`;
-    const uploadId = `upload${materialId}`;
-    
-    const nuevoMaterial = document.createElement('div');
-    nuevoMaterial.className = 'material-item';
-    nuevoMaterial.innerHTML = `
-        <div class="imagen-material" id="${materialId}">
-            <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CiAgPHJlY3Qgd2lkdGg9IjYwIiBoZWlnaHQ9IjYwIiBmaWxsPSIjZjRmNGY0IiBzdHJva2U9IiNjY2MiIHN0cm9rZS13aWR0aD0iMSIvPgogIDx0ZXh0IHg9IjMwIiB5PSIzNSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iIzk5OSIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjEwIj7wn5OFPC90ZXh0Pgo8L3N2Zz4K" alt="Material" class="material-preview">
-            <input type="file" id="${uploadId}" accept="image/*" class="file-input" style="display: none;">
-            <button class="upload-btn-small" onclick="document.getElementById('${uploadId}').click()">+</button>
-        </div>
-        <div class="material-description">
-            <input type="text" placeholder="Descripción del material" class="input-material-desc">
-        </div>
-        <button class="btn-eliminar-material" onclick="eliminarMaterial(this)" title="Eliminar material">-</button>
-    `;
-    
-    grid.appendChild(nuevoMaterial);
-    
-    // Configurar evento de subida de imagen
-    const uploadInput = document.getElementById(uploadId);
-    uploadInput.addEventListener('change', function(e) {
-        handleImageUpload(e, materialId);
-    });
-    
-    aplicarEfectosInputs(nuevoMaterial);
-}
-
-/**
- * Elimina la última fila de una tabla específica
- */
-function eliminarUltimaFila(tablaId) {
-    const tabla = document.getElementById(tablaId).getElementsByTagName('tbody')[0];
-    
-    let filasNormales;
-    if (tablaId === 'tablaCostos') {
-        // Para tabla de costos, excluir la fila total
-        filasNormales = Array.from(tabla.rows).filter(row => !row.classList.contains('total-row'));
-    } else {
-        filasNormales = Array.from(tabla.rows);
-    }
-    
-    // Verificar que no sea la última fila
-    if (filasNormales.length <= 1) {
-        alert('Debe mantener al menos una fila en la tabla.');
-        return;
-    }
-    
-    // Eliminar la última fila normal
-    const ultimaFila = filasNormales[filasNormales.length - 1];
-    tabla.removeChild(ultimaFila);
-    
-    // Renumerar filas si es necesario
-    if (tablaId === 'tablaMateriales' || tablaId === 'tablaCostos') {
-        renumerarFilas(tablaId);
-    }
-    
-    // Recalcular total si es tabla de corte
-    if (tablaId === 'tablaCorte') {
-        calculateTotalPrendas();
-    }
-}
-
-/**
- * Elimina el último material de la muestra
- */
-function eliminarUltimoMaterial() {
-    const grid = document.getElementById('materialesGrid');
-    
-    // Verificar que no sea el último material
-    if (grid.children.length <= 1) {
-        alert('Debe mantener al menos un material en la muestra.');
-        return;
-    }
-    
-    // Eliminar el último elemento
-    const ultimoMaterial = grid.lastElementChild;
-    grid.removeChild(ultimoMaterial);
-}
-
-
-/**
- * Elimina un material de la muestra
- */
-function eliminarMaterial(boton) {
-    const materialItem = boton.closest('.material-item');
-    const grid = document.getElementById('materialesGrid');
-    
-    // Verificar que no sea el último material
-    if (grid.children.length <= 1) {
-        alert('Debe mantener al menos un material en la muestra.');
-        return;
-    }
-    
-    grid.removeChild(materialItem);
-}
-
-/**
- * Renumera las filas de una tabla
- */
-function renumerarFilas(tablaId) {
-    const tabla = document.getElementById(tablaId).getElementsByTagName('tbody')[0];
-    const filas = Array.from(tabla.rows).filter(row => !row.classList.contains('total-row'));
-    
-    filas.forEach((fila, index) => {
-        const numeroCell = fila.cells[0];
-        numeroCell.textContent = index + 1;
-    });
-}
-
-/**
- * Aplica efectos hover y focus a los inputs de una fila
- */
-function aplicarEfectosInputs(elemento) {
-    const inputs = elemento.querySelectorAll('.input-celda, .input-numero, .input-material-desc');
-    inputs.forEach(input => {
-        input.addEventListener('mouseenter', function() {
-            if (!this.matches(':focus')) {
-                this.style.backgroundColor = '#e8e8e8';
-            }
-        });
-        
-        input.addEventListener('mouseleave', function() {
-            if (!this.matches(':focus')) {
-                this.style.backgroundColor = '#f5f5f5';
-            }
-        });
-        
-        input.addEventListener('focus', function() {
-            this.style.backgroundColor = '#ffffff';
-            this.style.boxShadow = '0 0 3px rgba(0, 123, 204, 0.3)';
-        });
-        
-        input.addEventListener('blur', function() {
-            this.style.backgroundColor = '#f5f5f5';
-            this.style.boxShadow = 'none';
-        });
-    });
-}
-
-/**
- * Inicializa cálculos automáticos
- */
-function initAutoCalculations() {
-    // Calcular total de prendas en taller de corte
-    const talleInputs = document.querySelectorAll('#tablaCorte .input-numero');
-    
-    talleInputs.forEach(input => {
-        input.addEventListener('input', calculateTotalPrendas);
-    });
-    
-    // Calcular total inicial
-    calculateTotalPrendas();
-}
-
-/**
- * Calcula el total de prendas automáticamente
- */
-function calculateTotalPrendas() {
-    const talleInputs = document.querySelectorAll('#tablaCorte .input-numero');
-    const totalInput = document.getElementById('totalPrendas');
-    
-    let total = 0;
-    talleInputs.forEach(input => {
-        const value = parseInt(input.value) || 0;
-        total += value;
-    });
-    
-    if (totalInput) {
-        totalInput.value = total;
-    }
-}
-
-/**
- * Inicializa la funcionalidad de guardado y carga
+ * Inicializa la funcionalidad de guardado y carga del sistema legacy
+ * 
+ * NOTA: Esta función configura los event listeners para botones de guardado
+ * y carga del sistema original. En el sistema NavBar actual, estas funciones
+ * se manejan a través del DataManager.
+ * 
+ * FUNCIONALIDAD:
+ * - Conecta botones con funciones de guardado/carga
+ * - Maneja la selección de archivos para cargar
+ * 
+ * @see DataManager.js Para el sistema actual de persistencia
  */
 function initSaveLoad() {
+    // Configurar event listeners para botones del sistema legacy
     const guardarBtn = document.getElementById('guardarDatos');
     const cargarBtn = document.getElementById('cargarDatos');
     const archivoInput = document.getElementById('archivoCargar');
@@ -479,668 +335,483 @@ function initSaveLoad() {
 
 /**
  * Guarda todos los datos de la ficha en un archivo JSON
+ * 
+ * FUNCIONAMIENTO:
+ * 1. Busca la instancia activa del DataManager (múltiples ubicaciones posibles)
+ * 2. Utiliza DataManager.saveAllData() para recopilar y guardar todos los datos
+ * 3. El DataManager maneja la exportación, modal de nombre y descarga
+ * 
+ * INTEGRACIÓN CON SISTEMA NAVBAR:
+ * - Prioriza window.dataManager (instancia global)
+ * - Fallback a window.NavBarDataManager 
+ * - Última opción: buscar en instancia de NavBarApp
+ * 
+ * @async
+ * @returns {Promise<void>}
+ * @throws {Error} Si DataManager no está disponible
+ * @see DataManager.saveAllData() Para implementación completa
  */
 async function guardarFicha() {
     try {
-        const datosCompletos = {
-            // Información general
-            informacionGeneral: {
-                marca: document.querySelector('.info-superior .campo-grupo:nth-child(1) input').value,
-                usuario: document.querySelector('.info-superior .campo-grupo:nth-child(2) input').value,
-                articulo: document.querySelector('.info-superior .campo-grupo:nth-child(3) input').value,
-                rubro: document.querySelector('.info-superior .campo-grupo:nth-child(4) input').value,
-                fichaProduccion: document.querySelector('.info-superior .campo-grupo:nth-child(5) input').value
-            },
-            
-            // Descripción y organización
-            descripcion: document.querySelector('.textarea-descripcion').value,
-            organizacion: document.querySelector('.organizacion-campo input').value,
-            
-            // Tabla de materiales
-            materiales: [],
-            
-            // Tabla de costos
-            costos: [],
-            
-            // Tabla de taller de corte
-            tallerCorte: [],
-            
-            // Muestra de materiales
-            muestraMateriales: [],
-            
-            // Imágenes (como base64)
-            imagenes: {}
-        };
+        console.log('🔄 Iniciando guardado de ficha...');
         
-        // Guardar datos de la tabla de materiales
-        const tablaMateriales = document.getElementById('tablaMateriales');
-        const filasMateriales = tablaMateriales.querySelectorAll('tbody tr');
-        
-        filasMateriales.forEach((fila, index) => {
-            const inputs = fila.querySelectorAll('.input-celda');
-            if (inputs.length >= 6) {
-                datosCompletos.materiales.push({
-                    numero: index + 1,
-                    descripcion: inputs[0].value,
-                    color: inputs[1].value,
-                    material: inputs[2].value,
-                    proveedor: inputs[3].value,
-                    cantidad: inputs[4].value,
-                    costo: inputs[5].value
-                });
-            }
-        });
-        
-        // Guardar datos de la tabla de costos
-        const tablaCostos = document.getElementById('tablaCostos');
-        const filasCostos = tablaCostos.querySelectorAll('tbody tr:not(.total-row)');
-        
-        filasCostos.forEach((fila, index) => {
-            const inputs = fila.querySelectorAll('.input-celda');
-            if (inputs.length >= 3) {
-                datosCompletos.costos.push({
-                    numero: index + 1,
-                    descripcion: inputs[0].value,
-                    cantidad: inputs[1].value,
-                    precio: inputs[2].value
-                });
-            }
-        });
-        
-        // Guardar fila total
-        const totalInput = document.querySelector('.total-input');
-        if (totalInput) {
-            datosCompletos.totalProduccion = totalInput.value;
-        }
-        
-        // Guardar datos del taller de corte
-        const tablaCorte = document.getElementById('tablaCorte');
-        const filasCorte = tablaCorte.querySelectorAll('tbody tr');
-        
-        filasCorte.forEach((fila, index) => {
-            const colorPicker = fila.querySelector('.color-picker');
-            const inputs = fila.querySelectorAll('.input-numero');
-            
-            if (colorPicker && inputs.length >= 6) {
-                datosCompletos.tallerCorte.push({
-                    color: colorPicker.value,
-                    talles: {
-                        xs: inputs[0].value,
-                        s: inputs[1].value,
-                        m: inputs[2].value,
-                        l: inputs[3].value,
-                        xl: inputs[4].value,
-                        xxl: inputs[5].value
-                    }
-                });
-            }
-        });
-        
-        // Guardar total de prendas
-        const totalPrendas = document.getElementById('totalPrendas');
-        if (totalPrendas) {
-            datosCompletos.totalPrendas = totalPrendas.value;
-        }
-        
-        // Guardar muestra de materiales
-        const materialesGrid = document.getElementById('materialesGrid');
-        const itemsMateriales = materialesGrid.querySelectorAll('.material-item');
-        
-        itemsMateriales.forEach((item, index) => {
-            const descripcionInput = item.querySelector('.input-material-desc');
-            const imagen = item.querySelector('.material-preview');
-            
-            if (descripcionInput) {
-                datosCompletos.muestraMateriales.push({
-                    descripcion: descripcionInput.value,
-                    imagen: imagen ? imagen.src : null
-                });
-            }
-        });
-        
-        // Guardar imagen del vestido
-        const imagenVestido = document.querySelector('#imagenVestido img');
-        if (imagenVestido && imagenVestido.src && !imagenVestido.src.includes('data:image/svg+xml')) {
-            datosCompletos.imagenes.vestido = imagenVestido.src;
-        }
-        
-        // Preparar datos para guardar
-        const dataStr = JSON.stringify(datosCompletos, null, 2);
-        
-        // Obtener nombre sugerido basado en los datos del formulario
-        const articulo = datosCompletos.informacionGeneral.articulo || 'Sin-Articulo';
-        const ahora = new Date();
-        const fecha = `${ahora.getFullYear()}-${(ahora.getMonth() + 1).toString().padStart(2, '0')}-${ahora.getDate().toString().padStart(2, '0')}`;
-        const nombreSugerido = `ficha-${articulo}-${fecha}`;
-        
-        // Intentar usar File System Access API si está disponible (navegadores modernos)
-        if ('showSaveFilePicker' in window) {
-            try {
-                const fileHandle = await window.showSaveFilePicker({
-                    suggestedName: `${nombreSugerido}.json`,
-                    types: [{
-                        description: 'Archivos de Ficha Técnica',
-                        accept: {
-                            'application/json': ['.json']
-                        }
-                    }]
-                });
-                
-                const writable = await fileHandle.createWritable();
-                await writable.write(dataStr);
-                await writable.close();
-                
-                alert('✅ Ficha guardada exitosamente en la ubicación seleccionada.');
-                return;
-                
-            } catch (err) {
-                // Si el usuario cancela o hay error, usar método con modal
-                if (err.name !== 'AbortError') {
-                    console.warn('Error con File System Access API:', err);
-                }
+        // Verificar disponibilidad del DataManager en múltiples ubicaciones
+        if (window.dataManager) {
+            console.log('✅ Usando DataManager global...');
+            await window.dataManager.saveAllData();
+        } else if (window.NavBarDataManager) {
+            console.log('✅ Usando NavBarDataManager...');
+            await window.NavBarDataManager.saveAllData();
+        } else {
+            // Fallback: buscar la instancia de NavBarApp
+            const navBarApp = window.navBarApp || window.NavBarApp;
+            if (navBarApp && navBarApp.dataManager) {
+                console.log('Usando DataManager desde NavBarApp...');
+                await navBarApp.dataManager.saveAllData();
+            } else {
+                throw new Error('DataManager no disponible');
             }
         }
         
-        // Mostrar modal personalizado para elegir nombre
-        mostrarModalGuardar(nombreSugerido, dataStr);
+        console.log('Guardado completado exitosamente');
         
     } catch (error) {
-        console.error('Error al guardar la ficha:', error);
-        alert('❌ Error al guardar la ficha. Por favor inténtalo de nuevo.');
+        console.error('Error guardando ficha:', error);
+        alert('Error al guardar la ficha. Por favor inténtalo de nuevo.');
     }
 }
 
 /**
  * Carga los datos de la ficha desde un archivo JSON
+ * 
+ * FUNCIONAMIENTO:
+ * 1. Valida que se haya seleccionado un archivo JSON válido
+ * 2. Lee el contenido del archivo y parsea el JSON
+ * 3. Confirma con el usuario antes de sobreescribir datos existentes
+ * 4. Utiliza DataManager.loadAllData() para cargar los datos
+ * 
+ * INTEGRACIÓN CON SISTEMA NAVBAR:
+ * - Busca DataManager en múltiples ubicaciones posibles
+ * - Maneja errores de parseo y validación de archivos
+ * - Proporciona retroalimentación al usuario
+ * 
+ * @param {Event} event - Evento de change del input file
+ * @returns {void}
+ * @throws {Error} Si el archivo no es válido o DataManager no está disponible
+ * @see DataManager.loadAllData() Para implementación de carga
  */
 function cargarFicha(event) {
-    const archivo = event.target.files[0];
-    if (!archivo) return;
-    
-    if (archivo.type !== 'application/json') {
-        alert('❌ Por favor selecciona un archivo .json válido.');
-        return;
-    }
-    
-    const reader = new FileReader();
-    reader.onload = function(e) {
-        try {
-            const datos = JSON.parse(e.target.result);
-            
-            // Confirmar carga
-            if (!confirm('⚠️ Esto reemplazará todos los datos actuales. ¿Continuar?')) {
-                return;
-            }
-            
-            // Cargar información general
-            if (datos.informacionGeneral) {
-                const info = datos.informacionGeneral;
-                document.querySelector('.info-superior .campo-grupo:nth-child(1) input').value = info.marca || '';
-                document.querySelector('.info-superior .campo-grupo:nth-child(2) input').value = info.usuario || '';
-                document.querySelector('.info-superior .campo-grupo:nth-child(3) input').value = info.articulo || '';
-                document.querySelector('.info-superior .campo-grupo:nth-child(4) input').value = info.rubro || '';
-                document.querySelector('.info-superior .campo-grupo:nth-child(5) input').value = info.fichaProduccion || '';
-            }
-            
-            // Cargar descripción y organización
-            if (datos.descripcion !== undefined) {
-                document.querySelector('.textarea-descripcion').value = datos.descripcion;
-            }
-            if (datos.organizacion !== undefined) {
-                document.querySelector('.organizacion-campo input').value = datos.organizacion;
-            }
-            
-            // Limpiar y cargar tabla de materiales
-            if (datos.materiales && datos.materiales.length > 0) {
-                const tablaMateriales = document.getElementById('tablaMateriales');
-                const tbody = tablaMateriales.querySelector('tbody');
-                tbody.innerHTML = '';
-                
-                datos.materiales.forEach((material, index) => {
-                    const fila = tbody.insertRow();
-                    fila.innerHTML = `
-                        <td>${index + 1}</td>
-                        <td><input type="text" value="${material.descripcion || ''}" class="input-celda"></td>
-                        <td><input type="text" value="${material.color || ''}" class="input-celda"></td>
-                        <td><input type="text" value="${material.material || ''}" class="input-celda"></td>
-                        <td><input type="text" value="${material.proveedor || ''}" class="input-celda"></td>
-                        <td><input type="text" value="${material.cantidad || ''}" class="input-celda"></td>
-                        <td><input type="text" value="${material.costo || ''}" class="input-celda"></td>
-                    `;
-                    aplicarEfectosInputs(fila);
-                });
-            }
-            
-            // Limpiar y cargar tabla de costos
-            if (datos.costos && datos.costos.length > 0) {
-                const tablaCostos = document.getElementById('tablaCostos');
-                const tbody = tablaCostos.querySelector('tbody');
-                tbody.innerHTML = '';
-                
-                datos.costos.forEach((costo, index) => {
-                    const fila = tbody.insertRow();
-                    fila.innerHTML = `
-                        <td>${index + 1}</td>
-                        <td><input type="text" value="${costo.descripcion || ''}" class="input-celda"></td>
-                        <td><input type="text" value="${costo.cantidad || ''}" class="input-celda"></td>
-                        <td><input type="text" value="${costo.precio || ''}" class="input-celda"></td>
-                    `;
-                    aplicarEfectosInputs(fila);
-                });
-                
-                // Agregar fila total
-                const filaTotal = tbody.insertRow();
-                filaTotal.className = 'total-row';
-                filaTotal.innerHTML = `
-                    <td colspan="3"><strong>Total x Prenda</strong></td>
-                    <td><input type="text" value="${datos.totalProduccion || ''}" class="input-celda total-input"></td>
-                `;
-            }
-            
-            // Limpiar y cargar taller de corte
-            if (datos.tallerCorte && datos.tallerCorte.length > 0) {
-                const tablaCorte = document.getElementById('tablaCorte');
-                const tbody = tablaCorte.querySelector('tbody');
-                tbody.innerHTML = '';
-                
-                datos.tallerCorte.forEach((corte) => {
-                    const fila = tbody.insertRow();
-                    fila.innerHTML = `
-                        <td class="color-cell">
-                            <input type="color" value="${corte.color || '#FFFF00'}" class="color-picker">
-                        </td>
-                        <td><input type="number" value="${corte.talles.xs || 0}" class="input-numero"></td>
-                        <td><input type="number" value="${corte.talles.s || 0}" class="input-numero"></td>
-                        <td><input type="number" value="${corte.talles.m || 0}" class="input-numero"></td>
-                        <td><input type="number" value="${corte.talles.l || 0}" class="input-numero"></td>
-                        <td><input type="number" value="${corte.talles.xl || 0}" class="input-numero"></td>
-                        <td><input type="number" value="${corte.talles.xxl || 0}" class="input-numero"></td>
-                    `;
-                    
-                    // Configurar color picker
-                    const colorPicker = fila.querySelector('.color-picker');
-                    colorPicker.style.backgroundColor = colorPicker.value;
-                    colorPicker.addEventListener('change', function() {
-                        this.style.backgroundColor = this.value;
-                    });
-                    
-                    // Configurar eventos de cálculo
-                    const inputs = fila.querySelectorAll('.input-numero');
-                    inputs.forEach(input => {
-                        input.addEventListener('input', calculateTotalPrendas);
-                    });
-                    
-                    aplicarEfectosInputs(fila);
-                });
-                
-                calculateTotalPrendas();
-            }
-            
-            // Cargar total de prendas
-            if (datos.totalPrendas !== undefined) {
-                const totalPrendas = document.getElementById('totalPrendas');
-                if (totalPrendas) {
-                    totalPrendas.value = datos.totalPrendas;
-                }
-            }
-            
-            // Limpiar y cargar muestra de materiales
-            if (datos.muestraMateriales && datos.muestraMateriales.length > 0) {
-                const materialesGrid = document.getElementById('materialesGrid');
-                materialesGrid.innerHTML = '';
-                
-                datos.muestraMateriales.forEach((material, index) => {
-                    const materialId = `material${index + 1}`;
-                    const uploadId = `upload${materialId}`;
-                    
-                    const nuevoMaterial = document.createElement('div');
-                    nuevoMaterial.className = 'material-item';
-                    nuevoMaterial.innerHTML = `
-                        <div class="imagen-material" id="${materialId}">
-                            <img src="${material.imagen || 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CiAgPHJlY3Qgd2lkdGg9IjYwIiBoZWlnaHQ9IjYwIiBmaWxsPSIjZjRmNGY0IiBzdHJva2U9IiNjY2MiIHN0cm9rZS13aWR0aD0iMSIvPgogIDx0ZXh0IHg9IjMwIiB5PSIzNSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iIzk5OSIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjEwIj7wn5OFPC90ZXh0Pgo8L3N2Zz4K'}" alt="Material" class="material-preview">
-                            <input type="file" id="${uploadId}" accept="image/*" class="file-input" style="display: none;">
-                            <button class="upload-btn-small" onclick="document.getElementById('${uploadId}').click()">+</button>
-                        </div>
-                        <div class="material-description">
-                            <input type="text" value="${material.descripcion || ''}" class="input-material-desc">
-                        </div>
-                        <button class="btn-eliminar-material" onclick="eliminarMaterial(this)" title="Eliminar material">-</button>
-                    `;
-                    
-                    materialesGrid.appendChild(nuevoMaterial);
-                    
-                    // Configurar evento de subida de imagen
-                    const uploadInput = document.getElementById(uploadId);
-                    uploadInput.addEventListener('change', function(e) {
-                        handleImageUpload(e, materialId);
-                    });
-                    
-                    aplicarEfectosInputs(nuevoMaterial);
-                });
-                
-                window.materialMuestraCounter = datos.muestraMateriales.length + 1;
-            }
-            
-            // Cargar imagen del vestido
-            if (datos.imagenes && datos.imagenes.vestido) {
-                const imagenVestido = document.querySelector('#imagenVestido img');
-                if (imagenVestido) {
-                    imagenVestido.src = datos.imagenes.vestido;
-                }
-            }
-            
-            alert('✅ Ficha cargada exitosamente.');
-            
-        } catch (error) {
-            console.error('Error al cargar la ficha:', error);
-            alert('❌ Error al cargar la ficha. Verifica que el archivo sea válido.');
-        }
-    };
-    
-    reader.readAsText(archivo);
-    
-    // Limpiar el input para permitir cargar el mismo archivo de nuevo
-    event.target.value = '';
-}
-
-/**
- * Función auxiliar para guardar datos localmente (para futuras expansiones)
- */
-function saveToLocalStorage() {
-    const formData = {};
-    
-    // Guardar todos los inputs de texto
-    const textInputs = document.querySelectorAll('input[type="text"], textarea, input[type="number"]');
-    textInputs.forEach(input => {
-        if (input.id) {
-            formData[input.id] = input.value;
-        }
-    });
-    
-    // Guardar colores
-    const colorInputs = document.querySelectorAll('input[type="color"]');
-    colorInputs.forEach(input => {
-        if (input.id) {
-            formData[input.id] = input.value;
-        }
-    });
-    
-    localStorage.setItem('fichaТecnica', JSON.stringify(formData));
-    console.log('Datos guardados localmente');
-}
-
-/**
- * Función auxiliar para cargar datos desde localStorage (para futuras expansiones)
- */
-function loadFromLocalStorage() {
-    const savedData = localStorage.getItem('fichaТecnica');
-    if (savedData) {
-        const formData = JSON.parse(savedData);
+    try {
+        console.log('🔄 Iniciando carga de ficha...');
         
-        Object.keys(formData).forEach(id => {
-            const element = document.getElementById(id);
-            if (element) {
-                element.value = formData[id];
-            }
-        });
-        
-        console.log('Datos cargados desde localStorage');
-    }
-}
-
-/**
- * Función para limpiar todos los campos (para futuras expansiones)
- */
-function clearAllFields() {
-    if (confirm('¿Estás seguro de que quieres limpiar todos los campos?')) {
-        // Limpiar inputs de texto y números
-        const inputs = document.querySelectorAll('input[type="text"], textarea, input[type="number"]');
-        inputs.forEach(input => {
-            if (!input.classList.contains('keep-value')) {
-                input.value = '';
-            }
-        });
-        
-        // Resetear colores a valores por defecto
-        const colorInputs = document.querySelectorAll('input[type="color"]');
-        colorInputs.forEach(input => {
-            input.value = '#FFFF00'; // Color por defecto
-            input.style.backgroundColor = input.value;
-        });
-        
-        // Limpiar imágenes
-        const images = document.querySelectorAll('.imagen-preview, .material-preview');
-        images.forEach(img => {
-            img.src = img.getAttribute('data-default') || img.src;
-        });
-        
-        console.log('Todos los campos han sido limpiados');
-    }
-}
-
-/**
- * Muestra el modal para elegir el nombre del archivo al guardar
- */
-function mostrarModalGuardar(nombreSugerido, dataStr) {
-    const modal = document.getElementById('modalGuardar');
-    const inputNombre = document.getElementById('nombreArchivo');
-    const btnConfirmar = document.getElementById('confirmarGuardar');
-    const btnCancelar = document.getElementById('cancelarGuardar');
-    const btnCerrar = document.querySelector('.modal-close');
-    
-    // Establecer nombre sugerido
-    inputNombre.value = nombreSugerido;
-    inputNombre.select();
-    
-    // Mostrar modal
-    modal.style.display = 'flex';
-    inputNombre.focus();
-    
-    // Función para cerrar modal
-    function cerrarModal() {
-        modal.style.display = 'none';
-        // Limpiar event listeners
-        btnConfirmar.replaceWith(btnConfirmar.cloneNode(true));
-        document.getElementById('confirmarGuardar').addEventListener('click', () => confirmarGuardado());
-    }
-    
-    // Función para confirmar guardado
-    function confirmarGuardado() {
-        const nombreArchivo = inputNombre.value.trim();
-        if (!nombreArchivo) {
-            alert('⚠️ Por favor ingresa un nombre para el archivo.');
+        const archivo = event.target.files[0];
+        if (!archivo) {
+            console.log('❌ No se seleccionó archivo');
             return;
         }
         
-        const nombreCompleto = nombreArchivo.endsWith('.json') ? nombreArchivo : `${nombreArchivo}.json`;
+        // Validar tipo de archivo
+        if (archivo.type !== 'application/json' && !archivo.name.endsWith('.json')) {
+            alert('❌ Por favor selecciona un archivo .json válido.');
+            console.error('Tipo de archivo inválido:', archivo.type);
+            return;
+        }
         
-        // Crear descarga
-        const blob = new Blob([dataStr], { type: 'application/json' });
-        const url = URL.createObjectURL(blob);
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            try {
+                console.log('📄 Parseando contenido del archivo...');
+                const datos = JSON.parse(e.target.result);
+                
+                // Confirmar carga con el usuario
+                if (!confirm('⚠️ Esto reemplazará todos los datos actuales. ¿Continuar?')) {
+                    console.log('❌ Carga cancelada por usuario');
+                    return;
+                }
+                
+                // Buscar DataManager disponible y cargar datos
+                if (window.dataManager) {
+                    console.log('✅ Usando DataManager global...');
+                    window.dataManager.loadAllData(datos);
+                } else if (window.NavBarDataManager) {
+                    console.log('✅ Usando NavBarDataManager...');
+                    window.NavBarDataManager.loadAllData(datos);
+                } else {
+                    // Fallback: buscar en NavBarApp
+                    const navBarApp = window.navBarApp || window.NavBarApp;
+                    if (navBarApp && navBarApp.dataManager) {
+                        console.log('✅ Usando DataManager desde NavBarApp...');
+                        navBarApp.dataManager.loadAllData(datos);
+                    } else {
+                        throw new Error('DataManager no disponible para cargar datos');
+                    }
+                }
+                
+                console.log('✅ Ficha cargada exitosamente');
+                alert('✅ Ficha cargada exitosamente.');
+                
+            } catch (error) {
+                console.error('❌ Error al cargar la ficha:', error);
+                if (error.name === 'SyntaxError') {
+                    alert('❌ El archivo no contiene un JSON válido. Verifica el formato.');
+                } else {
+                    alert('❌ Error al cargar la ficha. Archivo no válido.');
+                }
+            }
+        };
         
-        const link = document.createElement('a');
-        link.href = url;
-        link.download = nombreCompleto;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        URL.revokeObjectURL(url);
+        // Manejar errores de lectura de archivo
+        reader.onerror = function() {
+            console.error('❌ Error al leer el archivo');
+            alert('❌ Error al leer el archivo.');
+        };
         
-        cerrarModal();
-        alert('✅ Ficha guardada exitosamente. El archivo se ha descargado a tu carpeta de descargas.');
+        reader.readAsText(archivo);
+        
+    } catch (error) {
+        console.error('❌ Error en cargarFicha:', error);
+        alert('❌ Error al procesar el archivo.');
     }
-    
-    // Event listeners
-    btnConfirmar.addEventListener('click', confirmarGuardado);
-    btnCancelar.addEventListener('click', cerrarModal);
-    btnCerrar.addEventListener('click', cerrarModal);
-    
-    // Cerrar con Escape
-    function handleEscape(event) {
-        if (event.key === 'Escape') {
-            cerrarModal();
-            document.removeEventListener('keydown', handleEscape);
-        }
-    }
-    document.addEventListener('keydown', handleEscape);
-    
-    // Confirmar con Enter
-    inputNombre.addEventListener('keydown', function(event) {
-        if (event.key === 'Enter') {
-            confirmarGuardado();
-        }
-    });
-    
-    // Cerrar al hacer clic fuera del modal
-    modal.addEventListener('click', function(event) {
-        if (event.target === modal) {
-            cerrarModal();
-        }
-    });
 }
-
-/**
- * Función para validar campos requeridos (para futuras expansiones)
- */
-function validateRequiredFields() {
-    const requiredFields = document.querySelectorAll('[required]');
-    let isValid = true;
-    
-    requiredFields.forEach(field => {
-        if (!field.value.trim()) {
-            field.style.borderColor = '#ff0000';
-            isValid = false;
-        } else {
-            field.style.borderColor = '';
-        }
-    });
-    
-    return isValid;
-}
-
-// Guardar automáticamente cada 30 segundos (para futuras expansiones)
-setInterval(() => {
-    saveToLocalStorage();
-}, 30000);
-
-// Cargar datos al inicializar (comentado para no interferir con valores por defecto)
-// loadFromLocalStorage();
 
 // ============================================
-// FUNCIONALIDAD NAVBAR
+// FUNCIONES AUXILIARES PARA MANEJO DE ARCHIVOS
+// ============================================
+
+/**
+ * Configuración de eventos para botones de carga y guardado
+ * 
+ * PROPÓSITO:
+ * - Función auxiliar del sistema legacy para manejar botones de guardado/carga
+ * - Configura event listeners para botones específicos del HTML
+ * 
+ * NOTA DE DEPRECACIÓN:
+ * Esta función es principalmente para compatibilidad con el sistema legacy.
+ * El sistema NavBar moderno maneja estos eventos de forma más robusta.
+ * 
+ * @deprecated Usar NavBar system para manejo de eventos más robusto
+ * @returns {void}
+ */
+function setupFileHandlers() {
+    console.log('🔧 Configurando manejadores de archivos legacy...');
+    
+    // Buscar botones con IDs alternativos (legacy compatibility)
+    const guardarBtn = document.getElementById('guardarBtn') || 
+                      document.getElementById('guardarDatos');
+    const cargarBtn = document.getElementById('cargarBtn') || 
+                     document.getElementById('cargarDatos');
+    const archivoInput = document.getElementById('archivoInput') || 
+                        document.getElementById('archivoCargar');
+    
+    if (guardarBtn) {
+        console.log('✅ Configurando botón guardar');
+        guardarBtn.addEventListener('click', guardarFicha);
+    } else {
+        console.warn('⚠️ Botón guardar no encontrado');
+    }
+    
+    if (cargarBtn && archivoInput) {
+        console.log('✅ Configurando botón cargar');
+        cargarBtn.addEventListener('click', function() {
+            archivoInput.click();
+        });
+        archivoInput.addEventListener('change', cargarFicha);
+    } else {
+        console.warn('⚠️ Botón cargar o input archivo no encontrado');
+    }
+}
+
+// ============================================
+// INICIALIZACIÓN DE LA APLICACIÓN
+// ============================================
+
+/**
+ * Función principal de inicialización del sistema legacy
+ * 
+ * PROPÓSITO:
+ * - Inicializa componentes básicos del sistema legacy
+ * - Configura manejadores de archivos y eventos básicos
+ * - Proporciona auto-inicialización del NavBar como fallback
+ * 
+ * ARQUITECTURA:
+ * 1. Setup de manejadores de archivos legacy
+ * 2. Inicialización del toggle del NavBar
+ * 3. Auto-inicialización del sistema NavBar moderno
+ * 
+ * INTEGRACIÓN:
+ * - Esta función actúa como puente entre el sistema legacy y el NavBar moderno
+ * - El sistema NavBar tiene su propia inicialización más robusta
+ * - Esta función se mantiene para compatibilidad hacia atrás
+ * 
+ * @returns {void}
+ * @throws {Error} Si hay problemas en la inicialización
+ * @see NavBarApp.js Para la inicialización principal del sistema moderno
+ */
+function initializeApp() {
+    try {
+        console.log('🚀 Inicializando aplicación legacy...');
+        
+        // 1. Configurar manejo de archivos legacy
+        setupFileHandlers();
+        
+        // 2. Inicializar funcionalidad del NavBar toggle
+        initNavBarToggle();
+        
+        // 3. Auto-inicializar el sistema NavBar moderno como fallback
+        autoInitNavBar();
+        
+        console.log('✅ Aplicación legacy inicializada correctamente');
+        
+    } catch (error) {
+        console.error('❌ Error al inicializar la aplicación legacy:', error);
+        alert('Error al inicializar la aplicación. Recarga la página.');
+    }
+}
+
+// Inicializar cuando el DOM esté listo
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initializeApp);
+} else {
+    initializeApp();
+}
+
+// ============================================
+// FUNCIONALIDAD NAVBAR - SISTEMA MODERNO
 // ============================================
 
 /**
  * Inicializa la funcionalidad de toggle del NavBar
+ * 
+ * PROPÓSITO:
+ * - Configura el botón de alternancia entre sistema legacy y NavBar moderno
+ * - Permite al usuario cambiar entre interfaces
+ * 
+ * FUNCIONAMIENTO:
+ * - Busca el botón con ID 'toggleNavBar'
+ * - Asocia la función toggleNavBarApp al evento click
+ * 
+ * @returns {void}
  */
 function initNavBarToggle() {
+    console.log('🔧 Inicializando toggle del NavBar...');
+    
     const toggleButton = document.getElementById('toggleNavBar');
     if (toggleButton) {
+        console.log('✅ Botón toggle encontrado, configurando evento...');
         toggleButton.addEventListener('click', toggleNavBarApp);
+    } else {
+        console.warn('⚠️ Botón toggleNavBar no encontrado en el DOM');
     }
 }
 
 /**
  * Variable global para controlar la instancia de NavBar
+ * 
+ * GESTIÓN DE ESTADO:
+ * - null: NavBar no inicializado
+ * - NavBarApp instance: NavBar inicializado y disponible
+ * 
+ * @type {NavBarApp|null}
  */
 let navBarAppInstance = null;
 
 /**
- * Alterna entre la ficha original y el NavBar
+ * Alterna entre la ficha original (legacy) y el NavBar moderno
+ * 
+ * FUNCIONAMIENTO:
+ * 1. Verifica si el NavBar está inicializado
+ * 2. Si no está inicializado: crea nueva instancia y la inicializa
+ * 3. Si está inicializado: alterna la visibilidad entre sistemas
+ * 4. Actualiza el texto y estilo del botón según el estado
+ * 
+ * ESTADOS DEL SISTEMA:
+ * - Sistema Legacy activo: Ficha original visible
+ * - Sistema NavBar activo: Interfaz moderna visible
+ * 
+ * @async
+ * @returns {Promise<void>}
+ * @throws {Error} Si hay problemas en la inicialización del NavBar
  */
 async function toggleNavBarApp() {
     const toggleButton = document.getElementById('toggleNavBar');
     
     try {
+        console.log('🔄 Alternando sistema NavBar...');
+        
+        // Verificar si NavBar necesita inicialización
         if (!navBarAppInstance || !navBarAppInstance.isReady()) {
-            // Inicializar NavBar
+            console.log('🚀 Inicializando nuevo NavBar...');
+            
+            // Mostrar estado de carga
             if (toggleButton) {
                 toggleButton.textContent = 'Cargando NavBar...';
                 toggleButton.disabled = true;
             }
             
+            // Crear e inicializar nueva instancia
             navBarAppInstance = new NavBarApp();
             await navBarAppInstance.init();
             
+            console.log('✅ NavBar inicializado exitosamente');
+            
+            // Actualizar botón para mostrar opción de volver
             if (toggleButton) {
                 toggleButton.textContent = '📋 Volver a Ficha Original';
                 toggleButton.style.background = '#dc3545';
+                toggleButton.disabled = false;
             }
             
         } else {
-            // Alternar vista
+            // NavBar ya inicializado - alternar vista
+            console.log('🔄 Alternando vista entre sistemas...');
             navBarAppInstance.toggleOriginalView();
             
+            // Actualizar botón según el estado actual
             if (toggleButton) {
                 const navbarApp = document.getElementById('navbarApp');
                 if (navbarApp && navbarApp.style.display === 'none') {
+                    // Sistema legacy activo
                     toggleButton.textContent = '🚀 Abrir NavBar';
                     toggleButton.style.background = '#6f42c1';
+                    console.log('✅ Cambiado a sistema legacy');
                 } else {
+                    // Sistema NavBar activo
                     toggleButton.textContent = '📋 Volver a Ficha Original';
                     toggleButton.style.background = '#dc3545';
+                    console.log('✅ Cambiado a sistema NavBar');
                 }
             }
         }
         
     } catch (error) {
-        console.error('Error al alternar NavBar:', error);
+        console.error('❌ Error al alternar NavBar:', error);
         
         if (toggleButton) {
-            alert('Error al cargar el NavBar. Revisa la consola para más detalles.');
+            alert('❌ Error al cargar el NavBar. Revisa la consola para más detalles.');
             toggleButton.textContent = '🚀 Abrir NavBar';
             toggleButton.style.background = '#6f42c1';
+            toggleButton.disabled = false;
         }
     } finally {
+        // Asegurar que el botón esté habilitado
         if (toggleButton) {
             toggleButton.disabled = false;
         }
     }
 }
 
+// ============================================
+// FUNCIONES DE UTILIDAD Y DEBUGGING
+// ============================================
+
 /**
- * Función para obtener la instancia del NavBar (para debugging)
+ * Obtiene la instancia actual del NavBar para debugging y acceso externo
+ * 
+ * PROPÓSITO:
+ * - Proporciona acceso a la instancia del NavBar desde la consola
+ * - Útil para debugging y testing
+ * - Permite verificar el estado de inicialización
+ * 
+ * @returns {NavBarApp|null} La instancia actual del NavBar o null si no está inicializado
+ * @example
+ * // En la consola del navegador:
+ * const navbar = getNavBarInstance();
+ * console.log(navbar.isReady());
  */
 function getNavBarInstance() {
     return navBarAppInstance;
 }
 
 /**
- * Función para resetear el NavBar
+ * Resetea la instancia del NavBar y restaura el estado inicial
+ * 
+ * PROPÓSITO:
+ * - Destruye completamente la instancia actual del NavBar
+ * - Restaura el botón toggle a su estado inicial
+ * - Útil para resolución de problemas y testing
+ * 
+ * FUNCIONAMIENTO:
+ * 1. Llama al método destroy() de la instancia NavBar
+ * 2. Resetea la variable global a null
+ * 3. Restaura el texto y estilo del botón toggle
+ * 
+ * @returns {void}
  */
 function resetNavBar() {
+    console.log('🔄 Reseteando NavBar...');
+    
     if (navBarAppInstance) {
-        navBarAppInstance.destroy();
-        navBarAppInstance = null;
+        // Destruir instancia actual
+        try {
+            navBarAppInstance.destroy();
+            console.log('✅ Instancia NavBar destruida');
+        } catch (error) {
+            console.warn('⚠️ Error al destruir NavBar:', error);
+        }
         
-        const toggleButton = document.getElementById('toggleNavBar');
+        navBarAppInstance = null;
+    }
+    
+    // Resetear botón toggle
+    const toggleButton = document.getElementById('toggleNavBar');
+    if (toggleButton) {
         toggleButton.textContent = '🚀 Abrir NavBar';
         toggleButton.style.background = '#6f42c1';
-        
-        console.log('NavBar reseteado');
+        toggleButton.disabled = false;
     }
+    
+    console.log('✅ NavBar reseteado completamente');
 }
 
 /**
  * Auto-inicializa el NavBar con Vista1 al cargar la página
+ * 
+ * PROPÓSITO:
+ * - Proporciona inicialización automática del sistema NavBar
+ * - Facilita el acceso directo al sistema moderno
+ * - Mejora la experiencia del usuario
+ * 
+ * FUNCIONAMIENTO:
+ * 1. Espera un pequeño delay para asegurar que el DOM esté listo
+ * 2. Llama a toggleNavBarApp() para inicializar el NavBar
+ * 3. Maneja errores de inicialización automática
+ * 
+ * NOTA:
+ * - Delay de 100ms para evitar problemas de timing con el DOM
+ * - Esta función es opcional y puede ser deshabilitada
+ * 
+ * @async
+ * @returns {Promise<void>}
  */
 async function autoInitNavBar() {
     try {
-        console.log('Auto-inicializando NavBar con Vista1...');
+        console.log('🚀 Auto-inicializando NavBar con Vista1...');
         
         // Pequeño delay para asegurar que el DOM esté completamente cargado
         setTimeout(async () => {
-            await toggleNavBarApp();
+            try {
+                await toggleNavBarApp();
+                console.log('✅ Auto-inicialización completada');
+            } catch (error) {
+                console.warn('⚠️ Error en auto-inicialización:', error);
+                // No mostrar alert aquí para evitar interrumpir la carga de página
+            }
         }, 100);
         
     } catch (error) {
-        console.error('Error al auto-inicializar NavBar:', error);
+        console.error('❌ Error al configurar auto-inicialización:', error);
     }
 }
 
-// Hacer funciones disponibles globalmente para debugging y NavBar
+// ============================================
+// EXPOSICIÓN GLOBAL PARA DEBUGGING Y ACCESO EXTERNO
+// ============================================
+
+// Hacer funciones disponibles globalmente para debugging, testing y acceso desde NavBar
 window.getNavBarInstance = getNavBarInstance;
 window.resetNavBar = resetNavBar;
+window.guardarFicha = guardarFicha;
+window.cargarFicha = cargarFicha;
 window.toggleNavBarApp = toggleNavBarApp;
 
 // Hacer funciones principales disponibles para el NavBar

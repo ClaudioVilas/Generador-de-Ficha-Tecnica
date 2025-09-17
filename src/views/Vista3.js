@@ -9,6 +9,54 @@ class Vista3 {
     }
 
     /**
+     * Utilidad para preparar la vista antes de exportar PDF
+     * Llamar antes de html2canvas y restaurar después
+     */
+    prepareForPDFExport() {
+        console.log('📋 Vista3Instance: Preparando para exportación PDF...');
+        if (!this.container) {
+            console.log('⚠️ Vista3Instance: No hay contenedor disponible');
+            return null;
+        }
+        console.log('🔧 Vista3Instance: Llamando método estático forceImagesVisibleForPDF');
+        const result = Vista3.forceImagesVisibleForPDF(this.container);
+        console.log('✅ Vista3Instance: Preparación completada');
+        return result;
+    }
+
+    restoreAfterPDFExport(changed) {
+        console.log('🔄 Vista3Instance: Restaurando después de exportación PDF...');
+        Vista3.restoreImagesVisibility(changed);
+        console.log('✅ Vista3Instance: Restauración completada');
+    }
+
+    static forceImagesVisibleForPDF(container) {
+        const imgs = container.querySelectorAll('.foto-preview, .preview-image-vista3');
+        const changed = [];
+        console.log(`🔍 Vista3: Encontradas ${imgs.length} imágenes para hacer visibles`);
+        imgs.forEach(img => {
+            if (img && img.style.display === 'none') {
+                changed.push({ el: img, prev: img.style.display });
+                img.style.display = 'block';
+                console.log(`👁️ Vista3: Imagen hecha visible:`, img.className);
+            }
+        });
+        console.log(`✅ Vista3: ${changed.length} imágenes modificadas para PDF`);
+        return changed;
+    }
+
+    static restoreImagesVisibility(changed) {
+        console.log(`🔄 Vista3: Restaurando ${changed ? changed.length : 0} imágenes`);
+        if (changed && changed.length > 0) {
+            changed.forEach(({ el, prev }) => {
+                el.style.display = prev;
+                console.log(`↩️ Vista3: Imagen restaurada a display: ${prev}`);
+            });
+        }
+        console.log(`✅ Vista3: Restauración de imágenes completada`);
+    }
+
+    /**
      * Genera el HTML para la información general compartida (igual que en index.html)
      */
     getGeneralInfoHTML() {
@@ -242,23 +290,35 @@ class Vista3 {
      * Obtiene los datos de la tabla DESPIECE
      */
     getDespieceData() {
-        const tabla = document.getElementById('tablaDespiece');
-        if (!tabla) return [];
-
-        const filas = tabla.querySelectorAll('tbody tr');
-        const data = [];
-
-        filas.forEach(fila => {
-            const inputs = fila.querySelectorAll('input');
-            if (inputs.length >= 2) {
-                data.push({
-                    descripcion: inputs[0].value,
-                    cantidad: inputs[1].value
-                });
+        try {
+            const tabla = document.getElementById('tablaDespiece');
+            if (!tabla) {
+                console.warn('Tabla DESPIECE no encontrada');
+                return [];
             }
-        });
-        
-        return data;
+
+            const filas = tabla.querySelectorAll('tbody tr');
+            const data = [];
+
+            filas.forEach(fila => {
+                try {
+                    const inputs = fila.querySelectorAll('input');
+                    if (inputs.length >= 2) {
+                        data.push({
+                            descripcion: inputs[0].value || '',
+                            cantidad: inputs[1].value || ''
+                        });
+                    }
+                } catch (error) {
+                    console.warn('Error procesando fila de despiece:', error);
+                }
+            });
+            
+            return data;
+        } catch (error) {
+            console.error('Error en getDespieceData:', error);
+            return [];
+        }
     }
 
     /**
@@ -287,22 +347,46 @@ class Vista3 {
     getData() {
         const data = {};
         
-        // Recopilar datos de inputs generales
-        const inputs = this.container.querySelectorAll('input[data-field], select[data-field], textarea[data-field]');
-        inputs.forEach(input => {
-            data[input.dataset.field] = input.value;
-        });
+        try {
+            // Verificar que el contenedor existe
+            if (!this.container) {
+                console.warn('Container no disponible en Vista3.getData()');
+                return data;
+            }
+            
+            // Recopilar datos de inputs generales
+            const inputs = this.container.querySelectorAll('input[data-field], select[data-field], textarea[data-field]');
+            inputs.forEach(input => {
+                try {
+                    data[input.dataset.field] = input.value;
+                } catch (error) {
+                    console.warn('Error procesando input en Vista3:', error);
+                }
+            });
 
-        // Agregar datos de la tabla DESPIECE
-        data.despiece = this.getDespieceData();
-        
-        // Obtener foto principal (base64)
-        const fotoPrincipal = this.container.querySelector('#fotoPrincipal .foto-preview');
-        
-        if (fotoPrincipal && fotoPrincipal.src && !fotoPrincipal.src.includes('data:')) {
-            data.fotoPrincipal = fotoPrincipal.src;
-        } else if (fotoPrincipal && fotoPrincipal.src) {
-            data.fotoPrincipal = fotoPrincipal.src;
+            // Agregar datos de la tabla DESPIECE
+            try {
+                data.despiece = this.getDespieceData();
+            } catch (error) {
+                console.warn('Error obteniendo datos de despiece en Vista3:', error);
+                data.despiece = [];
+            }
+            
+            // Obtener foto principal (base64)
+            try {
+                const fotoPrincipal = this.container.querySelector('#fotoPrincipal .foto-preview');
+                
+                if (fotoPrincipal && fotoPrincipal.src && !fotoPrincipal.src.includes('data:')) {
+                    data.fotoPrincipal = fotoPrincipal.src;
+                } else if (fotoPrincipal && fotoPrincipal.src) {
+                    data.fotoPrincipal = fotoPrincipal.src;
+                }
+            } catch (error) {
+                console.warn('Error procesando foto principal en Vista3:', error);
+            }
+
+        } catch (error) {
+            console.error('Error general en Vista3.getData():', error);
         }
 
         return data;

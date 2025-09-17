@@ -235,7 +235,17 @@ class DataManager {
             // Asegurar que los datos estén guardados
             this.viewManager.saveCurrentViewData();
 
-            console.log('Librerías verificadas, creando PDF...');
+            // Usar el nuevo PDFExporter
+            if (window.PDFExporter) {
+                console.log('Usando PDFExporter especializado...');
+                const pdfExporter = new window.PDFExporter();
+                pdfExporter.init(this.viewManager);
+                await pdfExporter.exportAllViewsToPDF();
+                return;
+            }
+
+            // Fallback al método anterior solo para emergencias
+            console.log('PDFExporter no disponible, usando método de respaldo...');
             
             // Intentar usar la función original como fallback
             if (typeof window.exportToPDF === 'function') {
@@ -244,60 +254,19 @@ class DataManager {
                 return;
             }
 
-            // Crear nuevo documento PDF
-            const { jsPDF } = window.jspdf;
-            const pdf = new jsPDF('p', 'mm', 'a4');
-            
-            let currentY = 20;
-            const pageHeight = pdf.internal.pageSize.height;
-            const marginBottom = 20;
-
-            // Título general
-            pdf.setFontSize(16);
-            pdf.setFont('helvetica', 'bold');
-            pdf.text('Ficha Técnica de Producción - NavBar', 20, currentY);
-            currentY += 15;
-
-            // Exportar cada vista
-            const vistas = ['vista1', 'vista2', 'vista3', 'vista4'];
-            const titulos = [
-                'Vista 1 - Ficha Principal',
-                'Vista 2 - Especificaciones Técnicas',
-                'Vista 3 - Patrones y Moldes',
-                'Vista 4 - Control de Calidad'
-            ];
-
-            for (let i = 0; i < vistas.length; i++) {
-                const vista = vistas[i];
-                const titulo = titulos[i];
-
-                // Agregar nueva página si no es la primera vista
-                if (i > 0) {
-                    pdf.addPage();
-                    currentY = 20;
-                }
-
-                // Título de la vista
-                pdf.setFontSize(14);
-                pdf.setFont('helvetica', 'bold');
-                pdf.text(titulo, 20, currentY);
-                currentY += 10;
-
-                // Renderizar contenido de la vista
-                currentY = await this.renderViewToPDF(pdf, vista, currentY);
-            }
-
-            // Descargar PDF
-            const timestamp = new Date().toISOString().slice(0, 10);
-            pdf.save(`ficha-navbar-${timestamp}.pdf`);
-            
-            console.log('PDF exportado correctamente');
-            alert('PDF exportado correctamente');
+            throw new Error('No hay método de exportación disponible');
 
         } catch (error) {
             console.error('Error exportando PDF:', error);
             alert('Error al exportar PDF. Revisa la consola para más detalles.');
         }
+    }
+
+    /**
+     * Alias para exportAllViewsToPDF para compatibilidad
+     */
+    async exportToPDF() {
+        return await this.exportAllViewsToPDF();
     }
 
     /**
@@ -390,11 +359,132 @@ class DataManager {
                 this.viewManager.setAllData(parsedData);
                 console.log('Datos cargados desde localStorage');
                 return true;
+            } else {
+                // Si no hay datos guardados, inicializar con valores por defecto
+                console.log('No hay datos guardados, inicializando con valores por defecto...');
+                this.initializeDefaultData();
+                return false;
             }
         } catch (error) {
             console.error('Error cargando desde localStorage:', error);
+            // En caso de error, también inicializar valores por defecto
+            this.initializeDefaultData();
         }
         return false;
+    }
+
+    /**
+     * Inicializa la aplicación con datos por defecto
+     */
+    initializeDefaultData() {
+        if (!this.viewManager) return;
+
+        const defaultData = {
+            vista1: {
+                informacionGeneral: {
+                    marca: 'completar',
+                    usuario: 'completar',
+                    articulo: 'completar',
+                    rubro: 'completar',
+                    fichaProduccion: 'completar'
+                },
+                detallesProducto: {
+                    cliente: 'completar',
+                    entrega: new Date().toISOString().split('T')[0], // Fecha actual
+                    estilo: 'completar',
+                    temporada: 'completar',
+                    coleccion: 'completar',
+                    inspiracion: 'completar',
+                    tecnica: 'completar',
+                    tipoPrenda: 'completar',
+                    tipoManga: 'completar',
+                    tipoCuello: 'completar',
+                    genero: 'completar',
+                    talle: 'completar',
+                    comentarios: 'completar'
+                },
+                descripcion: 'completar',
+                organizacion: 'completar',
+                imagenes: {},
+                materiales: [
+                    {
+                        numero: 1,
+                        descripcion: 'completar',
+                        color: 'completar',
+                        material: 'completar',
+                        proveedor: 'completar',
+                        cantidad: 'completar',
+                        costo: 'completar'
+                    }
+                ]
+            },
+            vista2: {
+                materiales: [
+                    {
+                        numero: 1,
+                        descripcion: 'completar',
+                        color: 'completar',
+                        material: 'completar',
+                        proveedor: 'completar',
+                        cantidad: 'completar',
+                        costo: 'completar'
+                    }
+                ],
+                costos: [
+                    {
+                        numero: 1,
+                        descripcion: 'completar',
+                        cantidad: 'completar',
+                        precio: 'completar'
+                    },
+                    {
+                        numero: 2,
+                        descripcion: 'completar',
+                        cantidad: 'completar',
+                        precio: 'completar'
+                    }
+                ],
+                totalProduccion: 'completar'
+            },
+            vista3: {
+                tallerCorte: [
+                    {
+                        color: '#FFFF00',
+                        talles: {
+                            xs: '0',
+                            s: '0',
+                            m: '0',
+                            l: '0',
+                            xl: '0',
+                            xxl: '0'
+                        }
+                    }
+                ],
+                totalPrendas: '0'
+            },
+            vista4: {
+                controlCalidad: {
+                    fotoLook: null,
+                    fotoMuestra: null,
+                    materiales: [
+                        {
+                            descripcion: 'completar',
+                            imagen: null
+                        }
+                    ]
+                }
+            }
+        };
+
+        try {
+            this.viewManager.setAllData(defaultData);
+            console.log('✅ Datos por defecto inicializados correctamente');
+            
+            // Guardar los datos por defecto en localStorage para futuras sesiones
+            this.saveToLocalStorage();
+        } catch (error) {
+            console.error('Error inicializando datos por defecto:', error);
+        }
     }
 
     /**
@@ -406,6 +496,30 @@ class DataManager {
             console.log('Datos de localStorage eliminados');
         } catch (error) {
             console.error('Error eliminando datos de localStorage:', error);
+        }
+    }
+
+    /**
+     * Resetea la aplicación a los valores por defecto
+     */
+    resetToDefaults() {
+        try {
+            console.log('Reseteando aplicación a valores por defecto...');
+            
+            // Limpiar localStorage
+            this.clearLocalStorage();
+            
+            // Inicializar datos por defecto
+            this.initializeDefaultData();
+            
+            console.log('✅ Aplicación reseteada a valores por defecto');
+            
+            // Mostrar mensaje al usuario
+            alert('Aplicación reseteada a valores por defecto exitosamente.');
+            
+        } catch (error) {
+            console.error('Error reseteando aplicación:', error);
+            alert('Error al resetear la aplicación. Revisa la consola para más detalles.');
         }
     }
 
