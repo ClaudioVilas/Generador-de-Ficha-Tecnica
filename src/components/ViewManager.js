@@ -36,6 +36,9 @@ class ViewManager {
     init(container) {
         this.viewContainer = container;
         this.loadData();
+        this.cleanCorruptedImageData(); // Limpiar datos de imagen corruptos
+        this.cleanVista3TableData(); // Limpiar datos de tabla para empezar con 1 fila
+        this.cleanVista4MaterialsData(); // Limpiar datos de materiales para empezar con 1 fila
         this.showView('vista1'); // Vista por defecto
         console.log('ViewManager inicializado correctamente');
     }
@@ -392,6 +395,94 @@ class ViewManager {
         } catch (error) {
             console.error('Error importando datos:', error);
             throw new Error('Formato de datos inválido');
+        }
+    }
+
+    /**
+     * Limpia datos de imagen corruptos o inconsistentes
+     */
+    cleanCorruptedImageData() {
+        console.log('🧹 ViewManager: Limpiando datos de imagen corruptos...');
+        
+        // Lista de campos de imagen a verificar por vista
+        const imageFields = {
+            vista2: ['fotoIzquierda', 'fotoDerecha'],
+            vista3: ['fotoPrincipal'],
+            vista4: ['fotoPrincipal']
+        };
+
+        let cleaned = false;
+
+        Object.keys(imageFields).forEach(viewName => {
+            if (this.data[viewName]) {
+                imageFields[viewName].forEach(fieldName => {
+                    const fieldValue = this.data[viewName][fieldName];
+                    
+                    // Si el campo existe pero está vacío o es solo espacios en blanco
+                    if (fieldValue !== undefined && (!fieldValue || fieldValue.trim() === '')) {
+                        console.log(`🗑️ ViewManager: Limpiando campo vacío ${viewName}.${fieldName}`);
+                        delete this.data[viewName][fieldName];
+                        cleaned = true;
+                    }
+                });
+            }
+        });
+
+        if (cleaned) {
+            this.saveData();
+            console.log('✅ ViewManager: Datos de imagen limpiados y guardados');
+        } else {
+            console.log('✅ ViewManager: No se encontraron datos corruptos');
+        }
+    }
+
+    /**
+     * Limpia los datos de la tabla despiece de Vista3 para empezar con una sola fila
+     */
+    cleanVista3TableData() {
+        console.log('🧹 ViewManager: Limpiando datos de tabla Vista3...');
+        
+        if (this.data.vista3 && this.data.vista3.despiece) {
+            console.log('🗑️ ViewManager: Limpiando tabla despiece para empezar con 1 fila');
+            delete this.data.vista3.despiece;
+            this.saveData();
+            console.log('✅ ViewManager: Datos de tabla Vista3 limpiados');
+        } else {
+            console.log('✅ ViewManager: No se encontraron datos de tabla Vista3 que limpiar');
+        }
+    }
+
+    /**
+     * Limpia los datos de materiales de Vista4 para empezar con una sola fila
+     */
+    cleanVista4MaterialsData() {
+        console.log('🧹 ViewManager: Limpiando datos de materiales Vista4...');
+        
+        let cleaned = false;
+        
+        if (this.data.vista4) {
+            // Limpiar datos de muestra de materiales
+            if (this.data.vista4.muestraMateriales) {
+                console.log('🗑️ ViewManager: Limpiando datos de muestra de materiales para empezar con 1 fila');
+                delete this.data.vista4.muestraMateriales;
+                cleaned = true;
+            }
+            
+            // Limpiar posibles datos de talles/colores que puedan estar guardados
+            if (this.data.vista4.talles || this.data.vista4.colores || this.data.vista4.tallerCorte) {
+                console.log('🗑️ ViewManager: Limpiando datos de taller de corte para empezar con 1 fila');
+                delete this.data.vista4.talles;
+                delete this.data.vista4.colores;
+                delete this.data.vista4.tallerCorte;
+                cleaned = true;
+            }
+        }
+        
+        if (cleaned) {
+            this.saveData();
+            console.log('✅ ViewManager: Datos de materiales Vista4 limpiados');
+        } else {
+            console.log('✅ ViewManager: No se encontraron datos de materiales Vista4 que limpiar');
         }
     }
 

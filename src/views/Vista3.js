@@ -128,11 +128,6 @@ class Vista3 {
                                     <td><input type="text" value="Falda delantera" placeholder="Descripción de la pieza"></td>
                                     <td><input type="text" value="x1" placeholder="Cantidad"></td>
                                 </tr>
-                                <tr>
-                                    <td>2</td>
-                                    <td><input type="text" placeholder="Descripción de la pieza"></td>
-                                    <td><input type="text" placeholder="Cantidad"></td>
-                                </tr>
                             </tbody>
                         </table>
                         <div class="controles-tabla">
@@ -148,6 +143,17 @@ class Vista3 {
                             <div class="foto-principal">
                                 <!-- CONTENEDOR CON TAMAÑO FIJO - Las imágenes se adaptan sin desbordamiento -->
                                 <div class="foto-upload image-container" id="fotoPrincipal" onclick="console.log('Click detectado, Vista3Instance:', window.Vista3Instance); if(window.Vista3Instance) { Vista3Instance.subirFoto('principal'); } else { console.error('Vista3Instance no disponible'); }" style="cursor: pointer;">
+                                    
+                                    <!-- SVG PLACEHOLDER CUANDO NO HAY IMAGEN -->
+                                    <div class="foto-placeholder" style="display: flex; flex-direction: column; align-items: center; justify-content: center; color: #999; font-size: 14px; text-align: center; width: 100%; height: 100%;">
+                                        <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#ccc" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
+                                            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                                            <circle cx="8.5" cy="8.5" r="1.5"/>
+                                            <polyline points="21,15 16,10 5,21"/>
+                                        </svg>
+                                        <p style="margin: 8px 0 0 0; user-select: none;">Click para subir imagen</p>
+                                    </div>
+                                    
                                     <!-- IMAGEN CON OBJECT-FIT: COVER - Llena todo el contenedor sin márgenes -->
                                     <img class="foto-preview" style="display: none;" src="">
                                     <input type="file" class="file-input" accept="image/*" style="display: none;" data-field="fotoPrincipal">
@@ -168,10 +174,21 @@ class Vista3 {
         container.innerHTML = vista3HTML;
         this.setupEvents();
         
+        // Asegurar estado inicial correcto para contenedores de imagen
+        this.ensureInitialState();
+        
         // Establecer instancia global para callbacks
         window.Vista3Instance = this;
         
         console.log('Vista3 renderizada correctamente');
+    }
+
+    /**
+     * Asegura que todos los contenedores de imagen estén en estado inicial
+     */
+    ensureInitialState() {
+        // Para Vista3 solo hay una imagen: 'principal'
+        this.asegurarEstadoInicial('principal');
     }
 
     /**
@@ -405,15 +422,53 @@ class Vista3 {
             }
         });
 
-        // Cargar datos de la tabla DESPIECE
+        // Cargar datos de la tabla DESPIECE - forzar solo una fila inicial
         if (data.despiece && data.despiece.length > 0) {
-            this.loadDespieceData(data.despiece);
+            // Solo cargar el primer elemento para mantener una sola fila inicial
+            this.loadDespieceData([data.despiece[0]]);
         }
 
         // Cargar foto principal
-        if (data.fotoPrincipal) {
+        if (data.fotoPrincipal && data.fotoPrincipal.trim() !== '') {
             this.mostrarFoto('principal', data.fotoPrincipal);
+        } else {
+            // Asegurar que el contenedor esté en estado inicial limpio
+            this.asegurarEstadoInicial('principal');
         }
+    }
+
+    /**
+     * Asegura que el contenedor esté en estado inicial limpio (solo placeholder visible)
+     * @param {string} lado - 'principal'
+     */
+    asegurarEstadoInicial(lado) {
+        const container = this.container.querySelector(`#foto${lado.charAt(0).toUpperCase() + lado.slice(1)}`);
+        if (!container) return;
+
+        const preview = container.querySelector('.foto-preview');
+        const controls = container.querySelector('.foto-controls');
+        const placeholder = container.querySelector('.foto-placeholder');
+        const input = container.querySelector('.file-input');
+
+        // Forzar estado inicial: solo placeholder visible
+        if (preview) {
+            preview.style.display = 'none';
+            preview.src = '';
+        }
+        if (controls) {
+            controls.style.display = 'none';
+        }
+        if (placeholder) {
+            placeholder.style.display = 'flex';
+        }
+        if (input) {
+            input.value = '';
+        }
+        
+        // Remover clase de "tiene imagen"
+        container.classList.remove('tiene-imagen');
+        
+        console.log(`Vista3: Estado inicial asegurado para ${lado}`);
     }
 
     /**
@@ -506,6 +561,7 @@ class Vista3 {
         const container = this.container.querySelector(`#foto${lado.charAt(0).toUpperCase() + lado.slice(1)}`);
         const preview = container.querySelector('.foto-preview');
         const controls = container.querySelector('.foto-controls');
+        const placeholder = container.querySelector('.foto-placeholder');
 
         // Validar que todos los elementos existen
         if (!container || !preview || !controls) {
@@ -517,6 +573,11 @@ class Vista3 {
             return;
         }
 
+        // Ocultar placeholder y mostrar imagen
+        if (placeholder) {
+            placeholder.style.display = 'none';
+        }
+        
         // Mostrar la imagen
         preview.src = dataUrl;
         preview.style.display = 'block';
@@ -556,11 +617,18 @@ class Vista3 {
         const preview = container.querySelector('.foto-preview');
         const controls = container.querySelector('.foto-controls');
         const input = container.querySelector('.file-input');
+        const placeholder = container.querySelector('.foto-placeholder');
 
-        // Solo eliminar la imagen y ocultar controles - mantener toda la funcionalidad del contenedor
+        // Ocultar imagen y controles
         preview.style.display = 'none';
         preview.src = ''; // Usar src vacío en lugar de SVG
         input.value = '';
+        controls.style.display = 'none';
+
+        // Mostrar placeholder nuevamente
+        if (placeholder) {
+            placeholder.style.display = 'flex';
+        }
 
         // Usar setTimeout para suavizar la transición visual
         setTimeout(() => {

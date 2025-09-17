@@ -147,7 +147,7 @@ const PDF_QUALITY = 0.95; // Calidad PDF (0.1 - 1.0)
 
 La aplicación cuenta con **4 vistas principales** accesibles a través de la barra de navegación:
 
-#### 📝 Vista 1: Información General
+#### Vista 1: Información General
 - **Propósito**: Datos básicos del proyecto y vestuario
 - **Campos principales**:
   - Nombre del proyecto

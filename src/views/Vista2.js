@@ -74,42 +74,46 @@ class Vista2 {
                     <div class="fotos-container">
                         <div class="foto-izquierda">
                             <!-- CONTENEDOR CON TAMAÑO FIJO - Las imágenes se adaptan sin desbordamiento -->
-                            <div class="foto-upload image-container" id="fotoIzquierda">
-                                <div class="foto-placeholder">
-                                    <i class="📷"></i>
-                                    <button type="button" class="btn-upload" onclick="Vista2Instance.subirFoto('izquierda')">
-                                        Subir Imagen
-                                    </button>
-                                </div>
-                                <!-- IMAGEN CON ADAPTACIÓN AUTOMÁTICA: nunca sobrepasa límites del contenedor -->
+                            <div class="foto-upload image-container" id="fotoIzquierda" onclick="console.log('Click detectado, Vista2Instance:', window.Vista2Instance); if(window.Vista2Instance) { Vista2Instance.subirFoto('izquierda'); } else { console.error('Vista2Instance no disponible'); }" style="cursor: pointer;">
+                                <!-- IMAGEN CON OBJECT-FIT: COVER - Llena todo el contenedor sin márgenes -->
+                                <img class="foto-preview" style="display: none;" src="">
                                 <input type="file" class="file-input" accept="image/*" style="display: none;" data-field="fotoIzquierda">
-                                <div class="foto-controls" style="display: none;">
-                                    <button type="button" class="btn-cambiar" onclick="Vista2Instance.subirFoto('izquierda')">
-                                        Cambiar
-                                    </button>
-                                    <button type="button" class="btn-eliminar" onclick="Vista2Instance.eliminarFoto('izquierda')">
-                                        Eliminar
+                                <!-- SVG PLACEHOLDER CUANDO NO HAY IMAGEN -->
+                                <div class="foto-placeholder" style="display: flex; flex-direction: column; align-items: center; justify-content: center; color: #999; font-size: 14px; text-align: center; width: 100%; height: 100%;">
+                                    <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#ccc" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
+                                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                                        <circle cx="8.5" cy="8.5" r="1.5"/>
+                                        <polyline points="21,15 16,10 5,21"/>
+                                    </svg>
+                                    <p style="margin: 8px 0 0 0; user-select: none;">Click para subir imagen</p>
+                                </div>
+                                <!-- BOTONES POSICIONADOS EN BORDE INFERIOR DEL CONTENEDOR -->
+                                <div class="foto-controls vista4-controls" style="display: none;">
+                                    <button type="button" class="btn-eliminar vista4-btn-eliminar" onclick="event.stopPropagation(); Vista2Instance.eliminarFoto('izquierda')">
+                                        Eliminar Foto
                                     </button>
                                 </div>
                             </div>
                         </div>
                         <div class="foto-derecha">
                             <!-- CONTENEDOR CON TAMAÑO FIJO - Las imágenes se adaptan sin desbordamiento -->
-                            <div class="foto-upload image-container" id="fotoDerecha">
-                                <div class="foto-placeholder">
-                                    <i class="📷"></i>
-                                    <button type="button" class="btn-upload" onclick="Vista2Instance.subirFoto('derecha')">
-                                        Subir Imagen
-                                    </button>
-                                </div>
-                                <!-- IMAGEN CON ADAPTACIÓN AUTOMÁTICA: nunca sobrepasa límites del contenedor -->
+                            <div class="foto-upload image-container" id="fotoDerecha" onclick="console.log('Click detectado, Vista2Instance:', window.Vista2Instance); if(window.Vista2Instance) { Vista2Instance.subirFoto('derecha'); } else { console.error('Vista2Instance no disponible'); }" style="cursor: pointer;">
+                                <!-- IMAGEN CON OBJECT-FIT: COVER - Llena todo el contenedor sin márgenes -->
+                                <img class="foto-preview" style="display: none;" src="">
                                 <input type="file" class="file-input" accept="image/*" style="display: none;" data-field="fotoDerecha">
-                                <div class="foto-controls" style="display: none;">
-                                    <button type="button" class="btn-cambiar" onclick="Vista2Instance.subirFoto('derecha')">
-                                        Cambiar
-                                    </button>
-                                    <button type="button" class="btn-eliminar" onclick="Vista2Instance.eliminarFoto('derecha')">
-                                        Eliminar
+                                <!-- SVG PLACEHOLDER CUANDO NO HAY IMAGEN -->
+                                <div class="foto-placeholder" style="display: flex; flex-direction: column; align-items: center; justify-content: center; color: #999; font-size: 14px; text-align: center; width: 100%; height: 100%;">
+                                    <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#ccc" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
+                                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                                        <circle cx="8.5" cy="8.5" r="1.5"/>
+                                        <polyline points="21,15 16,10 5,21"/>
+                                    </svg>
+                                    <p style="margin: 8px 0 0 0; user-select: none;">Click para subir imagen</p>
+                                </div>
+                                <!-- BOTONES POSICIONADOS EN BORDE INFERIOR DEL CONTENEDOR -->
+                                <div class="foto-controls vista4-controls" style="display: none;">
+                                    <button type="button" class="btn-eliminar vista4-btn-eliminar" onclick="event.stopPropagation(); Vista2Instance.eliminarFoto('derecha')">
+                                        Eliminar Foto
                                     </button>
                                 </div>
                             </div>
@@ -122,10 +126,22 @@ class Vista2 {
         container.innerHTML = vista2HTML;
         this.setupEvents();
         
+        // Asegurar estado inicial correcto para contenedores de imagen
+        this.ensureInitialState();
+        
         // Establecer instancia global para callbacks
         window.Vista2Instance = this;
         
         console.log('Vista2 renderizada correctamente');
+    }
+
+    /**
+     * Asegura que todos los contenedores de imagen estén en estado inicial
+     */
+    ensureInitialState() {
+        // Para Vista2 hay dos imágenes: 'izquierda' y 'derecha'
+        this.asegurarEstadoInicial('izquierda');
+        this.asegurarEstadoInicial('derecha');
     }
 
     /**
@@ -192,12 +208,12 @@ class Vista2 {
      * COMPORTAMIENTO DE ADAPTACIÓN DE IMAGEN:
      * =======================================
      * - El contenedor .foto-upload mantiene su tamaño fijo (400px altura)
-     * - La imagen se adapta al contenedor sin deformarse (object-fit: contain)
-     * - Si la imagen es más grande: se reduce proporcionalmente
-     * - Si la imagen es más pequeña: se agranda proporcionalmente
-     * - La imagen siempre se centra en el contenedor (object-position: center)
-     * - El contenedor NUNCA cambia su tamaño según la imagen
-     * - La clase 'image-container' aplicada al elemento garantiza la contención
+     * - La imagen se adapta proporcionalmente al contenedor (object-fit: cover)
+     * - Fotos panorámicas: se recortan para llenar completamente el contenedor
+     * - Fotos verticales: se recortan para llenar completamente el contenedor  
+     * - La imagen llena todo el contenedor sin márgenes (efecto cover)
+     * - El contenedor mantiene sus dimensiones independiente de la imagen cargada
+     * - La clase 'image-container' aplicada garantiza la contención y previene overflow
      * 
      * @param {string} lado - 'izquierda' o 'derecha'
      * @param {string} dataUrl - URL de la imagen en base64
@@ -208,15 +224,45 @@ class Vista2 {
         const preview = container.querySelector('.foto-preview');
         const controls = container.querySelector('.foto-controls');
 
+        // Validar que todos los elementos existen
+        if (!container || !preview || !controls) {
+            console.error('Vista2: Error - elementos no encontrados:', {
+                container: !!container,
+                preview: !!preview,
+                controls: !!controls
+            });
+            return;
+        }
+
+        // Ocultar placeholder y mostrar imagen
         placeholder.style.display = 'none';
         preview.src = dataUrl;
         preview.style.display = 'block';
-        controls.style.display = 'flex';
         
-        // NOTA: La adaptación de la imagen se maneja via CSS con:
-        // - object-fit: contain (imagen completa visible)
-        // - object-position: center (centrada en el contenedor)
-        // - width: 100%, height: 100% (llena el contenedor disponible)
+        // Agregar clase para indicar que tiene imagen (esto activa los estilos CSS)
+        container.classList.add('tiene-imagen');
+        
+        // Forzar la visibilidad de los controles
+        controls.style.display = 'flex';
+        controls.style.visibility = 'visible';
+        controls.style.opacity = '1';
+        controls.style.zIndex = '50';
+
+        // Verificar que el botón eliminar exista y sea visible
+        const btnEliminar = controls.querySelector('.vista4-btn-eliminar');
+        
+        if (btnEliminar) {
+            // APLICAR LOS MISMOS ESTILOS EN LÍNEA QUE USA VISTA4
+            btnEliminar.style.display = 'inline-block';
+            btnEliminar.style.visibility = 'visible';
+            btnEliminar.style.opacity = '1';
+            
+            console.log('Vista2: Botón eliminar configurado como visible (usando estilos Vista4)');
+        } else {
+            console.error('Vista2: Botón eliminar no encontrado');
+        }
+        
+        console.log('Vista2: Imagen mostrada correctamente con controles visibles');
     }
 
     /**
@@ -230,12 +276,24 @@ class Vista2 {
         const controls = container.querySelector('.foto-controls');
         const input = container.querySelector('.file-input');
 
-        placeholder.style.display = 'block';
+        // Solo eliminar la imagen y ocultar controles - mantener toda la funcionalidad del contenedor
         preview.style.display = 'none';
-        preview.src = '';
-        controls.style.display = 'none';
+        preview.src = ''; // Usar src vacío en lugar de SVG
         input.value = '';
 
+        // Mostrar placeholder nuevamente
+        placeholder.style.display = 'flex';
+        
+        // Ocultar controles
+        controls.style.display = 'none';
+
+        // Usar setTimeout para suavizar la transición visual
+        setTimeout(() => {
+            // Remover la clase para volver al estado sin imagen (con fondo y borde)
+            container.classList.remove('tiene-imagen');
+        }, 150); // 150ms de delay para transición suave
+        
+        console.log('Vista2: Imagen eliminada - contenedor listo para nueva imagen');
         this.saveData();
     }
 
@@ -316,16 +374,56 @@ class Vista2 {
         });
 
         // Cargar fotos
-        if (data.fotoIzquierda) {
+        if (data.fotoIzquierda && data.fotoIzquierda.trim() !== '') {
             this.mostrarFoto('izquierda', data.fotoIzquierda);
+        } else {
+            // Asegurar que el contenedor esté en estado inicial limpio
+            this.asegurarEstadoInicial('izquierda');
         }
         
-        if (data.fotoDerecha) {
+        if (data.fotoDerecha && data.fotoDerecha.trim() !== '') {
             this.mostrarFoto('derecha', data.fotoDerecha);
+        } else {
+            // Asegurar que el contenedor esté en estado inicial limpio
+            this.asegurarEstadoInicial('derecha');
         }
 
         this.data = data;
         console.log('Datos cargados en Vista2:', data);
+    }
+
+    /**
+     * Asegura que el contenedor esté en estado inicial limpio (solo placeholder visible)
+     * @param {string} lado - 'izquierda' o 'derecha'
+     */
+    asegurarEstadoInicial(lado) {
+        const container = this.container.querySelector(`#foto${lado.charAt(0).toUpperCase() + lado.slice(1)}`);
+        if (!container) return;
+
+        const preview = container.querySelector('.foto-preview');
+        const controls = container.querySelector('.foto-controls');
+        const placeholder = container.querySelector('.foto-placeholder');
+        const input = container.querySelector('.file-input');
+
+        // Forzar estado inicial: solo placeholder visible
+        if (preview) {
+            preview.style.display = 'none';
+            preview.src = '';
+        }
+        if (controls) {
+            controls.style.display = 'none';
+        }
+        if (placeholder) {
+            placeholder.style.display = 'flex';
+        }
+        if (input) {
+            input.value = '';
+        }
+        
+        // Remover clase de "tiene imagen"
+        container.classList.remove('tiene-imagen');
+        
+        console.log(`Vista2: Estado inicial asegurado para ${lado}`);
     }
 
     /**

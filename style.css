@@ -511,10 +511,12 @@ body {
     border: 1px solid #999;
     border-radius: 4px;
     box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-    z-index: 1000;
+    z-index: 9999 !important;
     padding: 8px;
     min-width: 240px;
     display: none;
+    max-height: 300px;
+    overflow-y: auto;
 }
 
 .color-palette.open {
@@ -698,6 +700,58 @@ body {
 /* Ocultar inputs de archivo */
 .file-input {
     display: none;
+}
+
+/* OCULTAR IMÁGENES VACÍAS QUE APARECEN COMO ICONOS ROTOS */
+img[src=""], 
+img:not([src]), 
+img[src="#"],
+.foto-preview[style*="display: none"] {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    position: absolute !important;
+    top: -9999px !important;
+    left: -9999px !important;
+}
+
+/* REGLA ESPECÍFICA PARA FOTOS PREVIEW VACÍAS EN VISTA2 */
+.vista2-container .foto-preview[src=""],
+.vista2-container .foto-preview:not([src]),
+.vista2-container .foto-preview[style*="display: none"] {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    position: absolute !important;
+    top: -9999px !important;
+    left: -9999px !important;
+    z-index: -1000 !important;
+}
+
+/* REGLA ESPECÍFICA PARA FOTOS PREVIEW VACÍAS EN VISTA3 */
+.vista3-container .foto-preview[src=""],
+.vista3-container .foto-preview:not([src]),
+.vista3-container .foto-preview[style*="display: none"] {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    position: absolute !important;
+    top: -9999px !important;
+    left: -9999px !important;
+    z-index: -1000 !important;
+}
+
+/* REGLA ESPECÍFICA PARA FOTOS PREVIEW VACÍAS EN VISTA4 */
+.vista4-container .foto-preview[src=""],
+.vista4-container .foto-preview:not([src]),
+.vista4-container .foto-preview[style*="display: none"] {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    position: absolute !important;
+    top: -9999px !important;
+    left: -9999px !important;
+    z-index: -1000 !important;
 }
 
 /* Efectos de hover y focus para inputs editables */
@@ -1368,6 +1422,28 @@ body {
     font-size: 14px;
     font-weight: bold;
     margin: 5px 0;
+}
+
+/* REGLAS PARA ESTADO INICIAL CORRECTO - SIEMPRE MOSTRAR PLACEHOLDER */
+.foto-upload:not(.tiene-imagen) .foto-placeholder {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 100% !important;
+    height: 100% !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    z-index: 10 !important;
+}
+
+.foto-upload:not(.tiene-imagen) .foto-preview {
+    display: none !important;
+}
+
+.foto-upload:not(.tiene-imagen) .foto-controls {
+    display: none !important;
 }
 
 .btn-upload {
@@ -2295,12 +2371,13 @@ body {
     border: 1px solid #ddd;
     padding: 15px;
     background: #f8f9fa;
+    overflow: visible;
 }
 
 .tabla-taller-corte {
     background: white;
     border: 2px solid #333;
-    overflow: hidden;
+    overflow: visible;
 }
 
 .fila-header {
@@ -2381,6 +2458,7 @@ body {
 
 .color-selector-taller {
     position: relative;
+    overflow: visible;
 }
 
 .color-display-button {
@@ -2410,8 +2488,10 @@ body {
     border-radius: 4px;
     padding: 10px;
     box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-    z-index: 1000;
+    z-index: 9999 !important;
     min-width: 200px;
+    max-height: 300px;
+    overflow-y: auto;
 }
 
 .color-section {
@@ -3056,6 +3136,22 @@ body {
     opacity: 1 !important;
 }
 
+/* COMPATIBILIDAD VISTA2 - Usar las mismas clases de Vista4 para uniformidad */
+.vista2-container .vista4-controls {
+    position: absolute !important;
+    bottom: 15px !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    display: flex !important;
+    justify-content: center !important;
+    gap: 0 !important;
+    background: transparent !important;
+    padding: 0 !important;
+    z-index: 10 !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
 /* REGLA SUPER ESPECÍFICA PARA BOTONES VISTA4 - Mayor especificidad que .btn-eliminar general */
 .vista4-controls .vista4-btn-eliminar.btn-eliminar {
     /* SOBREESCRIBIR COMPLETAMENTE todos los estilos generales de .btn-eliminar */
@@ -3131,6 +3227,31 @@ body {
 }
 
 .vista3-container .vista4-controls .vista4-btn-eliminar.btn-eliminar:hover {
+    background: #c82333 !important;
+    transform: translateY(-1px) !important;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4) !important;
+}
+
+/* REGLA ADICIONAL DE RESPALDO CON MÁXIMA ESPECIFICIDAD PARA VISTA2 */
+.vista2-container .vista4-controls .vista4-btn-eliminar.btn-eliminar {
+    /* ASEGURAR que Vista2 use los mismos estilos que Vista4 */
+    width: auto !important;
+    height: auto !important;
+    padding: 10px 16px !important;
+    min-width: 120px !important;
+    border-radius: 6px !important;
+    font-size: 14px !important;
+    font-weight: 600 !important;
+    text-align: center !important;
+    white-space: nowrap !important;
+    display: inline-block !important;
+    background: #dc3545 !important;
+    color: #fff !important;
+    opacity: 1 !important;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3) !important;
+}
+
+.vista2-container .vista4-controls .vista4-btn-eliminar.btn-eliminar:hover {
     background: #c82333 !important;
     transform: translateY(-1px) !important;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4) !important;
@@ -3506,4 +3627,72 @@ button.vista3-btn-eliminar:hover {
         min-height: 300px;
         max-height: 300px;
     }
+}
+
+/* ==================== ESTILOS PARA VISTA2 - REPLICANDO VISTA4 ==================== */
+
+/* Contenedor específico para Vista2 - Mismo comportamiento que Vista3 y Vista4 */
+.vista2-container .foto-upload {
+    /* Estructura base del contenedor */
+    position: relative !important;
+    width: 100% !important;
+    height: 400px !important; /* Altura fija como Vista2 original */
+    overflow: hidden !important; /* Evitar que la imagen se desborde */
+    flex-shrink: 0 !important; /* No permitir que se encoja */
+    flex-grow: 0 !important; /* No permitir que crezca */
+    
+    /* Bordes y fondo para cuando NO hay imagen */
+    background: #f8f9fa !important;
+    border: 2px dashed #dee2e6 !important;
+    border-radius: 8px !important;
+    transition: all 0.3s ease !important;
+    
+    /* Cursor pointer para indicar que es clickeable */
+    cursor: pointer !important;
+}
+
+.vista2-container .foto-upload:hover {
+    background: #e9ecef !important;
+    border-color: #007bff !important;
+}
+
+/* Estado cuando hay imagen - usar clase específica */
+.vista2-container .foto-upload.tiene-imagen {
+    background: transparent !important;
+    border: none !important;
+}
+
+.vista2-container .foto-upload.tiene-imagen:hover {
+    background: transparent !important;
+    border: none !important;
+}
+
+/* COMPORTAMIENTO DE IMAGEN EN VISTA2 - IGUAL QUE VISTA4 */
+.vista2-container .foto-upload .foto-preview {
+    /* IMAGEN CON OBJECT-FIT: COVER - Llena todo el contenedor */
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important; /* COVER: recorta para llenar completamente */
+    object-position: center !important; /* Centra el recorte */
+    border-radius: 8px !important;
+    z-index: 1 !important;
+}
+
+/* Ocultar controles cuando NO tiene imagen */
+.vista2-container .foto-upload:not(.tiene-imagen) .foto-controls {
+    opacity: 0 !important;
+    visibility: hidden !important;
+    pointer-events: none !important; /* Evitar clics accidentales */
+}
+
+/* Mostrar controles solo cuando tiene imagen */
+.vista2-container .foto-upload.tiene-imagen .foto-controls {
+    opacity: 1 !important;
+    visibility: visible !important;
+    pointer-events: auto !important;
 }

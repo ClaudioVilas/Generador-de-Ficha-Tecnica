@@ -84,7 +84,7 @@ class Vista4 {
     constructor() {
         this.data = {};
         this.container = null;
-        this.colorRowCounter = 2; // Contador para nuevas filas de color
+        this.colorRowCounter = 1; // Contador para nuevas filas de color (inicia en 1 porque ya hay una fila)
         
         // Definir paleta de colores estilo Excel (igual que Vista1)
         this.colorPalette = {
@@ -186,21 +186,7 @@ class Vista4 {
                                         </div>
                                     </div>
                                     <div class="muestra-descripcion">
-                                        <input type="text" value="Hilo de poliester de color rojo y mostaza" placeholder="Descripción del material" class="input-descripcion-material">
-                                    </div>
-                                </div>
-                                <!-- Muestra 2 -->
-                                <div class="muestra-item">
-                                    <div class="muestra-foto-container">
-                                        <input type="file" accept="image/*" class="input-foto-material-hidden" onchange="Vista4Instance.handleMaterialPhotoUpload(event, this)">
-                                        <!-- CONTENEDOR DE MATERIAL CON TAMAÑO FIJO - Las imágenes se adaptan sin desbordamiento -->
-                                        <div class="foto-muestra-box image-container">
-                                            <button class="btn-agregar-foto" onclick="Vista4Instance.triggerMaterialInput(this)">+</button>
-                                            <div class="foto-preview-muestra"></div>
-                                        </div>
-                                    </div>
-                                    <div class="muestra-descripcion">
-                                        <input type="text" value="Cierre invisible de 35 cm" placeholder="Descripción del material" class="input-descripcion-material">
+                                        <input type="text" value="Descripción del material" placeholder="Descripción del material" class="input-descripcion-material">
                                     </div>
                                 </div>
                             </div>
@@ -231,60 +217,14 @@ class Vista4 {
                                                 <div class="talle-header">XXL</div>
                                             </div>
                                         </div>
-                                        <!-- Fila de color ejemplo 1 (Amarillo) -->
+                                        <!-- Fila de color ejemplo 1 (Blanco) -->
                                         <div class="fila-color" data-color-row="1">
                                             <div class="columna-color">
                                                 <div class="color-selector-taller" data-color-id="taller-color-1">
                                                     <div class="color-display-button" onclick="Vista4Instance.toggleColorPalette('taller-color-1')">
-                                                        <div class="color-display-preview" style="background-color: #FFFF00"></div>
+                                                        <div class="color-display-preview" style="background-color: #FFFFFF"></div>
                                                     </div>
                                                     <div class="color-palette" id="palette-taller-color-1" style="display: none;">
-                                                        <div class="color-section">
-                                                            <div class="color-section-title">Colores del tema</div>
-                                                            <div class="color-grid theme-colors">
-                                                                <div class="color-option" style="background-color: #FFFFFF" title="Blanco" onclick="Vista4Instance.selectColorTaller(event, '#FFFFFF')"></div>
-                                                                <div class="color-option" style="background-color: #000000" title="Negro" onclick="Vista4Instance.selectColorTaller(event, '#000000')"></div>
-                                                                <div class="color-option" style="background-color: #404040" title="Gris Oscuro" onclick="Vista4Instance.selectColorTaller(event, '#404040')"></div>
-                                                                <div class="color-option" style="background-color: #1F4E79" title="Azul Oscuro" onclick="Vista4Instance.selectColorTaller(event, '#1F4E79')"></div>
-                                                                <div class="color-option" style="background-color: #4472C4" title="Azul" onclick="Vista4Instance.selectColorTaller(event, '#4472C4')"></div>
-                                                                <div class="color-option" style="background-color: #C5504B" title="Rojo" onclick="Vista4Instance.selectColorTaller(event, '#C5504B')"></div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="color-section">
-                                                            <div class="color-section-title">Colores estándar</div>
-                                                            <div class="color-grid standard-colors">
-                                                                <div class="color-option" style="background-color: #C00000" title="Rojo Oscuro" onclick="Vista4Instance.selectColorTaller(event, '#C00000')"></div>
-                                                                <div class="color-option" style="background-color: #FF0000" title="Rojo" onclick="Vista4Instance.selectColorTaller(event, '#FF0000')"></div>
-                                                                <div class="color-option" style="background-color: #FFC000" title="Naranja" onclick="Vista4Instance.selectColorTaller(event, '#FFC000')"></div>
-                                                                <div class="color-option" style="background-color: #FFFF00" title="Amarillo" onclick="Vista4Instance.selectColorTaller(event, '#FFFF00')"></div>
-                                                                <div class="color-option" style="background-color: #92D050" title="Verde Claro" onclick="Vista4Instance.selectColorTaller(event, '#92D050')"></div>
-                                                                <div class="color-option" style="background-color: #00B050" title="Verde" onclick="Vista4Instance.selectColorTaller(event, '#00B050')"></div>
-                                                                <div class="color-option" style="background-color: #00B0F0" title="Azul Claro" onclick="Vista4Instance.selectColorTaller(event, '#00B0F0')"></div>
-                                                                <div class="color-option" style="background-color: #0070C0" title="Azul" onclick="Vista4Instance.selectColorTaller(event, '#0070C0')"></div>
-                                                                <div class="color-option" style="background-color: #002060" title="Azul Oscuro" onclick="Vista4Instance.selectColorTaller(event, '#002060')"></div>
-                                                                <div class="color-option" style="background-color: #7030A0" title="Púrpura" onclick="Vista4Instance.selectColorTaller(event, '#7030A0')"></div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="columna-talles-grid">
-                                                <input type="number" class="input-talle" data-talle="XS" min="0" onchange="Vista4Instance.calcularTotalPrendas()">
-                                                <input type="number" class="input-talle" data-talle="S" min="0" onchange="Vista4Instance.calcularTotalPrendas()">
-                                                <input type="number" class="input-talle" data-talle="M" min="0" onchange="Vista4Instance.calcularTotalPrendas()">
-                                                <input type="number" class="input-talle" data-talle="L" min="0" onchange="Vista4Instance.calcularTotalPrendas()">
-                                                <input type="number" class="input-talle" data-talle="XL" min="0" onchange="Vista4Instance.calcularTotalPrendas()">
-                                                <input type="number" class="input-talle" data-talle="XXL" min="0" onchange="Vista4Instance.calcularTotalPrendas()">
-                                            </div>
-                                        </div>
-                                        <!-- Fila de color ejemplo 2 (Rojo) -->
-                                        <div class="fila-color" data-color-row="2">
-                                            <div class="columna-color">
-                                                <div class="color-selector-taller" data-color-id="taller-color-2">
-                                                    <div class="color-display-button" onclick="Vista4Instance.toggleColorPalette('taller-color-2')">
-                                                        <div class="color-display-preview" style="background-color: #C5504B"></div>
-                                                    </div>
-                                                    <div class="color-palette" id="palette-taller-color-2" style="display: none;">
                                                         <div class="color-section">
                                                             <div class="color-section-title">Colores del tema</div>
                                                             <div class="color-grid theme-colors">
@@ -346,8 +286,19 @@ class Vista4 {
                                 <div class="foto-principal">
                                     <!-- CONTENEDOR DE IMAGEN LIMPIO - Sin texto ni íconos innecesarios -->
                                     <div class="foto-upload image-container" id="fotoPrincipal" onclick="Vista4Instance.subirFoto('principal')" style="cursor: pointer;">
+                                        
+                                        <!-- SVG PLACEHOLDER CUANDO NO HAY IMAGEN -->
+                                        <div class="foto-placeholder" style="display: flex; flex-direction: column; align-items: center; justify-content: center; color: #999; font-size: 14px; text-align: center; width: 100%; height: 100%;">
+                                            <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#ccc" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
+                                                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                                                <circle cx="8.5" cy="8.5" r="1.5"/>
+                                                <polyline points="21,15 16,10 5,21"/>
+                                            </svg>
+                                            <p style="margin: 8px 0 0 0; user-select: none;">Click para subir imagen</p>
+                                        </div>
+                                        
                                         <!-- IMAGEN CON OBJECT-FIT: COVER - Llena todo el contenedor sin márgenes -->
-                                        <img class="foto-preview" style="display: none;" src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMSIgaGVpZ2h0PSIxIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjwvc3ZnPg==">
+                                        <img class="foto-preview" style="display: none;" src="">
                                         <input type="file" class="file-input" accept="image/*" style="display: none;" data-field="fotoPrincipal">
                                         <!-- BOTONES POSICIONADOS EN BORDE INFERIOR DEL CONTENEDOR -->
                                         <div class="foto-controls vista4-controls" style="display: none;">
@@ -366,12 +317,24 @@ class Vista4 {
 
     container.innerHTML = vista4HTML;
     this.setupEvents();
+    
+    // Asegurar estado inicial correcto para contenedores de imagen
+    this.ensureInitialState();
+    
     // Establecer instancia global para callbacks
     window.Vista4Instance = this;
     console.log('Vista4 renderizada correctamente');
         } catch (error) {
             console.error('Error al renderizar Vista4:', error);
         }
+    }
+
+    /**
+     * Asegura que todos los contenedores de imagen estén en estado inicial
+     */
+    ensureInitialState() {
+        // Para Vista4 solo hay una imagen: 'principal'
+        this.asegurarEstadoInicial('principal');
     }
 
     /**
@@ -787,6 +750,7 @@ class Vista4 {
         const container = this.container.querySelector(`#foto${lado.charAt(0).toUpperCase() + lado.slice(1)}`);
         const preview = container.querySelector('.foto-preview');
         const controls = container.querySelector('.foto-controls');
+        const placeholder = container.querySelector('.foto-placeholder');
 
         // Validar que todos los elementos existen
         if (!container || !preview || !controls) {
@@ -796,6 +760,11 @@ class Vista4 {
                 controls: !!controls
             });
             return;
+        }
+
+        // Ocultar placeholder y mostrar imagen
+        if (placeholder) {
+            placeholder.style.display = 'none';
         }
 
         preview.src = dataUrl;
@@ -831,13 +800,19 @@ class Vista4 {
         const preview = container.querySelector('.foto-preview');
         const controls = container.querySelector('.foto-controls');
         const input = container.querySelector('.file-input');
+        const placeholder = container.querySelector('.foto-placeholder');
 
-        // Solo eliminar la imagen y ocultar controles - mantener toda la funcionalidad del contenedor
+        // Ocultar imagen y controles
         preview.style.display = 'none';
-        preview.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMSIgaGVpZ2h0PSIxIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjwvc3ZnPg==';
+        preview.src = '';
         controls.style.display = 'none';
         controls.style.visibility = 'hidden'; // Forzar ocultación adicional por si hay CSS con !important
         input.value = '';
+
+        // Mostrar placeholder nuevamente
+        if (placeholder) {
+            placeholder.style.display = 'flex';
+        }
 
         // Remover la clase para volver al estado sin imagen (con fondo y borde)
         container.classList.remove('tiene-imagen');
@@ -987,23 +962,61 @@ class Vista4 {
             }
         });
 
-        // Cargar datos de la tabla de muestra de materiales
+        // Cargar datos de la tabla de muestra de materiales - forzar solo una fila inicial
         if (data.muestraMateriales && Array.isArray(data.muestraMateriales) && data.muestraMateriales.length > 0) {
             if (typeof this.loadMuestraMaterialesData === 'function') {
-                this.loadMuestraMaterialesData(data.muestraMateriales);
+                // Solo cargar el primer elemento para mantener una sola fila inicial
+                this.loadMuestraMaterialesData([data.muestraMateriales[0]]);
             }
         }
 
         // Cargar foto principal
-        if (data.fotoPrincipal) {
+        if (data.fotoPrincipal && data.fotoPrincipal.trim() !== '') {
             const fotoContainer = this.container.querySelector('#fotoPrincipal .foto-preview');
             if (fotoContainer) {
                 this.mostrarFoto('principal', data.fotoPrincipal);
             }
+        } else {
+            // Asegurar que el contenedor esté en estado inicial limpio
+            this.asegurarEstadoInicial('principal');
         }
 
         this.data = data;
         console.log('Datos cargados en Vista4:', data);
+    }
+
+    /**
+     * Asegura que el contenedor esté en estado inicial limpio (solo placeholder visible)
+     * @param {string} lado - 'principal'
+     */
+    asegurarEstadoInicial(lado) {
+        const container = this.container.querySelector(`#foto${lado.charAt(0).toUpperCase() + lado.slice(1)}`);
+        if (!container) return;
+
+        const preview = container.querySelector('.foto-preview');
+        const controls = container.querySelector('.foto-controls');
+        const placeholder = container.querySelector('.foto-placeholder');
+        const input = container.querySelector('.file-input');
+
+        // Forzar estado inicial: solo placeholder visible
+        if (preview) {
+            preview.style.display = 'none';
+            preview.src = '';
+        }
+        if (controls) {
+            controls.style.display = 'none';
+        }
+        if (placeholder) {
+            placeholder.style.display = 'flex';
+        }
+        if (input) {
+            input.value = '';
+        }
+        
+        // Remover clase de "tiene imagen"
+        container.classList.remove('tiene-imagen');
+        
+        console.log(`Vista4: Estado inicial asegurado para ${lado}`);
     }
 
     /**
