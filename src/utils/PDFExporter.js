@@ -45,9 +45,9 @@ class PDFExporter {
             // Guardar datos de la vista actual antes de proceder
             this.viewManager.saveCurrentViewData();
 
-            // Crear documento PDF
+            // Crear documento PDF en orientación horizontal
             const { jsPDF } = window.jspdf;
-            const pdf = new jsPDF('p', 'mm', 'a4');
+            const pdf = new jsPDF('l', 'mm', 'a4');
             
             // Configurar vistas a exportar
             const vistas = [
