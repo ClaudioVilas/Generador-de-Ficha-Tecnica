@@ -932,6 +932,10 @@ class Vista4 {
                     if (element.value === data[key]) {
                         element.checked = true;
                     }
+                } else if (element.type === 'file') {
+                    // IMPORTANTE: No se puede asignar valor a inputs de tipo file
+                    // Los archivos se manejan por separado usando Base64 en imágenes
+                    console.log(`Vista4: Omitiendo asignación de valor a input file para campo: ${key}`);
                 } else {
                     element.value = data[key] || '';
                 }
