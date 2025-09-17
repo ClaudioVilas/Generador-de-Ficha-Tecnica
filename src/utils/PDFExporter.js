@@ -1,5 +1,10 @@
 /**
- * PDFExporter - Manejador especializado para exportación a PDF
+ * PDFExporter - Manejador especializado pa            const vistas = [
+                { name: 'vista1', title: 'Vista 1' },
+                { name: 'vista2', title: 'Vista 2' },
+                { name: 'vista3', title: 'Vista 3' },
+                { name: 'vista4', title: 'Vista 4' }
+            ];ortación a PDF
  * Genera PDF con múltiples páginas, una por cada vista
  */
 class PDFExporter {
