@@ -402,7 +402,13 @@ class Vista3 {
         Object.keys(data).forEach(key => {
             const element = this.container.querySelector(`[data-field="${key}"]`);
             if (element) {
-                element.value = data[key] || '';
+                if (element.type === 'file') {
+                    // IMPORTANTE: No se puede asignar valor a inputs de tipo file
+                    // Los archivos se manejan por separado usando Base64 en imágenes
+                    console.log(`Vista3: Omitiendo asignación de valor a input file para campo: ${key}`);
+                } else {
+                    element.value = data[key] || '';
+                }
             }
         });
 

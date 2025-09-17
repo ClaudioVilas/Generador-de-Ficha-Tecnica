@@ -289,6 +289,10 @@ class Vista2 {
             if (input) {
                 if (input.type === 'checkbox') {
                     input.checked = data[key];
+                } else if (input.type === 'file') {
+                    // IMPORTANTE: No se puede asignar valor a inputs de tipo file
+                    // Los archivos se manejan por separado usando Base64 en imágenes
+                    console.log(`Vista2: Omitiendo asignación de valor a input file para campo: ${key}`);
                 } else {
                     input.value = data[key];
                 }
