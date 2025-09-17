@@ -51,10 +51,10 @@ class PDFExporter {
             
             // Configurar vistas a exportar
             const vistas = [
-                { name: 'vista1', title: 'Vista 1 - Detalle General' },
-                { name: 'vista2', title: 'Vista 2 - Especificaciones Técnicas' },
-                { name: 'vista3', title: 'Vista 3 - Patrones y Moldes' },
-                { name: 'vista4', title: 'Vista 4 - Control de Calidad' }
+                { name: 'vista1', title: 'Vista 1' },
+                { name: 'vista2', title: 'Vista 2' },
+                { name: 'vista3', title: 'Vista 3' },
+                { name: 'vista4', title: 'Vista 4' }
             ];
 
             // Página de título
