@@ -1,6 +1,37 @@
 /**
- * Vista4 - Control de Calidad y Aprobación
+ * Vista4 - Planificación de Corte
  * Maneja el control de calidad, acabados finales y aprobaciones
+ * 
+ * ESTRATEGIA DE MANEJO DE IMÁGENES:
+ * ===================================
+ * Esta vista implementa un patrón específico para manejar imágenes que resuelve
+ * múltiples problemas técnicos:
+ * 
+ * 1. PROBLEMA ORIGINAL: InvalidStateError
+ *    - Los elementos <input type="file"> no pueden tener su value asignado programáticamente
+ *    - Esto causaba errores al cargar proyectos guardados
+ * 
+ * 2. SOLUCIÓN IMPLEMENTADA: DataURL (Base64)
+ *    - Las imágenes se convierten inmediatamente a Base64 usando FileReader
+ *    - Se almacenan como src de elementos <img>, NO en los file inputs
+ *    - Los file inputs solo se usan para la selección inicial del archivo
+ * 
+ * 3. BENEFICIOS DE ESTE ENFOQUE:
+ *    - ✅ Compatible con html2canvas (las imágenes Base64 se exportan correctamente en PDF)
+ *    - ✅ Sin InvalidStateError al cargar datos guardados
+ *    - ✅ Persistencia completa en localStorage
+ *    - ✅ Funciona offline sin dependencias de archivos externos
+ *    - ✅ Imágenes siempre disponibles para visualización y exportación
+ * 
+ * 4. FLUJO TÉCNICO:
+ *    [Usuario selecciona archivo] → [FileReader convierte a Base64] → 
+ *    [Se muestra en <img>] → [Se guarda Base64 en DataManager] → 
+ *    [Al cargar: se restaura Base64 directamente en <img>]
+ * 
+ * MÉTODOS CLAVE:
+ * - handleMaterialPhotoUpload(): Convierte archivos a Base64
+ * - loadMuestraMaterialesData(): Restaura imágenes Base64 sin tocar file inputs
+ * - getMuestraMaterialesData(): Recopila datos Base64 para persistencia
  */
 class Vista4 {
     /**
@@ -597,6 +628,24 @@ class Vista4 {
     /**
      * Maneja la carga de fotos para materiales individuales
      */
+    /**
+     * Maneja la carga de fotos de materiales
+     * 
+     * FLUJO TÉCNICO IMPORTANTE:
+     * 1. El usuario selecciona un archivo usando <input type="file">
+     * 2. El archivo se convierte inmediatamente a DataURL (Base64) usando FileReader
+     * 3. El DataURL se almacena como src de un elemento <img>
+     * 4. Los datos se guardan en formato Base64, NO como referencia al archivo
+     * 
+     * VENTAJAS DE ESTE ENFOQUE:
+     * - Compatible con html2canvas para exportación PDF (las imágenes Base64 se renderizan correctamente)
+     * - No hay InvalidStateError al cargar datos guardados (no se intenta asignar valores a file inputs)
+     * - Las imágenes persisten en el localStorage sin problemas de rutas de archivo
+     * - Funciona offline sin dependencias de archivos externos
+     * 
+     * @param {Event} event - Evento de cambio del input file
+     * @param {HTMLInputElement} input - Elemento input que disparó el evento
+     */
     handleMaterialPhotoUpload(event, input) {
         const file = event.target.files[0];
         if (!file) return;
@@ -615,25 +664,45 @@ class Vista4 {
 
         const reader = new FileReader();
         reader.onload = (e) => {
+            // NOTA: e.target.result contiene el DataURL (Base64) de la imagen
+            // Este formato es compatible con html2canvas y se puede guardar en localStorage
+            const base64Image = e.target.result;
+            
             const container = input.closest('.muestra-foto-container');
             const previewDiv = container.querySelector('.foto-preview-muestra');
             const botonAgregar = container.querySelector('.btn-agregar-foto');
             
+            // Crear elemento img con el Base64 como src
             previewDiv.innerHTML = `
-                <img src="${e.target.result}" alt="Material" class="material-image">
+                <img src="${base64Image}" alt="Material" class="material-image">
                 <button class="btn-remove-material" onclick="Vista4Instance.removeMaterialPhoto(this)">×</button>
             `;
             
             // Ocultar el botón + cuando hay imagen
             botonAgregar.style.display = 'none';
             
+            // Guardar datos (esto almacenará el Base64 en el DataManager)
             this.saveData();
+            
+            console.log('Vista4: Imagen de material cargada y convertida a Base64');
         };
+        
+        // Iniciar conversión a DataURL (Base64)
         reader.readAsDataURL(file);
     }
 
     /**
      * Elimina la foto de un material
+     * 
+     * FUNCIONAMIENTO:
+     * - Limpia el contenido HTML que muestra la imagen Base64
+     * - Resetea el input de archivo (esto SÍ es seguro, solo limpia el valor)
+     * - Restaura la visibilidad del botón "+" para agregar nueva imagen
+     * - Guarda los cambios para actualizar el DataManager
+     * 
+     * NOTA: Es seguro limpiar el value de un file input, solo no se puede asignar
+     * 
+     * @param {HTMLButtonElement} button - Botón de eliminar que fue clickeado
      */
     removeMaterialPhoto(button) {
         const container = button.closest('.muestra-foto-container');
@@ -641,11 +710,19 @@ class Vista4 {
         const fileInput = container.querySelector('.input-foto-material-hidden');
         const botonAgregar = container.querySelector('.btn-agregar-foto');
         
+        // Limpiar la vista previa (elimina la imagen Base64 del DOM)
         previewDiv.innerHTML = '';
-        fileInput.value = '';
-        botonAgregar.style.display = 'block'; // Mostrar el botón + nuevamente
         
+        // Limpiar el input de archivo (esto SÍ es permitido por el navegador)
+        fileInput.value = '';
+        
+        // Mostrar el botón + nuevamente para permitir nueva carga
+        botonAgregar.style.display = 'block';
+        
+        // Guardar cambios (esto eliminará el Base64 del DataManager)
         this.saveData();
+        
+        console.log('Vista4: Imagen de material eliminada');
     }
 
     /**
@@ -727,6 +804,19 @@ class Vista4 {
     /**
      * Obtiene los datos de la tabla de muestra de materiales
      */
+    /**
+     * Obtiene los datos de la muestra de materiales
+     * 
+     * IMPORTANTE: Las imágenes se almacenan como DataURL (Base64) en el src de los elementos <img>.
+     * Esto garantiza:
+     * - Compatibilidad con html2canvas para exportación PDF
+     * - Persistencia en localStorage sin problemas de rutas
+     * - No hay InvalidStateError al cargar datos guardados
+     * 
+     * @returns {Array<Object>} Array de objetos con estructura:
+     *   - foto: {string} DataURL (Base64) de la imagen o string vacío
+     *   - descripcion: {string} Descripción del material
+     */
     getMuestraMaterialesData() {
         try {
             const contenedor = document.getElementById('contenedorMuestraMateriales');
@@ -738,20 +828,28 @@ class Vista4 {
             const muestras = contenedor.querySelectorAll('.muestra-item');
             const data = [];
 
-            muestras.forEach(muestra => {
+            muestras.forEach((muestra, index) => {
                 try {
                     const descripcionInput = muestra.querySelector('.input-descripcion-material');
                     const fotoImg = muestra.querySelector('.material-image');
                     
-                    data.push({
-                        foto: fotoImg ? fotoImg.src : '',
+                    const materialData = {
+                        foto: fotoImg ? fotoImg.src : '', // Base64 DataURL o string vacío
                         descripcion: descripcionInput ? descripcionInput.value : ''
-                    });
+                    };
+                    
+                    data.push(materialData);
+                    
+                    // Log solo si hay imagen (para debugging)
+                    if (materialData.foto) {
+                        console.log(`Vista4: Material ${index + 1} tiene imagen Base64 (${materialData.foto.length} caracteres)`);
+                    }
                 } catch (error) {
-                    console.warn('Error procesando muestra de material:', error);
+                    console.warn(`Error procesando muestra de material ${index + 1}:`, error);
                 }
             });
             
+            console.log(`Vista4: Recopilados datos de ${data.length} materiales`);
             return data;
         } catch (error) {
             console.error('Error en getMuestraMaterialesData:', error);
@@ -861,16 +959,29 @@ class Vista4 {
 
     /**
      * Carga los datos en la tabla de muestra de materiales
+     * IMPORTANTE: Este método maneja imágenes almacenadas como DataURL (Base64) 
+     * para evitar el InvalidStateError que ocurre al intentar asignar valores 
+     * a elementos <input type="file"> programáticamente.
+     * 
+     * Las imágenes se muestran directamente como <img> con src en Base64,
+     * lo que es compatible con html2canvas para la exportación PDF.
      */
     loadMuestraMaterialesData(materialesData) {
         const contenedor = document.getElementById('contenedorMuestraMateriales');
-        if (!contenedor) return;
+        if (!contenedor) {
+            console.warn('Vista4: Contenedor de muestra de materiales no encontrado');
+            return;
+        }
 
         contenedor.innerHTML = ''; // Limpiar contenedor existente
 
-        materialesData.forEach((item) => {
+        materialesData.forEach((item, index) => {
             const nuevaMuestra = document.createElement('div');
             nuevaMuestra.className = 'muestra-item';
+            
+            // NOTA TÉCNICA: No intentamos asignar valores a los inputs de archivo
+            // porque esto causaría InvalidStateError. En su lugar, mostramos 
+            // directamente las imágenes Base64 almacenadas.
             nuevaMuestra.innerHTML = `
                 <div class="muestra-foto-container">
                     <input type="file" accept="image/*" class="input-foto-material-hidden" onchange="Vista4Instance.handleMaterialPhotoUpload(event, this)">
@@ -878,7 +989,7 @@ class Vista4 {
                         <button class="btn-agregar-foto" onclick="Vista4Instance.triggerMaterialInput(this)" ${item.foto ? 'style="display: none;"' : ''}>+</button>
                         <div class="foto-preview-muestra">
                             ${item.foto ? `
-                                <img src="${item.foto}" alt="Material" class="material-image">
+                                <img src="${item.foto}" alt="Material ${index + 1}" class="material-image">
                                 <button class="btn-remove-material" onclick="Vista4Instance.removeMaterialPhoto(this)">×</button>
                             ` : ''}
                         </div>
@@ -894,7 +1005,14 @@ class Vista4 {
             // Configurar eventos para los inputs cargados
             const input = nuevaMuestra.querySelector('.input-descripcion-material');
             input.addEventListener('change', () => this.saveData());
+
+            // Log para debugging (solo si hay imagen)
+            if (item.foto) {
+                console.log(`Vista4: Imagen cargada para material ${index + 1} (Base64: ${item.foto.substring(0, 50)}...)`);
+            }
         });
+
+        console.log(`Vista4: Cargados ${materialesData.length} materiales`);
     }
 
     /**
